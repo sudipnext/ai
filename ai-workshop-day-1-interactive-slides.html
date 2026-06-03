@@ -1,0 +1,1603 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Day 1: Introduction to AI in Simple Language | AI Applications Workshop</title>
+  <style>
+    :root {
+      --bg: #f7f7fb;
+      --ink: #17202a;
+      --muted: #596579;
+      --line: #d9deea;
+      --paper: #ffffff;
+      --teal: #008f8c;
+      --blue: #3468d9;
+      --coral: #f45b69;
+      --gold: #f4b942;
+      --green: #3aa76d;
+      --violet: #7652c8;
+      --shadow: 0 18px 50px rgba(23, 32, 42, 0.14);
+      --radius: 8px;
+      --slide-ratio: 16 / 9;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(0, 143, 140, 0.08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(244, 91, 105, 0.07) 1px, transparent 1px),
+        var(--bg);
+      background-size: 36px 36px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      letter-spacing: 0;
+      overflow: hidden;
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 20px 16px;
+      background: rgba(255, 255, 255, 0.88);
+      border-right: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+      min-height: 0;
+    }
+
+    .brand {
+      display: grid;
+      gap: 8px;
+      padding: 4px 4px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand strong {
+      font-size: 1rem;
+      line-height: 1.25;
+    }
+
+    .brand span {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.35;
+    }
+
+    .progress-wrap {
+      display: grid;
+      gap: 8px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+    }
+
+    .progress {
+      width: 100%;
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e7eaf2;
+    }
+
+    .progress span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--blue), var(--coral));
+      transition: width 220ms ease;
+    }
+
+    .thumbs {
+      display: grid;
+      gap: 8px;
+      overflow: auto;
+      padding-right: 4px;
+      min-height: 0;
+    }
+
+    .thumb {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 9px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .thumb:hover,
+    .thumb.active {
+      background: #eef6ff;
+      border-color: #bfd4ff;
+    }
+
+    .thumb .num {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--ink);
+      color: white;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .thumb.active .num {
+      background: var(--blue);
+    }
+
+    .thumb .title {
+      font-size: 0.84rem;
+      line-height: 1.2;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .icon-btn {
+      display: grid;
+      place-items: center;
+      min-width: 42px;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--ink);
+      font-weight: 800;
+      box-shadow: 0 4px 14px rgba(23, 32, 42, 0.08);
+    }
+
+    .icon-btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .stage {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      min-width: 0;
+      min-height: 0;
+      padding: 24px;
+    }
+
+    .deck-shell {
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .deck {
+      position: relative;
+      width: min(100%, calc((100vh - 132px) * 16 / 9));
+      aspect-ratio: var(--slide-ratio);
+      border: 1px solid rgba(23, 32, 42, 0.1);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+      padding: clamp(24px, 4vw, 54px);
+      overflow: hidden;
+    }
+
+    .slide.active {
+      display: grid;
+    }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(0, 143, 140, 0.07), transparent 28%),
+        linear-gradient(315deg, rgba(244, 91, 105, 0.08), transparent 30%);
+    }
+
+    .slide > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .kicker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: clamp(0.72rem, 1vw, 0.92rem);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--coral);
+      box-shadow: 18px 0 0 var(--gold), 36px 0 0 var(--teal);
+      margin-right: 36px;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 880px;
+      font-size: clamp(2.1rem, 5.1vw, 5rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      font-size: clamp(1.7rem, 3.5vw, 3.4rem);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      font-size: clamp(1rem, 1.5vw, 1.3rem);
+      line-height: 1.2;
+    }
+
+    p,
+    li {
+      font-size: clamp(0.88rem, 1.25vw, 1.16rem);
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    ul,
+    ol {
+      margin: 0;
+      padding-left: 1.1em;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    .hero-grid,
+    .two-col,
+    .three-col,
+    .four-col,
+    .split {
+      display: grid;
+      gap: 18px;
+      align-items: stretch;
+      min-height: 0;
+    }
+
+    .hero-grid {
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: center;
+    }
+
+    .two-col {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .three-col {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .four-col {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .split {
+      grid-template-columns: 0.9fr 1.1fr;
+      align-items: center;
+    }
+
+    .panel,
+    .mini-card,
+    .activity,
+    .quote-box {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 10px 30px rgba(23, 32, 42, 0.08);
+    }
+
+    .panel,
+    .activity,
+    .quote-box {
+      padding: clamp(16px, 2vw, 24px);
+    }
+
+    .mini-card {
+      display: grid;
+      gap: 10px;
+      padding: clamp(14px, 1.6vw, 20px);
+      min-height: 132px;
+    }
+
+    .mini-card strong {
+      font-size: clamp(0.95rem, 1.3vw, 1.18rem);
+      line-height: 1.2;
+    }
+
+    .mini-card p {
+      font-size: clamp(0.78rem, 1.04vw, 1rem);
+    }
+
+    .accent-teal { border-top: 7px solid var(--teal); }
+    .accent-blue { border-top: 7px solid var(--blue); }
+    .accent-coral { border-top: 7px solid var(--coral); }
+    .accent-gold { border-top: 7px solid var(--gold); }
+    .accent-green { border-top: 7px solid var(--green); }
+    .accent-violet { border-top: 7px solid var(--violet); }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #263253;
+      font-size: clamp(0.72rem, 0.98vw, 0.92rem);
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .visual-ai {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 360px;
+      isolation: isolate;
+    }
+
+    .chip-cloud {
+      position: absolute;
+      inset: 0;
+    }
+
+    .chip-cloud span {
+      position: absolute;
+      display: inline-grid;
+      place-items: center;
+      min-width: 78px;
+      min-height: 38px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 24px rgba(23, 32, 42, 0.1);
+      color: var(--ink);
+      font-size: 0.86rem;
+      font-weight: 850;
+      animation: floaty 4s ease-in-out infinite;
+    }
+
+    .chip-cloud span:nth-child(1) { left: 2%; top: 8%; background: #e7fbf8; animation-delay: -0.8s; }
+    .chip-cloud span:nth-child(2) { right: 3%; top: 16%; background: #fff4dd; animation-delay: -1.3s; }
+    .chip-cloud span:nth-child(3) { left: 6%; bottom: 15%; background: #ffecef; animation-delay: -2s; }
+    .chip-cloud span:nth-child(4) { right: 8%; bottom: 8%; background: #eef2ff; animation-delay: -2.7s; }
+    .chip-cloud span:nth-child(5) { left: 36%; bottom: 1%; background: #ecfff4; animation-delay: -3.1s; }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .brain {
+      position: relative;
+      width: min(270px, 65%);
+      aspect-ratio: 1;
+      border-radius: 30% 40% 35% 45%;
+      background:
+        linear-gradient(135deg, rgba(52, 104, 217, 0.92), rgba(0, 143, 140, 0.92)),
+        radial-gradient(circle at 35% 30%, #ffffff, transparent 28%);
+      box-shadow: 0 26px 60px rgba(52, 104, 217, 0.28);
+      transform: rotate(-6deg);
+    }
+
+    .brain::before,
+    .brain::after {
+      content: "";
+      position: absolute;
+      border: 5px solid rgba(255, 255, 255, 0.78);
+      border-radius: 999px;
+    }
+
+    .brain::before {
+      inset: 20% 18% 52% 12%;
+      border-bottom-color: transparent;
+      border-left-color: transparent;
+    }
+
+    .brain::after {
+      inset: 48% 12% 18% 26%;
+      border-top-color: transparent;
+      border-right-color: transparent;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .flow-box {
+      min-height: 150px;
+      padding: 18px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    .arrow {
+      font-size: clamp(1.4rem, 3vw, 2.4rem);
+      color: var(--blue);
+      font-weight: 900;
+    }
+
+    .tool-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: var(--paper);
+      font-size: clamp(0.78rem, 1vw, 0.96rem);
+    }
+
+    .tool-table th,
+    .tool-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .tool-table th {
+      background: #17202a;
+      color: #ffffff;
+      font-weight: 850;
+    }
+
+    .tool-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .demo-window {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 330px;
+      overflow: hidden;
+      border: 1px solid #b9c1d3;
+      border-radius: var(--radius);
+      background: #f9fafc;
+    }
+
+    .window-bar {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      padding: 10px 14px;
+      background: #17202a;
+    }
+
+    .window-bar span {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--coral);
+    }
+
+    .window-bar span:nth-child(2) { background: var(--gold); }
+    .window-bar span:nth-child(3) { background: var(--green); }
+
+    .chat {
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      padding: 18px;
+    }
+
+    .bubble {
+      max-width: 86%;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      color: var(--ink);
+      font-size: clamp(0.78rem, 1vw, 1rem);
+      line-height: 1.38;
+    }
+
+    .bubble.user {
+      justify-self: end;
+      background: #dfeaff;
+      border: 1px solid #bfd4ff;
+    }
+
+    .bubble.ai {
+      justify-self: start;
+      background: #e7fbf8;
+      border: 1px solid #b9e9e4;
+    }
+
+    .interactive-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .choice-btn,
+    .action-btn {
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--paper);
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .choice-btn:hover,
+    .action-btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .choice-btn.selected.good {
+      background: #e8fff2;
+      border-color: var(--green);
+      color: #12663b;
+    }
+
+    .choice-btn.selected.warn {
+      background: #fff7df;
+      border-color: var(--gold);
+      color: #735000;
+    }
+
+    .feedback {
+      min-height: 48px;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px dashed #adb7c9;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--muted);
+      font-size: clamp(0.8rem, 1vw, 1rem);
+      line-height: 1.38;
+    }
+
+    .myth-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .flip {
+      position: relative;
+      min-height: 170px;
+      perspective: 900px;
+    }
+
+    .flip button {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      align-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--ink);
+      text-align: left;
+      transform-style: preserve-3d;
+      transition: transform 260ms ease, border-color 160ms ease;
+    }
+
+    .flip button:hover {
+      border-color: var(--coral);
+    }
+
+    .flip.revealed button {
+      transform: rotateY(180deg);
+    }
+
+    .flip .front,
+    .flip .back {
+      backface-visibility: hidden;
+    }
+
+    .flip .back {
+      position: absolute;
+      inset: 18px;
+      transform: rotateY(180deg);
+    }
+
+    .prompt-builder {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 16px;
+      min-height: 0;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    label {
+      display: grid;
+      gap: 5px;
+      color: var(--ink);
+      font-size: clamp(0.78rem, 0.98vw, 0.9rem);
+      font-weight: 850;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid #c6ccda;
+      border-radius: var(--radius);
+      background: #ffffff;
+      color: var(--ink);
+      padding: 10px 12px;
+      outline: 0;
+      resize: vertical;
+    }
+
+    textarea {
+      min-height: 86px;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(52, 104, 217, 0.16);
+    }
+
+    .output-box {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      min-height: 230px;
+      padding: 16px;
+      border: 1px solid #b8c5df;
+      border-radius: var(--radius);
+      background: #f8fbff;
+      color: var(--ink);
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .task-board {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .task-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .task-list input {
+      min-height: 46px;
+    }
+
+    .badge {
+      display: inline-grid;
+      place-items: center;
+      min-width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--ink);
+      color: white;
+      font-weight: 900;
+    }
+
+    .agenda {
+      display: grid;
+      gap: 10px;
+    }
+
+    .agenda-item {
+      display: grid;
+      grid-template-columns: 74px 1fr;
+      gap: 12px;
+      align-items: center;
+      min-height: 54px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+    }
+
+    .time {
+      display: grid;
+      place-items: center;
+      height: 36px;
+      border-radius: 8px;
+      background: #eef2ff;
+      color: #263253;
+      font-weight: 900;
+      font-size: 0.8rem;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: clamp(0.68rem, 0.86vw, 0.84rem);
+      border-top: 1px solid rgba(217, 222, 234, 0.9);
+      padding-top: 10px;
+    }
+
+    .notes {
+      display: none;
+      max-height: 124px;
+      overflow: auto;
+      margin-top: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fffbe9;
+      color: #473a14;
+      font-size: 0.9rem;
+      line-height: 1.42;
+    }
+
+    body.show-notes .notes {
+      display: block;
+    }
+
+    body.presenter .sidebar {
+      display: none;
+    }
+
+    body.presenter .app {
+      grid-template-columns: 1fr;
+    }
+
+    body.presenter .stage {
+      padding: 16px;
+    }
+
+    body.presenter .deck {
+      width: min(100%, calc((100vh - 86px) * 16 / 9));
+    }
+
+    .bottom-help {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-top: 16px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .kbd {
+      display: inline-grid;
+      place-items: center;
+      min-width: 24px;
+      min-height: 24px;
+      padding: 2px 7px;
+      border: 1px solid #cbd2df;
+      border-bottom-width: 3px;
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--ink);
+      font-weight: 850;
+    }
+
+    .confetti {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .confetti i {
+      position: absolute;
+      top: -16px;
+      width: 8px;
+      height: 14px;
+      opacity: 0;
+      animation: fall 880ms ease-in forwards;
+    }
+
+    @keyframes fall {
+      0% { opacity: 1; transform: translateY(0) rotate(0); }
+      100% { opacity: 0; transform: translateY(620px) rotate(240deg); }
+    }
+
+    @media (max-width: 960px) {
+      body {
+        overflow: auto;
+      }
+
+      .app {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 100%;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        padding: 12px;
+      }
+
+      .brand,
+      .thumbs {
+        display: none;
+      }
+
+      .controls {
+        grid-template-columns: repeat(4, 42px);
+        padding-top: 0;
+        border-top: 0;
+      }
+
+      .stage {
+        padding: 12px;
+      }
+
+      .deck {
+        width: 100%;
+        min-height: 620px;
+        aspect-ratio: auto;
+      }
+
+      .slide {
+        position: relative;
+        min-height: 620px;
+        overflow: auto;
+      }
+
+      .hero-grid,
+      .split,
+      .two-col,
+      .three-col,
+      .four-col,
+      .prompt-builder,
+      .task-board,
+      .myth-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .arrow {
+        transform: rotate(90deg);
+        justify-self: center;
+      }
+
+      .bottom-help {
+        display: none;
+      }
+    }
+
+    @media print {
+      html, body {
+        height: auto;
+        overflow: visible;
+        background: #ffffff;
+      }
+
+      .app {
+        display: block;
+      }
+
+      .sidebar,
+      .bottom-help {
+        display: none;
+      }
+
+      .stage {
+        display: block;
+        padding: 0;
+      }
+
+      .deck {
+        width: 100%;
+        box-shadow: none;
+        border: 0;
+        overflow: visible;
+      }
+
+      .slide,
+      .slide.active {
+        position: relative;
+        display: grid;
+        page-break-after: always;
+        width: 100vw;
+        height: 56.25vw;
+        max-height: 100vh;
+        overflow: hidden;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="Slide navigation">
+      <div class="brand">
+        <strong>AI Applications Workshop</strong>
+        <span>Day 1 interactive HTML deck<br />Instructor: Er. Sudip Parajuli</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>Progress</span>
+          <span id="progressText">1 / 16</span>
+        </div>
+        <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+      </div>
+      <nav class="thumbs" id="thumbs"></nav>
+      <div class="controls" aria-label="Deck controls">
+        <button class="icon-btn" id="prevBtn" title="Previous slide" aria-label="Previous slide">&lt;</button>
+        <button class="icon-btn" id="nextBtn" title="Next slide" aria-label="Next slide">&gt;</button>
+        <button class="icon-btn" id="notesBtn" title="Toggle speaker notes" aria-label="Toggle speaker notes">N</button>
+        <button class="icon-btn" id="presentBtn" title="Toggle presenter view" aria-label="Toggle presenter view">F</button>
+      </div>
+    </aside>
+
+    <main class="stage">
+      <div class="deck-shell">
+        <section class="deck" id="deck" aria-live="polite">
+          <div class="confetti" id="confetti" aria-hidden="true"></div>
+
+          <article class="slide active" data-title="Welcome">
+            <header class="kicker"><span class="dot"></span> Day 1 | 20-Day Workshop</header>
+            <div class="hero-grid">
+              <div>
+                <h1>Introduction to AI in Simple Language</h1>
+                <p style="margin-top:18px; max-width:720px;">A friendly, practical start for daily life, work, and education. Today we learn what AI is, what generative AI can create, and how to spot useful AI moments around us.</p>
+                <div class="tag-row">
+                  <span class="tag">Beginner-friendly</span>
+                  <span class="tag">Demo-based</span>
+                  <span class="tag">Hands-on</span>
+                  <span class="tag">No coding needed</span>
+                </div>
+              </div>
+              <div class="visual-ai" aria-label="AI capability visual">
+                <div class="chip-cloud">
+                  <span>Text</span>
+                  <span>Images</span>
+                  <span>Audio</span>
+                  <span>Video</span>
+                  <span>Slides</span>
+                </div>
+                <div class="brain"></div>
+              </div>
+            </div>
+            <footer class="slide-footer">
+              <span>Instructor: Er. Sudip Parajuli</span>
+              <span>Output: list 5 tasks where AI can help</span>
+            </footer>
+            <aside class="notes">Open warmly. Ask: “When you hear AI, what is the first thing that comes to mind?” Keep answers light and collect 3 to 5 responses before moving on.</aside>
+          </article>
+
+          <article class="slide" data-title="Today’s Path">
+            <header class="kicker"><span class="dot"></span> Session Map</header>
+            <div class="split">
+              <div>
+                <h2>By the end, learners can explain AI without technical words.</h2>
+                <p style="margin-top:14px;">The goal is confidence, not expert vocabulary. We connect AI to ordinary tasks people already do.</p>
+              </div>
+              <div class="agenda">
+                <div class="agenda-item"><span class="time">10m</span><p>Warm-up: where have you already met AI?</p></div>
+                <div class="agenda-item"><span class="time">25m</span><p>Simple explanation: AI, generative AI, chatbots</p></div>
+                <div class="agenda-item"><span class="time">30m</span><p>Live demos: text, image, audio/video ideas, slides</p></div>
+                <div class="agenda-item"><span class="time">35m</span><p>Hands-on: build your personal AI help list</p></div>
+                <div class="agenda-item"><span class="time">10m</span><p>Share, feedback, and homework</p></div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Recommended for a 2-hour session</span><span>Adjust timing for a 3-hour class</span></footer>
+            <aside class="notes">Use the agenda to set expectations. For 3 hours, expand demos and hands-on practice.</aside>
+          </article>
+
+          <article class="slide" data-title="Warm-Up">
+            <header class="kicker"><span class="dot"></span> Starter Activity</header>
+            <div class="two-col">
+              <div>
+                <h2>AI is already in the room.</h2>
+                <p style="margin-top:14px;">Ask learners to pick which examples they have used before. Click each button and discuss why it may involve AI.</p>
+                <div class="interactive-row" data-poll>
+                  <button class="choice-btn" data-feedback="Recommendation systems learn from viewing and buying patterns.">YouTube or Netflix suggestions</button>
+                  <button class="choice-btn" data-feedback="Maps use prediction, traffic data, and route optimization.">Google Maps traffic</button>
+                  <button class="choice-btn" data-feedback="Autocorrect predicts the word you probably meant.">Phone autocorrect</button>
+                  <button class="choice-btn" data-feedback="Spam filters classify messages as safe or suspicious.">Email spam filter</button>
+                  <button class="choice-btn" data-feedback="Camera apps improve brightness, faces, and background blur.">Phone camera portrait mode</button>
+                </div>
+                <div class="feedback">Click an example to reveal the simple AI idea behind it.</div>
+              </div>
+              <div class="quote-box">
+                <h3>Friendly definition</h3>
+                <p style="font-size:clamp(1.1rem,2vw,1.65rem); color:var(--ink); margin-top:14px;">AI is software that can find patterns, make predictions, or create helpful output from examples and instructions.</p>
+                <div class="tag-row">
+                  <span class="tag">Patterns</span>
+                  <span class="tag">Predictions</span>
+                  <span class="tag">Creation</span>
+                  <span class="tag">Assistance</span>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Fun rule: start from things learners already know</span><span>Slide 3</span></footer>
+            <aside class="notes">Invite short stories: “Who trusted Maps today?” This makes AI feel practical rather than mysterious.</aside>
+          </article>
+
+          <article class="slide" data-title="What AI Does">
+            <header class="kicker"><span class="dot"></span> Simple Model</header>
+            <div>
+              <h2>AI is like a very fast pattern helper.</h2>
+              <div class="flow" style="margin-top:24px;">
+                <div class="flow-box accent-teal">
+                  <h3>1. It receives input</h3>
+                  <p>Words, images, files, numbers, voice, or instructions from a person.</p>
+                </div>
+                <div class="arrow">→</div>
+                <div class="flow-box accent-blue">
+                  <h3>2. It compares patterns</h3>
+                  <p>It uses what it learned from data to predict useful next steps.</p>
+                </div>
+                <div class="arrow">→</div>
+                <div class="flow-box accent-coral">
+                  <h3>3. It gives output</h3>
+                  <p>Answer, summary, draft, image idea, table, plan, or slide outline.</p>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Keep it non-technical: input → pattern → output</span><span>No programming background needed</span></footer>
+            <aside class="notes">Avoid deep ML terms here. The mental model is enough for Day 1.</aside>
+          </article>
+
+          <article class="slide" data-title="Generative AI">
+            <header class="kicker"><span class="dot"></span> Key Idea</header>
+            <div class="hero-grid">
+              <div>
+                <h2>Generative AI creates new content from your instructions.</h2>
+                <p style="margin-top:14px;">It can draft, rewrite, summarize, design, brainstorm, explain, and produce first versions. The human still decides what is correct, useful, respectful, and ready.</p>
+              </div>
+              <div class="three-col">
+                <div class="mini-card accent-blue"><strong>Text</strong><p>Emails, lesson plans, notices, quiz questions, summaries, reports.</p></div>
+                <div class="mini-card accent-coral"><strong>Images</strong><p>Posters, visual ideas, presentation graphics, concept art.</p></div>
+                <div class="mini-card accent-gold"><strong>Slides</strong><p>Outlines, full decks, speaker notes, story flow, visual prompts.</p></div>
+                <div class="mini-card accent-green"><strong>Audio</strong><p>Voiceover scripts, podcast outlines, pronunciation practice.</p></div>
+                <div class="mini-card accent-violet"><strong>Video</strong><p>Scripts, scenes, captions, storyboard plans, short-form ideas.</p></div>
+                <div class="mini-card accent-teal"><strong>Data</strong><p>Tables, formulas, charts, dashboard ideas, cleanup suggestions.</p></div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Main message: AI makes drafts, people make decisions</span><span>Slide 5</span></footer>
+            <aside class="notes">Use “first draft machine” carefully: it helps, but it is not always correct. Emphasize review.</aside>
+          </article>
+
+          <article class="slide" data-title="Chatbots">
+            <header class="kicker"><span class="dot"></span> Chatbots in Plain Words</header>
+            <div class="split">
+              <div class="demo-window">
+                <div class="window-bar"><span></span><span></span><span></span></div>
+                <div class="chat">
+                  <div class="bubble user">Explain AI to school staff in simple Nepali-English style.</div>
+                  <div class="bubble ai">AI is like a helpful digital assistant. It can draft, explain, summarize, and suggest ideas, but humans should check the final answer.</div>
+                  <div class="bubble user">Now make it shorter and friendlier.</div>
+                  <div class="bubble ai">AI is a smart helper for routine thinking work. It saves time, but we stay in charge.</div>
+                </div>
+              </div>
+              <div>
+                <h2>Chatbots are conversation-based AI assistants.</h2>
+                <p style="margin-top:14px;">They respond to prompts, remember the recent conversation, accept follow-up questions, and can change tone, format, or level when asked.</p>
+                <div class="tag-row">
+                  <span class="tag">ChatGPT</span>
+                  <span class="tag">Claude</span>
+                  <span class="tag">Gemini</span>
+                  <span class="tag">Microsoft Copilot</span>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Demo phrase: “Try again, but simpler”</span><span>Slide 6</span></footer>
+            <aside class="notes">Show that the follow-up is often more powerful than the first prompt. Beginners should feel allowed to keep asking.</aside>
+          </article>
+
+          <article class="slide" data-title="Tools">
+            <header class="kicker"><span class="dot"></span> Tool Map</header>
+            <div>
+              <h2>Which assistant should learners recognize today?</h2>
+              <table class="tool-table" style="margin-top:20px;">
+                <thead>
+                  <tr><th>Tool</th><th>Simple positioning</th><th>Good Day 1 demo</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><strong>ChatGPT</strong></td><td>General assistant for writing, explaining, planning, and creativity.</td><td>Ask it to explain AI for a teacher, parent, or office team.</td></tr>
+                  <tr><td><strong>Claude</strong></td><td>Helpful for long-form writing and careful rewriting.</td><td>Rewrite a long paragraph into a simple notice.</td></tr>
+                  <tr><td><strong>Gemini</strong></td><td>Useful for Google-style workflows and everyday research support.</td><td>Plan a short class activity or organize ideas.</td></tr>
+                  <tr><td><strong>Copilot</strong></td><td>Useful inside Microsoft work: Word, PowerPoint, Excel, Outlook.</td><td>Draft a formal email or meeting summary.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="slide-footer"><span>Do not make this a competition yet</span><span>Teach “right tool for the job” later</span></footer>
+            <aside class="notes">Day 3 compares assistants in more detail. Today, only introduce the names and use cases.</aside>
+          </article>
+
+          <article class="slide" data-title="AI or Not?">
+            <header class="kicker"><span class="dot"></span> Quick Game</header>
+            <div class="two-col">
+              <div>
+                <h2>AI or not AI?</h2>
+                <p style="margin-top:14px;">Ask learners to vote first. Then click the answer. The point is discussion, not trick questions.</p>
+                <div class="activity">
+                  <h3>Example: A calculator gives 15 × 8 = 120.</h3>
+                  <div class="interactive-row" data-quiz>
+                    <button class="choice-btn" data-correct="false" data-feedback="A normal calculator follows fixed rules. It does not learn patterns or generate new explanations.">AI</button>
+                    <button class="choice-btn" data-correct="true" data-feedback="Correct. A simple calculator is useful software, but not usually AI.">Not AI</button>
+                  </div>
+                  <div class="feedback">Choose one answer.</div>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Example: Email suggests “Thanks, I will check and reply soon.”</h3>
+                <div class="interactive-row" data-quiz>
+                  <button class="choice-btn" data-correct="true" data-feedback="Correct. It predicts useful text based on context and language patterns.">AI</button>
+                  <button class="choice-btn" data-correct="false" data-feedback="This is usually AI because it predicts a helpful phrase from message context.">Not AI</button>
+                </div>
+                <div class="feedback">Choose one answer.</div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Mini-game: useful for keeping the room awake</span><span>Slide 8</span></footer>
+            <aside class="notes">Encourage learners to explain their vote. Good disagreement is useful here.</aside>
+          </article>
+
+          <article class="slide" data-title="Myths">
+            <header class="kicker"><span class="dot"></span> Myths vs Realities</header>
+            <div>
+              <h2>Click each myth to reveal a better reality.</h2>
+              <div class="myth-grid" style="margin-top:20px;">
+                <div class="flip"><button><span class="front"><h3>Myth: AI knows everything.</h3><p>Click to flip.</p></span><span class="back"><h3>Reality</h3><p>AI can be wrong, outdated, biased, or overconfident. Always review important answers.</p></span></button></div>
+                <div class="flip"><button><span class="front"><h3>Myth: AI will replace every job.</h3><p>Click to flip.</p></span><span class="back"><h3>Reality</h3><p>AI changes tasks. People who use it well can save time and improve quality.</p></span></button></div>
+                <div class="flip"><button><span class="front"><h3>Myth: Prompts must be technical.</h3><p>Click to flip.</p></span><span class="back"><h3>Reality</h3><p>Clear everyday language works. Add role, task, context, format, and tone.</p></span></button></div>
+                <div class="flip"><button><span class="front"><h3>Myth: AI output is ready to submit.</h3><p>Click to flip.</p></span><span class="back"><h3>Reality</h3><p>Treat AI as a draft partner. Check facts, privacy, tone, and local fit.</p></span></button></div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Click cards during discussion</span><span>Slide 9</span></footer>
+            <aside class="notes">This slide prepares learners for Day 5 responsible AI without making Day 1 heavy.</aside>
+          </article>
+
+          <article class="slide" data-title="Where AI Fits">
+            <header class="kicker"><span class="dot"></span> Daily Life, Work, Education</header>
+            <div class="three-col">
+              <div class="mini-card accent-teal">
+                <span class="badge">D</span>
+                <strong>Daily life</strong>
+                <ul>
+                  <li>Plan a weekly routine</li>
+                  <li>Explain a confusing message</li>
+                  <li>Compare travel options</li>
+                  <li>Create a shopping checklist</li>
+                </ul>
+              </div>
+              <div class="mini-card accent-blue">
+                <span class="badge">W</span>
+                <strong>Work</strong>
+                <ul>
+                  <li>Draft emails and notices</li>
+                  <li>Summarize meeting notes</li>
+                  <li>Prepare reports and proposals</li>
+                  <li>Turn data into charts</li>
+                </ul>
+              </div>
+              <div class="mini-card accent-coral">
+                <span class="badge">E</span>
+                <strong>Education</strong>
+                <ul>
+                  <li>Create lesson outlines</li>
+                  <li>Generate quizzes and rubrics</li>
+                  <li>Explain topics at different levels</li>
+                  <li>Make worksheets and slides</li>
+                </ul>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Ask learners to add local examples</span><span>Slide 10</span></footer>
+            <aside class="notes">Invite school staff, teachers, and professionals to choose the column closest to their real life.</aside>
+          </article>
+
+          <article class="slide" data-title="Live Demo Script">
+            <header class="kicker"><span class="dot"></span> Instructor Demo</header>
+            <div class="two-col">
+              <div>
+                <h2>Run one simple “wow but practical” demo.</h2>
+                <p style="margin-top:14px;">Use a chatbot and type these prompts live. Keep the output short enough that learners can read it.</p>
+                <div class="tag-row">
+                  <span class="tag">Explain</span>
+                  <span class="tag">Rewrite</span>
+                  <span class="tag">Format</span>
+                  <span class="tag">Localize</span>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Demo prompt sequence</h3>
+                <ol>
+                  <li>Explain generative AI to a beginner in 5 bullet points.</li>
+                  <li>Now make it suitable for teachers and office staff in Nepal.</li>
+                  <li>Give 5 examples where AI can save 15 minutes per day.</li>
+                  <li>Turn the answer into a table with task, AI help, and human check.</li>
+                </ol>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Use the same idea across ChatGPT, Claude, Gemini, or Copilot</span><span>Slide 11</span></footer>
+            <aside class="notes">If internet is slow, read the prompts and show a prepared answer. The teaching point is prompt iteration.</aside>
+          </article>
+
+          <article class="slide" data-title="Prompt Builder">
+            <header class="kicker"><span class="dot"></span> Hands-On Helper</header>
+            <div class="prompt-builder">
+              <div class="activity">
+                <h2 style="font-size:clamp(1.4rem,2.5vw,2.5rem);">Build a beginner prompt.</h2>
+                <div class="form-grid" style="margin-top:14px;">
+                  <label>Role
+                    <input id="roleInput" value="You are a friendly AI trainer" />
+                  </label>
+                  <label>Task
+                    <input id="taskInput" value="explain what generative AI is" />
+                  </label>
+                  <label>Context
+                    <input id="contextInput" value="for teachers, office staff, and beginners" />
+                  </label>
+                  <label>Format
+                    <input id="formatInput" value="5 simple bullet points with examples" />
+                  </label>
+                  <label>Tone
+                    <input id="toneInput" value="warm, simple, and practical" />
+                  </label>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Generated prompt</h3>
+                <div class="output-box" id="promptOutput"></div>
+                <div class="interactive-row">
+                  <button class="action-btn" id="copyPromptBtn">Copy prompt</button>
+                  <button class="action-btn" id="resetPromptBtn">Reset</button>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Preview of Day 2 prompting basics</span><span>Slide 12</span></footer>
+            <aside class="notes">Do not teach all prompt engineering yet. This slide gives a simple formula learners can use immediately.</aside>
+          </article>
+
+          <article class="slide" data-title="Safe Start">
+            <header class="kicker"><span class="dot"></span> Responsible Use Starter</header>
+            <div class="four-col">
+              <div class="mini-card accent-coral">
+                <strong>Do not share private data</strong>
+                <p>Passwords, personal IDs, confidential school or office records, private student details.</p>
+              </div>
+              <div class="mini-card accent-gold">
+                <strong>Check facts</strong>
+                <p>AI can sound confident while being wrong. Verify names, dates, numbers, laws, and policies.</p>
+              </div>
+              <div class="mini-card accent-blue">
+                <strong>Edit the output</strong>
+                <p>Make the answer match your audience, local context, and real purpose.</p>
+              </div>
+              <div class="mini-card accent-green">
+                <strong>Use human judgment</strong>
+                <p>AI supports decisions. It should not be the only decision-maker for important matters.</p>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Day 5 goes deeper into responsible and safe use</span><span>Slide 13</span></footer>
+            <aside class="notes">Keep this positive: safety is a professional habit, not a fear message.</aside>
+          </article>
+
+          <article class="slide" data-title="Main Activity">
+            <header class="kicker"><span class="dot"></span> Participant Output</header>
+            <div class="task-board">
+              <div>
+                <h2>List 5 tasks where AI can help you.</h2>
+                <p style="margin-top:14px;">Choose from personal life, work, school, teaching, design, documents, or planning. Be specific: “make lesson plan” is better than “education.”</p>
+                <div class="tag-row">
+                  <span class="tag">Specific task</span>
+                  <span class="tag">AI help</span>
+                  <span class="tag">Human check</span>
+                </div>
+              </div>
+              <div class="activity">
+                <div class="task-list">
+                  <input class="taskInput" placeholder="1. Example: Draft a weekly class notice" />
+                  <input class="taskInput" placeholder="2. Example: Summarize a meeting" />
+                  <input class="taskInput" placeholder="3. Example: Create quiz questions" />
+                  <input class="taskInput" placeholder="4. Example: Plan a family budget table" />
+                  <input class="taskInput" placeholder="5. Example: Make a poster idea" />
+                </div>
+                <div class="interactive-row">
+                  <button class="action-btn" id="saveTasksBtn">Save list</button>
+                  <button class="action-btn" id="copyTasksBtn">Copy list</button>
+                  <button class="action-btn" id="clearTasksBtn">Clear</button>
+                </div>
+                <div class="feedback" id="taskFeedback">Your list stays in this browser after saving.</div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Submission: 5 useful tasks</span><span>Slide 14</span></footer>
+            <aside class="notes">Give learners 8 to 12 minutes. Walk around and help them become more specific.</aside>
+          </article>
+
+          <article class="slide" data-title="Share Back">
+            <header class="kicker"><span class="dot"></span> Sharing Round</header>
+            <div class="split">
+              <div>
+                <h2>Turn task ideas into better AI use cases.</h2>
+                <p style="margin-top:14px;">Ask 3 participants to share one task. As a group, improve each task using three questions.</p>
+              </div>
+              <div class="three-col">
+                <div class="mini-card accent-teal">
+                  <strong>What is the exact output?</strong>
+                  <p>Email, table, slide outline, checklist, quiz, poster copy, or plan?</p>
+                </div>
+                <div class="mini-card accent-blue">
+                  <strong>What context matters?</strong>
+                  <p>Audience, class level, office role, language, deadline, format, constraints.</p>
+                </div>
+                <div class="mini-card accent-coral">
+                  <strong>What must a human check?</strong>
+                  <p>Facts, privacy, tone, fairness, school or office rules, final quality.</p>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Make the output stronger before learners leave</span><span>Slide 15</span></footer>
+            <aside class="notes">This is a bridge from Day 1 to Day 2. The better the task description, the better the prompt.</aside>
+          </article>
+
+          <article class="slide" data-title="Wrap-Up">
+            <header class="kicker"><span class="dot"></span> Recap and Homework</header>
+            <div class="hero-grid">
+              <div>
+                <h2>AI is a practical assistant, not magic.</h2>
+                <p style="margin-top:14px;">It helps with drafts, ideas, summaries, organization, and creative starting points. The person using it stays responsible for the final result.</p>
+                <div class="interactive-row">
+                  <button class="action-btn" id="celebrateBtn">Celebrate completion</button>
+                  <button class="action-btn" onclick="window.print()">Print / Save PDF</button>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Homework before Day 2</h3>
+                <ol>
+                  <li>Finalize your list of 5 AI-helpful tasks.</li>
+                  <li>Pick one task you want to try with a chatbot.</li>
+                  <li>Bring one “bad prompt” and one “better prompt” idea.</li>
+                </ol>
+                <div class="quote-box" style="margin-top:14px;">
+                  <p style="color:var(--ink);">Positioning line: This workshop is not about becoming an AI engineer. It is about becoming an AI-powered teacher, professional, and creator.</p>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Instructor: Er. Sudip Parajuli</span><span>End of Day 1</span></footer>
+            <aside class="notes">End with momentum. Tell learners Day 2 is about how to talk to AI clearly.</aside>
+          </article>
+        </section>
+      </div>
+      <div class="bottom-help">
+        <span>Keyboard: <span class="kbd">←</span> <span class="kbd">→</span> navigate, <span class="kbd">N</span> notes, <span class="kbd">F</span> focus</span>
+        <span>Standalone HTML slide deck</span>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const thumbs = document.getElementById("thumbs");
+    const progressText = document.getElementById("progressText");
+    const progressBar = document.getElementById("progressBar");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const notesBtn = document.getElementById("notesBtn");
+    const presentBtn = document.getElementById("presentBtn");
+    const confetti = document.getElementById("confetti");
+    let index = Number(localStorage.getItem("day1-ai-slide") || 0);
+
+    function clampSlide(value) {
+      return Math.max(0, Math.min(slides.length - 1, value));
+    }
+
+    function renderThumbs() {
+      thumbs.innerHTML = "";
+      slides.forEach((slide, i) => {
+        const button = document.createElement("button");
+        button.className = "thumb";
+        button.type = "button";
+        button.innerHTML = `<span class="num">${i + 1}</span><span class="title">${slide.dataset.title}</span>`;
+        button.addEventListener("click", () => goTo(i));
+        thumbs.appendChild(button);
+      });
+    }
+
+    function goTo(nextIndex) {
+      index = clampSlide(nextIndex);
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
+      [...thumbs.children].forEach((thumb, i) => thumb.classList.toggle("active", i === index));
+      progressText.textContent = `${index + 1} / ${slides.length}`;
+      progressBar.style.width = `${((index + 1) / slides.length) * 100}%`;
+      localStorage.setItem("day1-ai-slide", String(index));
+    }
+
+    prevBtn.addEventListener("click", () => goTo(index - 1));
+    nextBtn.addEventListener("click", () => goTo(index + 1));
+    notesBtn.addEventListener("click", () => document.body.classList.toggle("show-notes"));
+    presentBtn.addEventListener("click", () => document.body.classList.toggle("presenter"));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.target.matches("input, textarea")) return;
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") goTo(index + 1);
+      if (event.key === "ArrowLeft" || event.key === "PageUp") goTo(index - 1);
+      if (event.key.toLowerCase() === "n") document.body.classList.toggle("show-notes");
+      if (event.key.toLowerCase() === "f") document.body.classList.toggle("presenter");
+      if (event.key === "Home") goTo(0);
+      if (event.key === "End") goTo(slides.length - 1);
+    });
+
+    document.querySelectorAll("[data-poll]").forEach((group) => {
+      const feedback = group.parentElement.querySelector(".feedback");
+      group.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", () => {
+          group.querySelectorAll("button").forEach((b) => b.classList.remove("selected", "good"));
+          button.classList.add("selected", "good");
+          feedback.textContent = button.dataset.feedback;
+        });
+      });
+    });
+
+    document.querySelectorAll("[data-quiz]").forEach((group) => {
+      const feedback = group.parentElement.querySelector(".feedback");
+      group.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const correct = button.dataset.correct === "true";
+          group.querySelectorAll("button").forEach((b) => b.classList.remove("selected", "good", "warn"));
+          button.classList.add("selected", correct ? "good" : "warn");
+          feedback.textContent = button.dataset.feedback;
+        });
+      });
+    });
+
+    document.querySelectorAll(".flip").forEach((card) => {
+      card.querySelector("button").addEventListener("click", () => card.classList.toggle("revealed"));
+    });
+
+    const promptFields = ["roleInput", "taskInput", "contextInput", "formatInput", "toneInput"].map((id) => document.getElementById(id));
+    const promptOutput = document.getElementById("promptOutput");
+
+    function updatePrompt() {
+      const [role, task, context, format, tone] = promptFields.map((field) => field.value.trim());
+      promptOutput.textContent =
+        `${role || "You are a helpful assistant"}.\n\n` +
+        `Your task is to ${task || "help me"}.\n\n` +
+        `Context: ${context || "I am a beginner"}.\n\n` +
+        `Please respond in this format: ${format || "clear bullet points"}.\n\n` +
+        `Tone: ${tone || "simple and friendly"}.`;
+    }
+
+    promptFields.forEach((field) => field.addEventListener("input", updatePrompt));
+    document.getElementById("copyPromptBtn").addEventListener("click", async () => {
+      await navigator.clipboard.writeText(promptOutput.textContent);
+      promptOutput.textContent += "\n\nCopied to clipboard.";
+      setTimeout(updatePrompt, 900);
+    });
+    document.getElementById("resetPromptBtn").addEventListener("click", () => {
+      const defaults = [
+        "You are a friendly AI trainer",
+        "explain what generative AI is",
+        "for teachers, office staff, and beginners",
+        "5 simple bullet points with examples",
+        "warm, simple, and practical"
+      ];
+      promptFields.forEach((field, i) => field.value = defaults[i]);
+      updatePrompt();
+    });
+
+    const taskInputs = [...document.querySelectorAll(".taskInput")];
+    const taskFeedback = document.getElementById("taskFeedback");
+
+    function saveTasks() {
+      localStorage.setItem("day1-ai-tasks", JSON.stringify(taskInputs.map((input) => input.value)));
+      taskFeedback.textContent = "Saved. Ask 2 participants to share one task each.";
+    }
+
+    function loadTasks() {
+      const saved = JSON.parse(localStorage.getItem("day1-ai-tasks") || "[]");
+      saved.forEach((value, i) => {
+        if (taskInputs[i]) taskInputs[i].value = value;
+      });
+    }
+
+    document.getElementById("saveTasksBtn").addEventListener("click", saveTasks);
+    document.getElementById("copyTasksBtn").addEventListener("click", async () => {
+      const text = taskInputs.map((input, i) => `${i + 1}. ${input.value || "[write your task]"}`).join("\n");
+      await navigator.clipboard.writeText(text);
+      taskFeedback.textContent = "Copied task list to clipboard.";
+    });
+    document.getElementById("clearTasksBtn").addEventListener("click", () => {
+      taskInputs.forEach((input) => input.value = "");
+      localStorage.removeItem("day1-ai-tasks");
+      taskFeedback.textContent = "Cleared. Start fresh.";
+    });
+
+    function celebrate() {
+      confetti.innerHTML = "";
+      const colors = ["#008f8c", "#3468d9", "#f45b69", "#f4b942", "#3aa76d", "#7652c8"];
+      for (let i = 0; i < 72; i += 1) {
+        const piece = document.createElement("i");
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.background = colors[i % colors.length];
+        piece.style.animationDelay = `${Math.random() * 220}ms`;
+        piece.style.transform = `rotate(${Math.random() * 180}deg)`;
+        confetti.appendChild(piece);
+      }
+      setTimeout(() => confetti.innerHTML = "", 1400);
+    }
+
+    document.getElementById("celebrateBtn").addEventListener("click", celebrate);
+
+    renderThumbs();
+    loadTasks();
+    updatePrompt();
+    goTo(index);
+  </script>
+</body>
+</html>
