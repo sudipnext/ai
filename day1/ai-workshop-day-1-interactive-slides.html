@@ -618,6 +618,260 @@
       line-height: 1.38;
     }
 
+    .ai-game {
+      display: grid;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .game-panel {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .game-panel[hidden] {
+      display: none;
+    }
+
+    .game-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .game-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .game-stat {
+      display: grid;
+      gap: 2px;
+      min-width: 72px;
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      background: #eef2ff;
+      border: 1px solid #d5def7;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .game-stat strong {
+      font-size: 1.15rem;
+      color: var(--ink);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .game-stat.streak strong {
+      color: var(--coral);
+    }
+
+    .game-progress {
+      flex: 1 1 140px;
+      min-width: 120px;
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e7eaf2;
+    }
+
+    .game-progress span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--teal), var(--violet));
+      transition: width 280ms ease;
+    }
+
+    .game-round-label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .game-question {
+      margin: 0;
+      font-size: clamp(1.05rem, 1.55vw, 1.45rem);
+      line-height: 1.3;
+    }
+
+    .game-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .game-option {
+      min-height: 52px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--ink);
+      font-weight: 750;
+      text-align: left;
+      line-height: 1.32;
+      transition: border-color 140ms ease, background 140ms ease, transform 120ms ease;
+    }
+
+    .game-option:hover:not(:disabled) {
+      border-color: var(--blue);
+      transform: translateY(-1px);
+    }
+
+    .game-option:disabled {
+      cursor: default;
+      opacity: 0.92;
+    }
+
+    .game-option.correct {
+      background: #e8fff2;
+      border-color: var(--green);
+      color: #12663b;
+    }
+
+    .game-option.wrong {
+      background: #fff0f1;
+      border-color: var(--coral);
+      color: #8b2430;
+    }
+
+    .game-option.reveal {
+      box-shadow: inset 0 0 0 2px rgba(58, 167, 109, 0.35);
+    }
+
+    .game-tip {
+      min-height: 44px;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      background: #f8fbff;
+      border: 1px dashed #b8c5df;
+      color: var(--ink);
+      font-size: clamp(0.78rem, 0.95vw, 0.92rem);
+      line-height: 1.38;
+    }
+
+    .game-tip.empty {
+      color: var(--muted);
+    }
+
+    .game-intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .game-intro ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: clamp(0.82rem, 1vw, 0.95rem);
+    }
+
+    .game-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .game-badge {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eef6ff;
+      border: 1px solid #bfd4ff;
+      color: #263253;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .game-result {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .game-score-ring {
+      display: grid;
+      place-items: center;
+      width: 108px;
+      height: 108px;
+      border-radius: 50%;
+      background: conic-gradient(var(--teal) 0deg, var(--teal) var(--pct, 0deg), #e7eaf2 var(--pct, 0deg));
+      position: relative;
+    }
+
+    .game-score-ring::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border-radius: 50%;
+      background: var(--paper);
+    }
+
+    .game-score-ring strong {
+      position: relative;
+      z-index: 1;
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .game-score-ring span {
+      position: relative;
+      z-index: 1;
+      display: block;
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    .game-title-card {
+      text-align: center;
+      padding: 20px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #e7fbf8, #eef6ff 55%, #fff4e8);
+      border: 1px solid var(--line);
+    }
+
+    .game-title-card h3 {
+      margin: 0;
+      font-size: clamp(1.35rem, 2.2vw, 2rem);
+    }
+
+    .game-title-card p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 960px) {
+      .game-intro,
+      .game-options,
+      .game-result {
+        grid-template-columns: 1fr;
+      }
+
+      .game-score-ring {
+        justify-self: center;
+      }
+    }
+
     .myth-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1048,7 +1302,7 @@
               </div>
               <div class="agenda">
                 <div class="agenda-item"><span class="time">10m</span><p>Warm-up: where have you already met AI?</p></div>
-                <div class="agenda-item"><span class="time">25m</span><p>Simple explanation: AI, generative AI, chatbots</p></div>
+                <div class="agenda-item"><span class="time">25m</span><p>Simple explanation: AI, generative AI, chatbots, AI Quest game</p></div>
                 <div class="agenda-item"><span class="time">30m</span><p>Live demos: text, image, audio/video ideas, slides</p></div>
                 <div class="agenda-item"><span class="time">35m</span><p>Hands-on: build your personal AI help list</p></div>
                 <div class="agenda-item"><span class="time">10m</span><p>Share, feedback, and homework</p></div>
@@ -1208,6 +1462,76 @@
             <aside class="notes">Encourage learners to explain their vote. Good disagreement is useful here.</aside>
           </article>
 
+          <article class="slide" data-title="AI Quest">
+            <header class="kicker"><span class="dot"></span> Play &amp; Learn</header>
+            <div class="ai-game" id="aiQuestGame">
+              <div class="game-panel" data-game-panel="start">
+                <div class="game-intro">
+                  <div>
+                    <h2 style="margin:0;">AI Quest Challenge</h2>
+                    <p style="margin-top:10px;">Six quick rounds about Day 1 ideas. Play solo, in pairs, or as a room vote. Wrong answers still teach — read the tip before the next round.</p>
+                    <ul>
+                      <li>Topics: AI vs tools, generative AI, chatbots, myths, safe use</li>
+                      <li>+10 points per correct answer, +5 streak bonus after 2 in a row</li>
+                      <li>Best score saves in this browser</li>
+                    </ul>
+                    <div class="game-badge-row">
+                      <span class="game-badge">~5 minutes</span>
+                      <span class="game-badge">No login</span>
+                      <span class="game-badge">Discussion friendly</span>
+                    </div>
+                    <div class="interactive-row">
+                      <button class="action-btn" type="button" id="aiQuestStartBtn">Start game</button>
+                    </div>
+                  </div>
+                  <div class="game-title-card">
+                    <h3>🏆 Earn your title</h3>
+                    <p>0–39: AI Curious · 40–59: AI Explorer · 60+: AI Champion</p>
+                    <p style="margin-top:14px;font-size:0.82rem;">High score: <strong id="aiQuestBest">0</strong></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="game-panel" data-game-panel="play" hidden>
+                <div class="game-top">
+                  <span class="game-round-label" id="aiQuestRoundLabel">Round 1 / 6</span>
+                  <div class="game-stats">
+                    <div class="game-stat"><span>Score</span><strong id="aiQuestScore">0</strong></div>
+                    <div class="game-stat streak"><span>Streak</span><strong id="aiQuestStreak">0</strong></div>
+                  </div>
+                  <div class="game-progress" aria-hidden="true"><span id="aiQuestProgressBar"></span></div>
+                </div>
+                <p class="game-question" id="aiQuestQuestion"></p>
+                <div class="game-options" id="aiQuestOptions"></div>
+                <div class="game-tip empty" id="aiQuestTip">Pick an answer to see a learning tip.</div>
+                <div class="interactive-row">
+                  <button class="action-btn" type="button" id="aiQuestNextBtn" hidden>Next round</button>
+                </div>
+              </div>
+
+              <div class="game-panel" data-game-panel="end" hidden>
+                <div class="game-result">
+                  <div class="game-score-ring" id="aiQuestScoreRing" style="--pct: 0deg;">
+                    <div>
+                      <strong id="aiQuestFinalScore">0</strong>
+                      <span>points</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h2 style="margin:0;" id="aiQuestTitle">AI Curious</h2>
+                    <p style="margin-top:10px;" id="aiQuestSummary"></p>
+                    <div class="interactive-row">
+                      <button class="action-btn" type="button" id="aiQuestAgainBtn">Play again</button>
+                      <button class="action-btn" type="button" id="aiQuestCelebrateBtn">Celebrate</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Pause for group debate on tricky rounds</span><span>Slide 9 — AI Quest</span></footer>
+            <aside class="notes">Run after the quick “AI or not?” vote. Let pairs play on laptops or vote as a class. Celebrate top scores lightly — the goal is understanding, not competition stress.</aside>
+          </article>
+
           <article class="slide" data-title="Myths">
             <header class="kicker"><span class="dot"></span> Myths vs Realities</header>
             <div>
@@ -1219,7 +1543,7 @@
                 <div class="flip"><button><span class="front"><h3>Myth: AI output is ready to submit.</h3><p>Click to flip.</p></span><span class="back"><h3>Reality</h3><p>Treat AI as a draft partner. Check facts, privacy, tone, and local fit.</p></span></button></div>
               </div>
             </div>
-            <footer class="slide-footer"><span>Click cards during discussion</span><span>Slide 9</span></footer>
+            <footer class="slide-footer"><span>Click cards during discussion</span><span>Slide 10</span></footer>
             <aside class="notes">This slide prepares learners for Day 5 responsible AI without making Day 1 heavy.</aside>
           </article>
 
@@ -1257,7 +1581,7 @@
                 </ul>
               </div>
             </div>
-            <footer class="slide-footer"><span>Ask learners to add local examples</span><span>Slide 10</span></footer>
+            <footer class="slide-footer"><span>Ask learners to add local examples</span><span>Slide 11</span></footer>
             <aside class="notes">Invite school staff, teachers, and professionals to choose the column closest to their real life.</aside>
           </article>
 
@@ -1284,7 +1608,7 @@
                 </ol>
               </div>
             </div>
-            <footer class="slide-footer"><span>Use the same idea across ChatGPT, Claude, Gemini, or Copilot</span><span>Slide 11</span></footer>
+            <footer class="slide-footer"><span>Use the same idea across ChatGPT, Claude, Gemini, or Copilot</span><span>Slide 12</span></footer>
             <aside class="notes">If internet is slow, read the prompts and show a prepared answer. The teaching point is prompt iteration.</aside>
           </article>
 
@@ -1320,7 +1644,7 @@
                 </div>
               </div>
             </div>
-            <footer class="slide-footer"><span>Preview of Day 2 prompting basics</span><span>Slide 12</span></footer>
+            <footer class="slide-footer"><span>Preview of Day 2 prompting basics</span><span>Slide 13</span></footer>
             <aside class="notes">Do not teach all prompt engineering yet. This slide gives a simple formula learners can use immediately.</aside>
           </article>
 
@@ -1344,7 +1668,7 @@
                 <p>AI supports decisions. It should not be the only decision-maker for important matters.</p>
               </div>
             </div>
-            <footer class="slide-footer"><span>Day 5 goes deeper into responsible and safe use</span><span>Slide 13</span></footer>
+            <footer class="slide-footer"><span>Day 5 goes deeper into responsible and safe use</span><span>Slide 14</span></footer>
             <aside class="notes">Keep this positive: safety is a professional habit, not a fear message.</aside>
           </article>
 
@@ -1376,7 +1700,7 @@
                 <div class="feedback" id="taskFeedback">Your list stays in this browser after saving.</div>
               </div>
             </div>
-            <footer class="slide-footer"><span>Submission: 5 useful tasks</span><span>Slide 14</span></footer>
+            <footer class="slide-footer"><span>Submission: 5 useful tasks</span><span>Slide 15</span></footer>
             <aside class="notes">Give learners 8 to 12 minutes. Walk around and help them become more specific.</aside>
           </article>
 
@@ -1402,7 +1726,7 @@
                 </div>
               </div>
             </div>
-            <footer class="slide-footer"><span>Make the output stronger before learners leave</span><span>Slide 15</span></footer>
+            <footer class="slide-footer"><span>Make the output stronger before learners leave</span><span>Slide 16</span></footer>
             <aside class="notes">This is a bridge from Day 1 to Day 2. The better the task description, the better the prompt.</aside>
           </article>
 
@@ -1593,6 +1917,177 @@
     }
 
     document.getElementById("celebrateBtn").addEventListener("click", celebrate);
+
+    const AI_QUEST_ROUNDS = [
+      {
+        q: "A calculator returns 15 × 8 = 120. Is this AI?",
+        options: ["Yes, it is AI", "No, fixed rules — not AI"],
+        correct: 1,
+        tip: "Classic calculators follow fixed math rules. They do not learn from data or generate new explanations."
+      },
+      {
+        q: "Gmail suggests: “Thanks, I will check and reply soon.” What is happening?",
+        options: ["Generative AI predicts helpful text", "A human typed it for you"],
+        correct: 0,
+        tip: "Smart replies predict language from context — a common everyday AI pattern."
+      },
+      {
+        q: "ChatGPT drafts a new lesson plan outline from your description. Best label?",
+        options: ["Generative AI", "Only a search engine"],
+        correct: 0,
+        tip: "Generative AI creates new text, images, or ideas from a prompt — not just links to old pages."
+      },
+      {
+        q: "Which statement is the healthier reality?",
+        options: ["AI can be wrong — always review important answers", "If it sounds confident, it must be true"],
+        correct: 0,
+        tip: "Confidence is not accuracy. Check facts, dates, policies, and local context."
+      },
+      {
+        q: "You need help with a school record that has student names and IDs. What should you do?",
+        options: ["Paste the full record into any chatbot", "Remove private details or use a safe workflow"],
+        correct: 1,
+        tip: "Day 1 safety habit: do not share passwords, IDs, or confidential records in public AI tools."
+      },
+      {
+        q: "Who is responsible for the final email, report, or grade you submit?",
+        options: ["The human using AI", "The AI alone"],
+        correct: 0,
+        tip: "AI is a draft partner. People decide, edit, and take responsibility for the final result."
+      }
+    ];
+
+    const aiQuestPanels = {
+      start: document.querySelector('[data-game-panel="start"]'),
+      play: document.querySelector('[data-game-panel="play"]'),
+      end: document.querySelector('[data-game-panel="end"]')
+    };
+    const aiQuestBestEl = document.getElementById("aiQuestBest");
+    const aiQuestRoundLabel = document.getElementById("aiQuestRoundLabel");
+    const aiQuestScoreEl = document.getElementById("aiQuestScore");
+    const aiQuestStreakEl = document.getElementById("aiQuestStreak");
+    const aiQuestProgressBar = document.getElementById("aiQuestProgressBar");
+    const aiQuestQuestion = document.getElementById("aiQuestQuestion");
+    const aiQuestOptions = document.getElementById("aiQuestOptions");
+    const aiQuestTip = document.getElementById("aiQuestTip");
+    const aiQuestNextBtn = document.getElementById("aiQuestNextBtn");
+    const aiQuestFinalScore = document.getElementById("aiQuestFinalScore");
+    const aiQuestScoreRing = document.getElementById("aiQuestScoreRing");
+    const aiQuestTitle = document.getElementById("aiQuestTitle");
+    const aiQuestSummary = document.getElementById("aiQuestSummary");
+
+    let aiQuestRound = 0;
+    let aiQuestScore = 0;
+    let aiQuestStreak = 0;
+    let aiQuestAnswered = false;
+
+    function aiQuestBestScore() {
+      return Number(localStorage.getItem("day1-ai-quest-best") || 0);
+    }
+
+    function aiQuestSetBest(score) {
+      const best = aiQuestBestScore();
+      if (score > best) {
+        localStorage.setItem("day1-ai-quest-best", String(score));
+      }
+      aiQuestBestEl.textContent = String(Math.max(score, aiQuestBestScore()));
+    }
+
+    function aiQuestShowPanel(name) {
+      Object.entries(aiQuestPanels).forEach(([key, panel]) => {
+        panel.hidden = key !== name;
+      });
+    }
+
+    function aiQuestRank(score) {
+      if (score >= 60) return { title: "AI Champion", summary: "Strong Day 1 grasp. You know when AI helps, when it does not, and who stays in charge." };
+      if (score >= 40) return { title: "AI Explorer", summary: "Solid start. Replay once and discuss any round your group found tricky." };
+      return { title: "AI Curious", summary: "Good beginning. Use the tips above and try one real chatbot task before Day 2." };
+    }
+
+    function aiQuestRenderRound() {
+      const round = AI_QUEST_ROUNDS[aiQuestRound];
+      aiQuestAnswered = false;
+      aiQuestNextBtn.hidden = true;
+      aiQuestRoundLabel.textContent = `Round ${aiQuestRound + 1} / ${AI_QUEST_ROUNDS.length}`;
+      aiQuestProgressBar.style.width = `${((aiQuestRound) / AI_QUEST_ROUNDS.length) * 100}%`;
+      aiQuestQuestion.textContent = round.q;
+      aiQuestTip.textContent = "Pick an answer to see a learning tip.";
+      aiQuestTip.classList.add("empty");
+      aiQuestOptions.innerHTML = "";
+      round.options.forEach((label, i) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "game-option";
+        button.textContent = label;
+        button.addEventListener("click", () => aiQuestPick(i, button));
+        aiQuestOptions.appendChild(button);
+      });
+    }
+
+    function aiQuestPick(choiceIndex, button) {
+      if (aiQuestAnswered) return;
+      aiQuestAnswered = true;
+      const round = AI_QUEST_ROUNDS[aiQuestRound];
+      const correct = choiceIndex === round.correct;
+      [...aiQuestOptions.children].forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === round.correct) btn.classList.add("correct", "reveal");
+        if (i === choiceIndex && !correct) btn.classList.add("wrong");
+      });
+      if (correct) {
+        aiQuestStreak += 1;
+        let gained = 10;
+        if (aiQuestStreak >= 2) gained += 5;
+        aiQuestScore += gained;
+        aiQuestTip.textContent = `Correct! +${gained} points. ${round.tip}`;
+      } else {
+        aiQuestStreak = 0;
+        aiQuestTip.textContent = `Not quite. ${round.tip}`;
+      }
+      aiQuestTip.classList.remove("empty");
+      aiQuestScoreEl.textContent = String(aiQuestScore);
+      aiQuestStreakEl.textContent = String(aiQuestStreak);
+      aiQuestNextBtn.hidden = false;
+      aiQuestNextBtn.textContent = aiQuestRound < AI_QUEST_ROUNDS.length - 1 ? "Next round" : "See results";
+    }
+
+    function aiQuestFinish() {
+      aiQuestProgressBar.style.width = "100%";
+      aiQuestSetBest(aiQuestScore);
+      const maxScore = AI_QUEST_ROUNDS.length * 10 + (AI_QUEST_ROUNDS.length - 1) * 5;
+      const pct = Math.round((aiQuestScore / maxScore) * 360);
+      aiQuestScoreRing.style.setProperty("--pct", `${Math.min(360, pct)}deg`);
+      aiQuestFinalScore.textContent = String(aiQuestScore);
+      const rank = aiQuestRank(aiQuestScore);
+      aiQuestTitle.textContent = rank.title;
+      aiQuestSummary.textContent = `${rank.summary} You answered ${AI_QUEST_ROUNDS.length} rounds. Best score in this browser: ${aiQuestBestEl.textContent}.`;
+      aiQuestShowPanel("end");
+    }
+
+    function aiQuestStart() {
+      aiQuestRound = 0;
+      aiQuestScore = 0;
+      aiQuestStreak = 0;
+      aiQuestScoreEl.textContent = "0";
+      aiQuestStreakEl.textContent = "0";
+      aiQuestShowPanel("play");
+      aiQuestRenderRound();
+    }
+
+    document.getElementById("aiQuestStartBtn").addEventListener("click", aiQuestStart);
+    document.getElementById("aiQuestAgainBtn").addEventListener("click", aiQuestStart);
+    document.getElementById("aiQuestCelebrateBtn").addEventListener("click", celebrate);
+    aiQuestNextBtn.addEventListener("click", () => {
+      if (aiQuestRound < AI_QUEST_ROUNDS.length - 1) {
+        aiQuestRound += 1;
+        aiQuestRenderRound();
+      } else {
+        aiQuestFinish();
+      }
+    });
+
+    aiQuestBestEl.textContent = String(aiQuestBestScore());
 
     renderThumbs();
     loadTasks();
