@@ -1,0 +1,1889 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Day 2: Prompt Engineering | AI Applications Workshop</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --ink: #17202a;
+      --muted: #5a6678;
+      --paper: #ffffff;
+      --line: #d9dfeb;
+      --blue: #2f6eea;
+      --teal: #008f8c;
+      --coral: #f45b69;
+      --gold: #f2b84b;
+      --green: #2f9e66;
+      --violet: #7257c8;
+      --soft-blue: #eaf1ff;
+      --soft-teal: #e8fbf7;
+      --soft-coral: #fff0f2;
+      --soft-gold: #fff7e4;
+      --shadow: 0 18px 48px rgba(23, 32, 42, 0.13);
+      --radius: 8px;
+      --slide-ratio: 16 / 9;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(47, 110, 234, 0.07) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(0, 143, 140, 0.06) 1px, transparent 1px),
+        var(--bg);
+      background-size: 34px 34px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      letter-spacing: 0;
+      overflow: hidden;
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 264px 1fr;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 0;
+      padding: 20px 16px;
+      background: rgba(255, 255, 255, 0.9);
+      border-right: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: grid;
+      gap: 8px;
+      padding: 4px 4px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand strong {
+      font-size: 1rem;
+      line-height: 1.25;
+    }
+
+    .brand span {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.35;
+    }
+
+    .progress-wrap { display: grid; gap: 8px; }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+    }
+
+    .progress {
+      width: 100%;
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8edf5;
+    }
+
+    .progress span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--blue), var(--coral));
+      transition: width 220ms ease;
+    }
+
+    .thumbs {
+      display: grid;
+      gap: 8px;
+      min-height: 0;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .thumb {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 9px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .thumb:hover,
+    .thumb.active {
+      background: #eef6ff;
+      border-color: #bfd4ff;
+    }
+
+    .thumb .num {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 850;
+    }
+
+    .thumb.active .num { background: var(--blue); }
+
+    .thumb .title {
+      font-size: 0.84rem;
+      line-height: 1.2;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .icon-btn {
+      display: grid;
+      place-items: center;
+      min-width: 42px;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--ink);
+      font-weight: 850;
+      box-shadow: 0 4px 14px rgba(23, 32, 42, 0.08);
+    }
+
+    .icon-btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .stage {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      min-width: 0;
+      min-height: 0;
+      padding: 24px;
+    }
+
+    .deck-shell {
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .deck {
+      position: relative;
+      width: min(100%, calc((100vh - 132px) * 16 / 9));
+      aspect-ratio: var(--slide-ratio);
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 42, 0.1);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+      padding: clamp(24px, 4vw, 54px);
+      overflow: hidden;
+    }
+
+    .slide.active { display: grid; }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(47, 110, 234, 0.07), transparent 34%),
+        linear-gradient(315deg, rgba(0, 143, 140, 0.07), transparent 34%);
+    }
+
+    .slide > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      max-width: 900px;
+      font-size: clamp(2.3rem, 5vw, 5rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      font-size: clamp(1.75rem, 3.3vw, 3.3rem);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      font-size: clamp(1rem, 1.45vw, 1.3rem);
+      line-height: 1.2;
+    }
+
+    p, li {
+      color: var(--muted);
+      font-size: clamp(0.88rem, 1.2vw, 1.12rem);
+      line-height: 1.45;
+    }
+
+    ul, ol {
+      margin: 0;
+      padding-left: 1.12em;
+    }
+
+    li + li { margin-top: 8px; }
+
+    .kicker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: clamp(0.72rem, 1vw, 0.92rem);
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      margin-right: 36px;
+      border-radius: 50%;
+      background: var(--coral);
+      box-shadow: 18px 0 0 var(--gold), 36px 0 0 var(--teal);
+    }
+
+    .hero-grid,
+    .two-col,
+    .three-col,
+    .four-col,
+    .split,
+    .prompt-builder,
+    .library-layout {
+      display: grid;
+      gap: 18px;
+      align-items: stretch;
+      min-height: 0;
+    }
+
+    .hero-grid { grid-template-columns: 1.1fr 0.9fr; align-items: center; }
+    .two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three-col { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .four-col { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .split { grid-template-columns: 0.88fr 1.12fr; align-items: center; }
+    .prompt-builder { grid-template-columns: 0.92fr 1.08fr; }
+    .library-layout { grid-template-columns: 0.72fr 1.28fr; }
+
+    .panel,
+    .mini-card,
+    .activity,
+    .quote-box {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: 0 10px 28px rgba(23, 32, 42, 0.08);
+    }
+
+    .panel,
+    .activity,
+    .quote-box {
+      padding: clamp(16px, 2vw, 24px);
+    }
+
+    .mini-card {
+      display: grid;
+      gap: 10px;
+      min-height: 132px;
+      padding: clamp(14px, 1.5vw, 20px);
+    }
+
+    .mini-card strong {
+      font-size: clamp(0.95rem, 1.28vw, 1.18rem);
+      line-height: 1.22;
+    }
+
+    .mini-card p,
+    .mini-card li {
+      font-size: clamp(0.78rem, 1vw, 0.96rem);
+    }
+
+    .accent-teal { border-top: 7px solid var(--teal); }
+    .accent-blue { border-top: 7px solid var(--blue); }
+    .accent-coral { border-top: 7px solid var(--coral); }
+    .accent-gold { border-top: 7px solid var(--gold); }
+    .accent-green { border-top: 7px solid var(--green); }
+    .accent-violet { border-top: 7px solid var(--violet); }
+
+    .tag-row,
+    .interactive-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #263253;
+      font-size: clamp(0.72rem, 0.98vw, 0.92rem);
+      font-weight: 780;
+      white-space: nowrap;
+    }
+
+    .prompt-map {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .formula-tile {
+      display: grid;
+      align-content: start;
+      gap: 8px;
+      min-height: 190px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+    }
+
+    .formula-tile span {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .formula-tile:nth-child(2) span { background: var(--teal); }
+    .formula-tile:nth-child(3) span { background: var(--blue); }
+    .formula-tile:nth-child(4) span { background: var(--coral); }
+    .formula-tile:nth-child(5) span { background: var(--violet); }
+
+    .choice-btn,
+    .action-btn {
+      min-height: 42px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--ink);
+      font-weight: 820;
+      line-height: 1.2;
+    }
+
+    .choice-btn:hover,
+    .action-btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .choice-btn.selected.good {
+      background: #e8fff2;
+      border-color: var(--green);
+      color: #12663b;
+    }
+
+    .choice-btn.selected.warn {
+      background: #fff7df;
+      border-color: var(--gold);
+      color: #735000;
+    }
+
+    .feedback {
+      min-height: 48px;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px dashed #adb7c9;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.74);
+      color: var(--muted);
+      font-size: clamp(0.8rem, 1vw, 1rem);
+      line-height: 1.38;
+    }
+
+    .prompt-card {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+    }
+
+    .weak {
+      background: var(--soft-coral);
+      border-color: #ffc4cb;
+    }
+
+    .strong {
+      background: var(--soft-teal);
+      border-color: #b9e9e4;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 820;
+      text-transform: uppercase;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcff;
+      color: var(--ink);
+      font-size: clamp(0.82rem, 1vw, 0.98rem);
+    }
+
+    input, select {
+      min-height: 42px;
+      padding: 10px 12px;
+    }
+
+    textarea {
+      min-height: 86px;
+      padding: 10px 12px;
+      resize: none;
+      line-height: 1.35;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: 2px solid rgba(47, 110, 234, 0.2);
+      border-color: var(--blue);
+    }
+
+    .output-box {
+      min-height: 220px;
+      padding: 14px;
+      overflow: auto;
+      border: 1px solid #bfd4ff;
+      border-radius: var(--radius);
+      background: #f8fbff;
+      color: var(--ink);
+      font-size: clamp(0.8rem, 1vw, 0.98rem);
+      line-height: 1.42;
+      white-space: pre-wrap;
+    }
+
+    .chain {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .chain-step {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    .chain-step span {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius);
+      background: var(--blue);
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .game-panel {
+      display: grid;
+      gap: 12px;
+      min-height: 0;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .game-panel[hidden] { display: none; }
+
+    .game-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .game-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .game-stat {
+      display: grid;
+      gap: 2px;
+      min-width: 76px;
+      padding: 8px 12px;
+      border: 1px solid #d5def7;
+      border-radius: var(--radius);
+      background: #eef2ff;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 820;
+      text-transform: uppercase;
+    }
+
+    .game-stat strong {
+      color: var(--ink);
+      font-size: 1.15rem;
+      text-transform: none;
+    }
+
+    .game-progress {
+      flex: 1 1 140px;
+      min-width: 120px;
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e7eaf2;
+    }
+
+    .game-progress span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--violet));
+      transition: width 260ms ease;
+    }
+
+    .game-question {
+      color: var(--ink);
+      font-size: clamp(1.05rem, 1.55vw, 1.45rem);
+      line-height: 1.3;
+    }
+
+    .game-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .game-option {
+      min-height: 54px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--ink);
+      font-weight: 760;
+      line-height: 1.32;
+      text-align: left;
+    }
+
+    .game-option:hover:not(:disabled) { border-color: var(--blue); }
+    .game-option:disabled { cursor: default; opacity: 0.94; }
+    .game-option.correct { background: #e8fff2; border-color: var(--green); color: #12663b; }
+    .game-option.wrong { background: #fff0f1; border-color: var(--coral); color: #8b2430; }
+
+    .game-tip {
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px dashed #b8c5df;
+      border-radius: var(--radius);
+      background: #f8fbff;
+      color: var(--ink);
+      font-size: clamp(0.78rem, 0.95vw, 0.92rem);
+      line-height: 1.38;
+    }
+
+    .game-tip.empty { color: var(--muted); }
+
+    .library-list {
+      display: grid;
+      gap: 8px;
+      min-height: 0;
+      max-height: 430px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .library-row {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .library-row span {
+      display: grid;
+      place-items: center;
+      min-height: 42px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: #fff;
+      font-weight: 850;
+      font-size: 0.8rem;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--muted);
+      font-size: clamp(0.72rem, 0.9vw, 0.88rem);
+      font-weight: 720;
+    }
+
+    .notes {
+      display: none;
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      left: 18px;
+      z-index: 3;
+      padding: 14px 16px;
+      border: 1px solid #c8d0df;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--ink);
+      box-shadow: 0 14px 36px rgba(23, 32, 42, 0.16);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    body.show-notes .slide.active .notes { display: block; }
+
+    .bottom-help {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 14px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .kbd {
+      display: inline-grid;
+      place-items: center;
+      min-width: 25px;
+      min-height: 23px;
+      padding: 2px 6px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--paper);
+      color: var(--ink);
+      font-weight: 850;
+    }
+
+    .confetti {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      overflow: hidden;
+    }
+
+    .confetti i {
+      position: absolute;
+      top: -20px;
+      width: 9px;
+      height: 15px;
+      border-radius: 3px;
+      animation: fall 1400ms ease-in forwards;
+    }
+
+    @keyframes fall {
+      to { transform: translateY(790px) rotate(540deg); opacity: 0; }
+    }
+
+    body.presenter .sidebar,
+    body.presenter .bottom-help { display: none; }
+
+    body.presenter .app { grid-template-columns: 1fr; }
+    body.presenter .stage { padding: 0; }
+    body.presenter .deck {
+      width: 100vw;
+      height: 100vh;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    @media (max-width: 960px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .stage { padding: 12px; }
+      .deck { width: 100%; }
+      .hero-grid,
+      .two-col,
+      .three-col,
+      .four-col,
+      .split,
+      .prompt-builder,
+      .library-layout,
+      .prompt-map,
+      .chain,
+      .game-options {
+        grid-template-columns: 1fr;
+      }
+
+      .slide {
+        padding: 22px;
+        overflow: auto;
+      }
+    }
+
+    @media print {
+      html, body { height: auto; overflow: visible; background: #fff; }
+      .app { display: block; }
+      .sidebar, .bottom-help, .notes, .confetti { display: none !important; }
+      .stage { padding: 0; display: block; }
+      .deck { width: 100%; height: auto; border: 0; box-shadow: none; overflow: visible; }
+      .slide {
+        position: relative;
+        display: grid !important;
+        width: 100%;
+        aspect-ratio: var(--slide-ratio);
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="Slide navigation">
+      <div class="brand">
+        <strong>AI Applications Workshop</strong>
+        <span>Day 2 student session<br />Prompt engineering</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>Progress</span>
+          <span id="progressText">1 / 18</span>
+        </div>
+        <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+      </div>
+      <nav class="thumbs" id="thumbs"></nav>
+      <div class="controls" aria-label="Deck controls">
+        <button class="icon-btn" id="prevBtn" title="Previous slide" aria-label="Previous slide">&lt;</button>
+        <button class="icon-btn" id="nextBtn" title="Next slide" aria-label="Next slide">&gt;</button>
+        <button class="icon-btn" id="notesBtn" title="Toggle speaker notes" aria-label="Toggle speaker notes">N</button>
+        <button class="icon-btn" id="presentBtn" title="Toggle presenter view" aria-label="Toggle presenter view">F</button>
+      </div>
+    </aside>
+
+    <main class="stage">
+      <div class="deck-shell">
+        <section class="deck" id="deck" aria-live="polite">
+          <div class="confetti" id="confetti" aria-hidden="true"></div>
+
+          <article class="slide active" data-title="Welcome">
+            <header class="kicker"><span class="dot"></span> Day 2 | How to Talk to AI</header>
+            <div class="hero-grid">
+              <div>
+                <h1>Prompt Engineering in Simple Words</h1>
+                <p style="margin-top:18px; max-width:720px;">Today you learn how to give AI clearer instructions, improve weak prompts, ask follow-up questions, and build your own prompt library.</p>
+                <div class="tag-row">
+                  <span class="tag">No coding</span>
+                  <span class="tag">Many examples</span>
+                  <span class="tag">Prompt games</span>
+                  <span class="tag">Ready-to-use output</span>
+                </div>
+              </div>
+              <div class="quote-box">
+                <h3>Today's promise</h3>
+                <p style="margin-top:14px; color:var(--ink); font-size:clamp(1.15rem,2vw,1.65rem);">Better prompts give better first drafts. Better follow-ups give better final answers.</p>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Today: prompt, test, improve</span><span>Your output: 10 useful prompts</span></footer>
+            <aside class="notes">Open with a quick recap of Day 1. Ask participants to name one AI task they want to try.</aside>
+          </article>
+
+          <article class="slide" data-title="Today's Path">
+            <header class="kicker"><span class="dot"></span> Learning Map</header>
+            <div class="split">
+              <div>
+                <h2>Today is about clarity, not clever words.</h2>
+                <p style="margin-top:14px;">A prompt is simply your instruction to AI. We will practise making instructions clear, specific, safe, and useful.</p>
+              </div>
+              <div class="three-col">
+                <div class="mini-card accent-teal"><strong>1. Notice</strong><p>Spot why some prompts fail and some work.</p></div>
+                <div class="mini-card accent-blue"><strong>2. Build</strong><p>Use Role + Task + Context + Format + Tone.</p></div>
+                <div class="mini-card accent-coral"><strong>3. Improve</strong><p>Use follow-ups, chaining, peer swaps, and safety checks.</p></div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Warm-up, demo, games, practice, peer share</span><span>Slide 2</span></footer>
+            <aside class="notes">Use the map to set expectations. Emphasize that prompts can be improved through conversation.</aside>
+          </article>
+
+          <article class="slide" data-title="Day 1 Recap">
+            <header class="kicker"><span class="dot"></span> Quick Recap</header>
+            <div class="two-col">
+              <div>
+                <h2>Before prompting, remember what AI is good at.</h2>
+                <p style="margin-top:14px;">Click the task where AI can usually help. Then discuss what a human must still check.</p>
+                <div class="interactive-row" data-poll>
+                  <button class="choice-btn" data-feedback="Yes. AI can create a first draft, but you check accuracy, tone, and local fit.">Draft a notice</button>
+                  <button class="choice-btn" data-feedback="Yes. AI can organize ideas, but you verify dates, facts, and instructions.">Plan an event</button>
+                  <button class="choice-btn" data-feedback="Risky. Do not paste private records, IDs, passwords, or confidential files into public AI tools.">Upload private student records</button>
+                  <button class="choice-btn" data-feedback="Yes. AI can suggest questions, but the teacher checks level, fairness, and answers.">Create quiz questions</button>
+                </div>
+                <div class="feedback">Click one option.</div>
+              </div>
+              <div class="quote-box">
+                <h3>Day 1 reminder</h3>
+                <p style="margin-top:14px; color:var(--ink);">AI is a practical assistant, not magic. You stay responsible for the final work.</p>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Privacy and review are part of every prompt</span><span>Slide 3</span></footer>
+            <aside class="notes">Use this to transition into the safety rule for Day 2.</aside>
+          </article>
+
+          <article class="slide" data-title="Bad vs Good">
+            <header class="kicker"><span class="dot"></span> Prompt Quality</header>
+            <div class="two-col">
+              <div class="prompt-card weak">
+                <h2 style="font-size:clamp(1.45rem,2.4vw,2.3rem);">Weak prompt</h2>
+                <p style="color:var(--ink); font-size:clamp(1.05rem,1.5vw,1.35rem);">Write about AI.</p>
+                <ul>
+                  <li>No audience</li>
+                  <li>No purpose</li>
+                  <li>No format</li>
+                  <li>No level or tone</li>
+                </ul>
+              </div>
+              <div class="prompt-card strong">
+                <h2 style="font-size:clamp(1.45rem,2.4vw,2.3rem);">Stronger prompt</h2>
+                <p style="color:var(--ink); font-size:clamp(0.98rem,1.25vw,1.14rem);">You are a friendly trainer. Explain generative AI to beginner teachers in Nepal. Use 5 simple bullet points, one classroom example, and a warm tone.</p>
+                <ul>
+                  <li>Clear role</li>
+                  <li>Specific task</li>
+                  <li>Useful context</li>
+                  <li>Requested format and tone</li>
+                </ul>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Small details change the quality of the answer</span><span>Slide 4</span></footer>
+            <aside class="notes">Ask learners which details helped most. Keep the discussion practical.</aside>
+          </article>
+
+          <article class="slide" data-title="Formula">
+            <header class="kicker"><span class="dot"></span> The Simple Formula</header>
+            <div>
+              <h2>Use five ingredients for a clearer prompt.</h2>
+              <div class="prompt-map" style="margin-top:24px;">
+                <div class="formula-tile"><span>R</span><h3>Role</h3><p>Who should AI act as?</p><p><strong>Example:</strong> friendly trainer</p></div>
+                <div class="formula-tile"><span>T</span><h3>Task</h3><p>What should AI do?</p><p><strong>Example:</strong> draft a notice</p></div>
+                <div class="formula-tile"><span>C</span><h3>Context</h3><p>Who is it for and why?</p><p><strong>Example:</strong> Grade 9 students</p></div>
+                <div class="formula-tile"><span>F</span><h3>Format</h3><p>How should it look?</p><p><strong>Example:</strong> 5 bullets, table, email</p></div>
+                <div class="formula-tile"><span>T</span><h3>Tone</h3><p>How should it sound?</p><p><strong>Example:</strong> simple and respectful</p></div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Role + Task + Context + Format + Tone</span><span>Slide 5</span></footer>
+            <aside class="notes">Have participants say the formula aloud once. It helps retention.</aside>
+          </article>
+
+          <article class="slide" data-title="Ingredient Quiz">
+            <header class="kicker"><span class="dot"></span> Fast Quiz</header>
+            <div class="two-col">
+              <div>
+                <h2>Which ingredient is missing?</h2>
+                <p style="margin-top:14px;">Prompt: "Explain photosynthesis in 5 bullet points."</p>
+                <div class="activity" style="margin-top:18px;">
+                  <div class="interactive-row" data-quiz>
+                    <button class="choice-btn" data-correct="false" data-feedback="Format is already present: 5 bullet points.">Format</button>
+                    <button class="choice-btn" data-correct="true" data-feedback="Correct. The prompt does not say who the explanation is for: child, teacher, expert, parent, or beginner.">Audience / context</button>
+                    <button class="choice-btn" data-correct="false" data-feedback="Task is present: explain photosynthesis.">Task</button>
+                  </div>
+                  <div class="feedback">Choose one answer.</div>
+                </div>
+              </div>
+              <div class="quote-box">
+                <h3>Improved version</h3>
+                <p style="margin-top:12px; color:var(--ink);">Explain photosynthesis to Grade 7 students in 5 simple bullet points. Use one everyday example and avoid difficult science words.</p>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Audience changes the answer</span><span>Slide 6</span></footer>
+            <aside class="notes">Repeat with another topic from the participants' context if time allows.</aside>
+          </article>
+
+          <article class="slide" data-title="Prompt Makeover">
+            <header class="kicker"><span class="dot"></span> Mini Challenge</header>
+            <div class="two-col">
+              <div>
+                <h2>Fix the weak prompt.</h2>
+                <div class="prompt-card weak" style="margin-top:18px;">
+                  <h3>Weak prompt</h3>
+                  <p style="color:var(--ink);">Make a report.</p>
+                </div>
+                <p style="margin-top:14px;">Work with a partner. What detail would you add first?</p>
+              </div>
+              <div class="activity">
+                <h3>Pick the best first improvement</h3>
+                <div class="interactive-row" data-quiz>
+                  <button class="choice-btn" data-correct="false" data-feedback="Length helps after the goal is clear. First we need topic, audience, and purpose.">Say "make it short"</button>
+                  <button class="choice-btn" data-correct="true" data-feedback="Correct. A report needs a topic, audience, purpose, and format.">Add topic and audience</button>
+                  <button class="choice-btn" data-correct="false" data-feedback="Tone is useful, but it cannot rescue a prompt with no topic or audience.">Add polite tone</button>
+                </div>
+                <div class="feedback">Choose one answer.</div>
+                <div class="prompt-card strong" style="margin-top:14px;">
+                  <h3>Stronger prompt</h3>
+                  <p style="color:var(--ink);">You are an office assistant. Create a one-page monthly attendance report for the school principal. Use a short summary, a table of key numbers, and 3 action points.</p>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Bad prompt to better prompt in one minute</span><span>Slide 7</span></footer>
+            <aside class="notes">Have learners rewrite the weak prompt for their own role after revealing the answer.</aside>
+          </article>
+
+          <article class="slide" data-title="Prompt Clinic">
+            <header class="kicker"><span class="dot"></span> Hands-On Diagnosis</header>
+            <div class="game-panel" data-clinic-panel="start">
+              <div class="hero-grid">
+                <div>
+                  <h2 style="margin:0;">Prompt Clinic: What is missing?</h2>
+                  <p style="margin-top:10px;">Ten quick cases. Each case shows a weak prompt. Students choose what to improve first, then compare with a demo stronger prompt.</p>
+                  <div class="tag-row">
+                    <span class="tag">10 questions</span>
+                    <span class="tag">Pair discussion</span>
+                    <span class="tag">Demo improvements</span>
+                    <span class="tag">Safe prompting</span>
+                  </div>
+                  <div class="interactive-row">
+                    <button class="action-btn" type="button" id="clinicStartBtn">Start clinic</button>
+                  </div>
+                </div>
+                <div class="quote-box">
+                  <h3>How to play</h3>
+                  <ol style="margin-top:10px;">
+                    <li>Read the weak prompt.</li>
+                    <li>Vote: what is missing or weak?</li>
+                    <li>Read the improved demo prompt.</li>
+                    <li>Say one extra improvement aloud.</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+            <div class="game-panel" data-clinic-panel="play" hidden>
+              <div class="game-top">
+                <span class="game-stat"><span>Case</span><strong id="clinicRound">1 / 10</strong></span>
+                <div class="game-stats">
+                  <div class="game-stat"><span>Score</span><strong id="clinicScore">0</strong></div>
+                  <div class="game-stat"><span>Skill</span><strong id="clinicSkill">Diagnose</strong></div>
+                </div>
+                <div class="game-progress" aria-hidden="true"><span id="clinicProgress"></span></div>
+              </div>
+              <div class="prompt-card weak">
+                <h3>Weak prompt</h3>
+                <p style="color:var(--ink);" id="clinicWeakPrompt"></p>
+              </div>
+              <p class="game-question" id="clinicQuestion"></p>
+              <div class="game-options" id="clinicOptions"></div>
+              <div class="game-tip empty" id="clinicTip">Pick the first thing you would improve.</div>
+              <div class="prompt-card strong" id="clinicDemoWrap" hidden>
+                <h3>Demo improved prompt</h3>
+                <p style="color:var(--ink);" id="clinicDemo"></p>
+              </div>
+              <div class="interactive-row"><button class="action-btn" type="button" id="clinicNextBtn" hidden>Next case</button></div>
+            </div>
+            <div class="game-panel" data-clinic-panel="end" hidden>
+              <div class="hero-grid">
+                <div>
+                  <h2 id="clinicTitle">Prompt Doctor</h2>
+                  <p style="margin-top:10px;" id="clinicSummary"></p>
+                  <div class="interactive-row">
+                    <button class="action-btn" type="button" id="clinicAgainBtn">Run clinic again</button>
+                    <button class="action-btn" type="button" id="clinicCelebrateBtn">Celebrate</button>
+                  </div>
+                </div>
+                <div class="quote-box">
+                  <h3>Final score</h3>
+                  <p style="margin-top:10px; color:var(--ink); font-size:clamp(2rem,4vw,4rem); font-weight:900;" id="clinicFinalScore">0</p>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Practice: diagnose missing prompt details</span><span>Slide 8</span></footer>
+            <aside class="notes">Use this as a guided in-between quiz before the hands-on builder. Ask pairs to discuss before clicking each answer.</aside>
+          </article>
+
+          <article class="slide" data-title="Tone Lab">
+            <header class="kicker"><span class="dot"></span> Tone and Format Lab</header>
+            <div class="prompt-builder">
+              <div class="activity">
+                <h2 style="font-size:clamp(1.35rem,2.3vw,2.25rem);">Same message, different tone.</h2>
+                <div class="form-grid" style="margin-top:14px;">
+                  <label>Message
+                    <textarea id="toneMessage">Please attend tomorrow's AI workshop on time and bring your notebook.</textarea>
+                  </label>
+                  <label>Tone
+                    <select id="toneSelect">
+                      <option value="friendly">Friendly</option>
+                      <option value="formal">Formal</option>
+                      <option value="short">Short</option>
+                      <option value="encouraging">Encouraging</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="interactive-row">
+                  <button class="action-btn" id="toneBtn">Transform</button>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Prompt to use</h3>
+                <div class="output-box" id="toneOutput"></div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Tone controls how the answer feels</span><span>Slide 9</span></footer>
+            <aside class="notes">Use this before the live chatbot demo. It teaches tone without needing the internet.</aside>
+          </article>
+
+          <article class="slide" data-title="Follow-Ups">
+            <header class="kicker"><span class="dot"></span> Follow-Up Power</header>
+            <div class="split">
+              <div>
+                <h2>The first answer is not the final answer.</h2>
+                <p style="margin-top:14px;">Good AI users keep improving the answer. Follow-up prompts are where the real value appears.</p>
+              </div>
+              <div class="three-col">
+                <div class="mini-card accent-teal"><strong>Make it simpler</strong><p>"Rewrite this for beginners using daily-life examples."</p></div>
+                <div class="mini-card accent-blue"><strong>Change the format</strong><p>"Turn this into a table with task, AI help, and human check."</p></div>
+                <div class="mini-card accent-coral"><strong>Improve quality</strong><p>"Find gaps, improve clarity, and ask me 3 questions before finalizing."</p></div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Follow-up prompts are normal</span><span>Slide 10</span></footer>
+            <aside class="notes">Tell learners they do not need the perfect first prompt. They can shape the answer step by step.</aside>
+          </article>
+
+          <article class="slide" data-title="Prompt Chaining">
+            <header class="kicker"><span class="dot"></span> Prompt Chaining</header>
+            <div>
+              <h2>For bigger work, use small connected steps.</h2>
+              <div class="chain" style="margin-top:24px;">
+                <div class="chain-step"><span>1</span><h3>Plan</h3><p>Ask for an outline or checklist first.</p></div>
+                <div class="chain-step"><span>2</span><h3>Draft</h3><p>Ask AI to create the first version.</p></div>
+                <div class="chain-step"><span>3</span><h3>Review</h3><p>Ask AI to find gaps, errors, and missing details.</p></div>
+                <div class="chain-step"><span>4</span><h3>Polish</h3><p>Ask for final tone, format, and clarity.</p></div>
+              </div>
+              <div class="quote-box" style="margin-top:18px;">
+                <p style="color:var(--ink);">Example chain: plan a lesson - draft worksheet - make quiz - create answer key - check difficulty.</p>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>One big task becomes four easy prompts</span><span>Slide 11</span></footer>
+            <aside class="notes">Use one learner's Day 1 task list item and convert it into a chain live.</aside>
+          </article>
+
+          <article class="slide" data-title="Ask AI to Improve">
+            <header class="kicker"><span class="dot"></span> Quality Trick</header>
+            <div class="two-col">
+              <div>
+                <h2>Ask AI to improve its own answer.</h2>
+                <p style="margin-top:14px;">This is simple and powerful. You can ask AI to act like an editor, reviewer, teacher, or audience member.</p>
+                <div class="tag-row">
+                  <span class="tag">Find gaps</span>
+                  <span class="tag">Ask questions</span>
+                  <span class="tag">Improve clarity</span>
+                  <span class="tag">Check tone</span>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Copy-ready follow-up prompts</h3>
+                <ol>
+                  <li>Review your answer and list 3 ways to improve it.</li>
+                  <li>Ask me 3 questions before writing the final version.</li>
+                  <li>Make the answer simpler, shorter, and more practical.</li>
+                  <li>Check if anything might be wrong or unsupported.</li>
+                </ol>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>AI can help you edit, but you approve the final work</span><span>Slide 12</span></footer>
+            <aside class="notes">Emphasize that AI's review can also be wrong. Human judgment remains necessary.</aside>
+          </article>
+
+          <article class="slide" data-title="Safety Check">
+            <header class="kicker"><span class="dot"></span> Responsible Prompting</header>
+            <div class="four-col">
+              <div class="mini-card accent-coral"><strong>Do not paste private data</strong><p>Names, IDs, passwords, marks, salaries, private files, or confidential records.</p></div>
+              <div class="mini-card accent-gold"><strong>Use placeholders</strong><p>Replace real names with Student A, Client B, or Department X.</p></div>
+              <div class="mini-card accent-blue"><strong>Check facts</strong><p>Verify dates, numbers, laws, policies, and formal claims.</p></div>
+              <div class="mini-card accent-green"><strong>Own the result</strong><p>AI can draft. You review, edit, and take responsibility.</p></div>
+            </div>
+            <footer class="slide-footer"><span>Today's safety rule: private data stays private</span><span>Slide 13</span></footer>
+            <aside class="notes">This directly matches Day 2 responsible AI from the source document.</aside>
+          </article>
+
+          <article class="slide" data-title="Prompt Game">
+            <header class="kicker"><span class="dot"></span> Prompt Builder Game</header>
+            <div class="game-panel" data-game-panel="start">
+              <div class="hero-grid">
+                <div>
+                  <h2 style="margin:0;">Prompt Pro Challenge</h2>
+                  <p style="margin-top:10px;">Six quick rounds. Pick the better prompt move. Play solo, in pairs, or as a room vote.</p>
+                  <div class="tag-row">
+                    <span class="tag">~6 minutes</span>
+                    <span class="tag">Score saved</span>
+                    <span class="tag">Discussion friendly</span>
+                  </div>
+                  <div class="interactive-row">
+                    <button class="action-btn" type="button" id="gameStartBtn">Start game</button>
+                  </div>
+                </div>
+                <div class="quote-box">
+                  <h3>Rank guide</h3>
+                  <p style="margin-top:10px; color:var(--ink);">0-29: Prompt Rookie<br />30-49: Prompt Builder<br />50+: Prompt Pro</p>
+                  <p style="margin-top:14px;">Best score: <strong id="gameBest">0</strong></p>
+                </div>
+              </div>
+            </div>
+            <div class="game-panel" data-game-panel="play" hidden>
+              <div class="game-top">
+                <span class="game-stat"><span>Round</span><strong id="gameRound">1 / 6</strong></span>
+                <div class="game-stats">
+                  <div class="game-stat"><span>Score</span><strong id="gameScore">0</strong></div>
+                  <div class="game-stat"><span>Streak</span><strong id="gameStreak">0</strong></div>
+                </div>
+                <div class="game-progress" aria-hidden="true"><span id="gameProgress"></span></div>
+              </div>
+              <p class="game-question" id="gameQuestion"></p>
+              <div class="game-options" id="gameOptions"></div>
+              <div class="game-tip empty" id="gameTip">Pick an answer to see why.</div>
+              <div class="interactive-row"><button class="action-btn" type="button" id="gameNextBtn" hidden>Next round</button></div>
+            </div>
+            <div class="game-panel" data-game-panel="end" hidden>
+              <div class="hero-grid">
+                <div>
+                  <h2 id="gameTitle">Prompt Rookie</h2>
+                  <p style="margin-top:10px;" id="gameSummary"></p>
+                  <div class="interactive-row">
+                    <button class="action-btn" type="button" id="gameAgainBtn">Play again</button>
+                    <button class="action-btn" type="button" id="gameCelebrateBtn">Celebrate</button>
+                  </div>
+                </div>
+                <div class="quote-box">
+                  <h3>Your score</h3>
+                  <p style="margin-top:10px; color:var(--ink); font-size:clamp(2rem,4vw,4rem); font-weight:900;" id="gameFinalScore">0</p>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Quiz: better prompt choices</span><span>Slide 14</span></footer>
+            <aside class="notes">Pause after wrong answers. Let learners explain why the better option works.</aside>
+          </article>
+
+          <article class="slide" data-title="Prompt Builder">
+            <header class="kicker"><span class="dot"></span> Hands-On Builder</header>
+            <div class="prompt-builder">
+              <div class="activity">
+                <h2 style="font-size:clamp(1.35rem,2.3vw,2.25rem);">Build one strong prompt.</h2>
+                <div class="form-grid" style="margin-top:14px;">
+                  <label>Role <input id="roleInput" value="You are a helpful AI assistant" /></label>
+                  <label>Task <input id="taskInput" value="create a weekly work plan" /></label>
+                  <label>Context <input id="contextInput" value="for a busy teacher with limited preparation time" /></label>
+                  <label>Format <input id="formatInput" value="table with day, task, time, and checklist" /></label>
+                  <label>Tone <input id="toneInput" value="simple, respectful, and practical" /></label>
+                  <label>Safety check <input id="safetyInput" value="do not include private student information" /></label>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Generated prompt</h3>
+                <div class="output-box" id="promptOutput"></div>
+                <div class="interactive-row">
+                  <button class="action-btn" id="copyPromptBtn">Copy prompt</button>
+                  <button class="action-btn" id="resetPromptBtn">Reset</button>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Use this during live practice</span><span>Slide 15</span></footer>
+            <aside class="notes">Have participants use their own role and task, then test the prompt in ChatGPT, Claude, or Gemini.</aside>
+          </article>
+
+          <article class="slide" data-title="Prompt Library">
+            <header class="kicker"><span class="dot"></span> Main Output</header>
+            <div class="library-layout">
+              <div>
+                <h2>Build your personal prompt library.</h2>
+                <p style="margin-top:14px;">Write 10 prompts for your real work, teaching, study, or daily life. Label them clearly so you can reuse them later.</p>
+                <div class="tag-row">
+                  <span class="tag">10 prompts</span>
+                  <span class="tag">Real tasks</span>
+                  <span class="tag">Safe wording</span>
+                  <span class="tag">Ready to copy</span>
+                </div>
+                <div class="interactive-row">
+                  <button class="action-btn" id="saveLibraryBtn">Save</button>
+                  <button class="action-btn" id="copyLibraryBtn">Copy all</button>
+                  <button class="action-btn" id="clearLibraryBtn">Clear</button>
+                </div>
+                <div class="feedback" id="libraryFeedback">Your prompt library stays in this browser after saving.</div>
+              </div>
+              <div class="activity">
+                <div class="library-list" id="libraryList"></div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Submit: 10 ready-to-use prompts</span><span>Slide 16</span></footer>
+            <aside class="notes">Give 30 to 45 minutes for this if possible. Walk around and help participants add context and format.</aside>
+          </article>
+
+          <article class="slide" data-title="Peer Swap">
+            <header class="kicker"><span class="dot"></span> Peer Review</header>
+            <div class="split">
+              <div>
+                <h2>Swap prompts and make them stronger.</h2>
+                <p style="margin-top:14px;">Share one prompt with a partner. Your partner should test it using this checklist.</p>
+              </div>
+              <div class="three-col">
+                <div class="mini-card accent-teal"><strong>Clear?</strong><p>Can you understand the task in one read?</p></div>
+                <div class="mini-card accent-blue"><strong>Specific?</strong><p>Does it include audience, context, and format?</p></div>
+                <div class="mini-card accent-coral"><strong>Safe?</strong><p>Does it avoid private data and risky claims?</p></div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Feedback rule: 2 strengths + 1 improvement</span><span>Slide 17</span></footer>
+            <aside class="notes">End with two volunteers sharing before/after prompt improvements.</aside>
+          </article>
+
+          <article class="slide" data-title="Wrap-Up">
+            <header class="kicker"><span class="dot"></span> Recap and Homework</header>
+            <div class="hero-grid">
+              <div>
+                <h2>Prompting is a skill you improve by testing.</h2>
+                <p style="margin-top:14px;">Start clear, review the output, ask follow-ups, protect private data, and save your best prompts for reuse.</p>
+                <div class="interactive-row">
+                  <button class="action-btn" id="celebrateBtn">Celebrate completion</button>
+                  <button class="action-btn" onclick="window.print()">Print / Save PDF</button>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Homework before Day 3</h3>
+                <ol>
+                  <li>Finalize your 10-prompt library.</li>
+                  <li>Test 2 prompts in ChatGPT, Claude, or Gemini.</li>
+                  <li>Bring one result that worked well and one result that needs improvement.</li>
+                </ol>
+                <div class="quote-box" style="margin-top:14px;">
+                  <p style="color:var(--ink);">Career tip: Prompt engineering is a sellable skill. Prompt libraries and AI SOPs can become freelance services.</p>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>See you on Day 3: choosing the right AI assistant</span><span>End of Day 2</span></footer>
+            <aside class="notes">Preview Day 3: comparing assistants and beginning Custom GPTs or Gems.</aside>
+          </article>
+        </section>
+      </div>
+      <div class="bottom-help">
+        <span>Keyboard: <span class="kbd">&lt;</span> <span class="kbd">&gt;</span> navigate, <span class="kbd">N</span> notes, <span class="kbd">F</span> focus</span>
+        <span>Standalone HTML slide deck</span>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const thumbs = document.getElementById("thumbs");
+    const progressText = document.getElementById("progressText");
+    const progressBar = document.getElementById("progressBar");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const notesBtn = document.getElementById("notesBtn");
+    const presentBtn = document.getElementById("presentBtn");
+    const confetti = document.getElementById("confetti");
+    let index = Number(localStorage.getItem("day2-ai-slide") || 0);
+
+    function clampSlide(value) {
+      return Math.max(0, Math.min(slides.length - 1, value));
+    }
+
+    function renderThumbs() {
+      thumbs.innerHTML = "";
+      slides.forEach((slide, i) => {
+        const button = document.createElement("button");
+        button.className = "thumb";
+        button.type = "button";
+        button.innerHTML = `<span class="num">${i + 1}</span><span class="title">${slide.dataset.title}</span>`;
+        button.addEventListener("click", () => goTo(i));
+        thumbs.appendChild(button);
+      });
+    }
+
+    function goTo(nextIndex) {
+      index = clampSlide(nextIndex);
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
+      [...thumbs.children].forEach((thumb, i) => thumb.classList.toggle("active", i === index));
+      progressText.textContent = `${index + 1} / ${slides.length}`;
+      progressBar.style.width = `${((index + 1) / slides.length) * 100}%`;
+      localStorage.setItem("day2-ai-slide", String(index));
+    }
+
+    prevBtn.addEventListener("click", () => goTo(index - 1));
+    nextBtn.addEventListener("click", () => goTo(index + 1));
+    notesBtn.addEventListener("click", () => document.body.classList.toggle("show-notes"));
+    presentBtn.addEventListener("click", () => document.body.classList.toggle("presenter"));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.target.matches("input, textarea, select")) return;
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") goTo(index + 1);
+      if (event.key === "ArrowLeft" || event.key === "PageUp") goTo(index - 1);
+      if (event.key.toLowerCase() === "n") document.body.classList.toggle("show-notes");
+      if (event.key.toLowerCase() === "f") document.body.classList.toggle("presenter");
+      if (event.key === "Home") goTo(0);
+      if (event.key === "End") goTo(slides.length - 1);
+    });
+
+    document.querySelectorAll("[data-poll]").forEach((group) => {
+      const feedback = group.parentElement.querySelector(".feedback");
+      group.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", () => {
+          group.querySelectorAll("button").forEach((b) => b.classList.remove("selected", "good"));
+          button.classList.add("selected", "good");
+          feedback.textContent = button.dataset.feedback;
+        });
+      });
+    });
+
+    document.querySelectorAll("[data-quiz]").forEach((group) => {
+      const feedback = group.parentElement.querySelector(".feedback");
+      group.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const correct = button.dataset.correct === "true";
+          group.querySelectorAll("button").forEach((b) => b.classList.remove("selected", "good", "warn"));
+          button.classList.add("selected", correct ? "good" : "warn");
+          feedback.textContent = button.dataset.feedback;
+        });
+      });
+    });
+
+    const toneMessage = document.getElementById("toneMessage");
+    const toneSelect = document.getElementById("toneSelect");
+    const toneOutput = document.getElementById("toneOutput");
+
+    function updateTonePrompt() {
+      const tone = toneSelect.value;
+      const labels = {
+        friendly: "friendly and easy to understand",
+        formal: "formal, respectful, and suitable for an official notice",
+        short: "very short, clear, and direct",
+        encouraging: "warm, motivating, and beginner-friendly"
+      };
+      toneOutput.textContent =
+        `Rewrite this message in a ${labels[tone]} tone.\n\n` +
+        `Message: ${toneMessage.value.trim() || "[write your message]"}\n\n` +
+        "Keep the meaning the same. Do not add private information.";
+    }
+
+    document.getElementById("toneBtn").addEventListener("click", updateTonePrompt);
+    toneMessage.addEventListener("input", updateTonePrompt);
+    toneSelect.addEventListener("change", updateTonePrompt);
+
+    const promptFields = ["roleInput", "taskInput", "contextInput", "formatInput", "toneInput", "safetyInput"].map((id) => document.getElementById(id));
+    const promptOutput = document.getElementById("promptOutput");
+
+    function updatePrompt() {
+      const [role, task, context, format, tone, safety] = promptFields.map((field) => field.value.trim());
+      promptOutput.textContent =
+        `${role || "You are a helpful assistant"}.\n\n` +
+        `Your task is to ${task || "help me with a task"}.\n\n` +
+        `Context: ${context || "I am a beginner and need a practical answer"}.\n\n` +
+        `Please respond in this format: ${format || "clear bullet points"}.\n\n` +
+        `Tone: ${tone || "simple and friendly"}.\n\n` +
+        `Safety rule: ${safety || "do not include private or confidential information"}.`;
+    }
+
+    promptFields.forEach((field) => field.addEventListener("input", updatePrompt));
+    document.getElementById("copyPromptBtn").addEventListener("click", async () => {
+      await navigator.clipboard.writeText(promptOutput.textContent);
+      promptOutput.textContent += "\n\nCopied to clipboard.";
+      setTimeout(updatePrompt, 900);
+    });
+    document.getElementById("resetPromptBtn").addEventListener("click", () => {
+      const defaults = [
+        "You are a helpful AI assistant",
+        "create a weekly work plan",
+        "for a busy teacher with limited preparation time",
+        "table with day, task, time, and checklist",
+        "simple, respectful, and practical",
+        "do not include private student information"
+      ];
+      promptFields.forEach((field, i) => field.value = defaults[i]);
+      updatePrompt();
+    });
+
+    const libraryList = document.getElementById("libraryList");
+    const libraryFeedback = document.getElementById("libraryFeedback");
+
+    function buildLibraryInputs() {
+      libraryList.innerHTML = "";
+      for (let i = 1; i <= 10; i += 1) {
+        const row = document.createElement("div");
+        row.className = "library-row";
+        row.innerHTML = `<span>${i}</span><input class="libraryInput" placeholder="${i}. Example: Create a quiz from my lesson notes for Grade 8 students" />`;
+        libraryList.appendChild(row);
+      }
+    }
+
+    function libraryInputs() {
+      return [...document.querySelectorAll(".libraryInput")];
+    }
+
+    function saveLibrary() {
+      localStorage.setItem("day2-prompt-library", JSON.stringify(libraryInputs().map((input) => input.value)));
+      libraryFeedback.textContent = "Saved. Now swap one prompt with a partner.";
+    }
+
+    function loadLibrary() {
+      const saved = JSON.parse(localStorage.getItem("day2-prompt-library") || "[]");
+      saved.forEach((value, i) => {
+        const inputs = libraryInputs();
+        if (inputs[i]) inputs[i].value = value;
+      });
+    }
+
+    document.getElementById("saveLibraryBtn").addEventListener("click", saveLibrary);
+    document.getElementById("copyLibraryBtn").addEventListener("click", async () => {
+      const text = libraryInputs().map((input, i) => `${i + 1}. ${input.value || "[write your prompt]"}`).join("\n");
+      await navigator.clipboard.writeText(text);
+      libraryFeedback.textContent = "Copied your 10-prompt library.";
+    });
+    document.getElementById("clearLibraryBtn").addEventListener("click", () => {
+      libraryInputs().forEach((input) => input.value = "");
+      localStorage.removeItem("day2-prompt-library");
+      libraryFeedback.textContent = "Cleared. Start fresh.";
+    });
+
+    function celebrate() {
+      confetti.innerHTML = "";
+      const colors = ["#008f8c", "#2f6eea", "#f45b69", "#f2b84b", "#2f9e66", "#7257c8"];
+      for (let i = 0; i < 72; i += 1) {
+        const piece = document.createElement("i");
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.background = colors[i % colors.length];
+        piece.style.animationDelay = `${Math.random() * 220}ms`;
+        piece.style.transform = `rotate(${Math.random() * 180}deg)`;
+        confetti.appendChild(piece);
+      }
+      setTimeout(() => confetti.innerHTML = "", 1400);
+    }
+
+    document.getElementById("celebrateBtn").addEventListener("click", celebrate);
+
+    const CLINIC_ROUNDS = [
+      {
+        weak: "Write a lesson plan.",
+        question: "What is missing first?",
+        options: ["Class level and topic", "More emojis", "Only a shorter answer"],
+        correct: 0,
+        tip: "A lesson plan needs level, topic, duration, objective, and format before style matters.",
+        demo: "You are a teacher assistant. Create a 45-minute lesson plan for Grade 8 science on photosynthesis. Include objectives, activities, materials, assessment, and homework in a table."
+      },
+      {
+        weak: "Make this better.",
+        question: "What should the user add?",
+        options: ["The text or output to improve", "The AI tool name only", "A thank-you message"],
+        correct: 0,
+        tip: "AI cannot improve something clearly unless it sees the content and knows the goal.",
+        demo: "Improve the notice below for clarity and friendliness. Keep it under 80 words and suitable for students. Notice: [paste notice here]."
+      },
+      {
+        weak: "Give me questions.",
+        question: "Which detail would improve this most?",
+        options: ["Number, topic, level, and answer key", "Only the word quiz", "Make it colorful"],
+        correct: 0,
+        tip: "Quiz prompts need quantity, topic, learner level, question type, and whether answers are needed.",
+        demo: "Create 10 multiple-choice questions for Grade 9 students on internet safety. Include 4 options, correct answers, and one-line explanations."
+      },
+      {
+        weak: "Write an email to parents.",
+        question: "What is the biggest missing piece?",
+        options: ["Purpose of the email", "Font size", "AI's opinion"],
+        correct: 0,
+        tip: "The audience is present, but the purpose is missing. AI needs to know why the email is being sent.",
+        demo: "Write a polite email to parents informing them about the AI awareness session on Friday. Include time, venue, what students should bring, and a warm closing."
+      },
+      {
+        weak: "Summarize this report.",
+        question: "What should be added?",
+        options: ["Audience, length, and key focus", "A joke", "Only uppercase text"],
+        correct: 0,
+        tip: "A principal, student, manager, and parent need different summaries.",
+        demo: "Summarize this report for a school principal in 5 bullet points. Focus on attendance trends, key issues, and suggested action points. Report: [paste report]."
+      },
+      {
+        weak: "Make a poster.",
+        question: "What is missing for a useful poster prompt?",
+        options: ["Event details, audience, size, and style", "Only the word beautiful", "A random quote"],
+        correct: 0,
+        tip: "Design prompts need purpose, audience, required text, visual style, and format.",
+        demo: "Create poster copy for a school AI workshop. Audience: teachers and students. Include title, date, venue, 3 benefits, and a short call to action. Tone: energetic and beginner-friendly."
+      },
+      {
+        weak: "Explain AI.",
+        question: "What improvement helps most?",
+        options: ["Say who the explanation is for", "Ask for a longer answer only", "Remove all examples"],
+        correct: 0,
+        tip: "The same topic needs different language for children, parents, teachers, or professionals.",
+        demo: "Explain AI to beginner office staff in simple Nepali-English style. Use 5 bullet points and 2 daily work examples."
+      },
+      {
+        weak: "Use this student data to make a report: [real names and marks].",
+        question: "What must be fixed before prompting?",
+        options: ["Remove or anonymize private data", "Add more student details", "Ask AI to publish it"],
+        correct: 0,
+        tip: "Never paste private student information into public AI tools. Use placeholders or safe internal workflows.",
+        demo: "Using anonymized class data only, create a short performance summary. Use Student A, Student B, and grouped averages. Do not include real names or personal identifiers."
+      },
+      {
+        weak: "Create a plan for my work.",
+        question: "Which missing detail matters most?",
+        options: ["Role, available time, and type of work", "The weather", "AI's favorite task"],
+        correct: 0,
+        tip: "A useful work plan depends on the person's role, time, priorities, and constraints.",
+        demo: "You are a productivity coach. Create a 5-day work plan for a school administrator who has 2 hours per day for documentation, parent communication, and meeting follow-up. Use a table."
+      },
+      {
+        weak: "Check this answer.",
+        question: "What should the prompt ask AI to do?",
+        options: ["Check facts, clarity, tone, and missing points", "Only praise the answer", "Translate without reading"],
+        correct: 0,
+        tip: "Review prompts should define the review criteria so AI gives useful feedback.",
+        demo: "Review the answer below for factual accuracy, clarity, missing points, and tone. Give 2 strengths, 3 improvements, and a revised version. Answer: [paste answer]."
+      }
+    ];
+
+    const clinicPanels = {
+      start: document.querySelector('[data-clinic-panel="start"]'),
+      play: document.querySelector('[data-clinic-panel="play"]'),
+      end: document.querySelector('[data-clinic-panel="end"]')
+    };
+    const clinicRound = document.getElementById("clinicRound");
+    const clinicScore = document.getElementById("clinicScore");
+    const clinicSkill = document.getElementById("clinicSkill");
+    const clinicProgress = document.getElementById("clinicProgress");
+    const clinicWeakPrompt = document.getElementById("clinicWeakPrompt");
+    const clinicQuestion = document.getElementById("clinicQuestion");
+    const clinicOptions = document.getElementById("clinicOptions");
+    const clinicTip = document.getElementById("clinicTip");
+    const clinicDemoWrap = document.getElementById("clinicDemoWrap");
+    const clinicDemo = document.getElementById("clinicDemo");
+    const clinicNextBtn = document.getElementById("clinicNextBtn");
+    const clinicTitle = document.getElementById("clinicTitle");
+    const clinicSummary = document.getElementById("clinicSummary");
+    const clinicFinalScore = document.getElementById("clinicFinalScore");
+    let clinicIndex = 0;
+    let clinicPoints = 0;
+
+    function showClinicPanel(name) {
+      Object.entries(clinicPanels).forEach(([key, panel]) => {
+        panel.hidden = key !== name;
+      });
+    }
+
+    function renderClinicRound() {
+      const round = CLINIC_ROUNDS[clinicIndex];
+      clinicRound.textContent = `${clinicIndex + 1} / ${CLINIC_ROUNDS.length}`;
+      clinicProgress.style.width = `${(clinicIndex / CLINIC_ROUNDS.length) * 100}%`;
+      clinicWeakPrompt.textContent = round.weak;
+      clinicQuestion.textContent = round.question;
+      clinicTip.textContent = "Pick the first thing you would improve.";
+      clinicTip.classList.add("empty");
+      clinicDemo.textContent = "";
+      clinicDemoWrap.hidden = true;
+      clinicNextBtn.hidden = true;
+      clinicOptions.innerHTML = "";
+      clinicSkill.textContent = clinicIndex < 4 ? "Diagnose" : clinicIndex < 8 ? "Improve" : "Review";
+      round.options.forEach((label, i) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "game-option";
+        button.textContent = label;
+        button.addEventListener("click", () => pickClinicAnswer(i));
+        clinicOptions.appendChild(button);
+      });
+    }
+
+    function pickClinicAnswer(choice) {
+      const round = CLINIC_ROUNDS[clinicIndex];
+      const correct = choice === round.correct;
+      [...clinicOptions.children].forEach((button, i) => {
+        button.disabled = true;
+        if (i === round.correct) button.classList.add("correct");
+        if (i === choice && !correct) button.classList.add("wrong");
+      });
+      if (correct) {
+        clinicPoints += 10;
+        clinicTip.textContent = `Correct. ${round.tip}`;
+      } else {
+        clinicTip.textContent = `Good try. ${round.tip}`;
+      }
+      clinicTip.classList.remove("empty");
+      clinicScore.textContent = String(clinicPoints);
+      clinicDemo.textContent = round.demo;
+      clinicDemoWrap.hidden = false;
+      clinicNextBtn.hidden = false;
+      clinicNextBtn.textContent = clinicIndex < CLINIC_ROUNDS.length - 1 ? "Next case" : "See clinic result";
+    }
+
+    function finishClinic() {
+      clinicProgress.style.width = "100%";
+      clinicFinalScore.textContent = String(clinicPoints);
+      let title = "Prompt Doctor";
+      let summary = "Great. You can diagnose weak prompts and explain how to improve them.";
+      if (clinicPoints < 70) {
+        title = "Prompt Intern";
+        summary = "Good practice. Review the five ingredients and run the clinic once more with a partner.";
+      } else if (clinicPoints < 90) {
+        title = "Prompt Coach";
+        summary = "Strong work. You spotted most missing details and safety issues.";
+      }
+      clinicTitle.textContent = title;
+      clinicSummary.textContent = `${summary} Now use these patterns in your own 10-prompt library.`;
+      showClinicPanel("end");
+    }
+
+    function startClinic() {
+      clinicIndex = 0;
+      clinicPoints = 0;
+      clinicScore.textContent = "0";
+      showClinicPanel("play");
+      renderClinicRound();
+    }
+
+    document.getElementById("clinicStartBtn").addEventListener("click", startClinic);
+    document.getElementById("clinicAgainBtn").addEventListener("click", startClinic);
+    document.getElementById("clinicCelebrateBtn").addEventListener("click", celebrate);
+    clinicNextBtn.addEventListener("click", () => {
+      if (clinicIndex < CLINIC_ROUNDS.length - 1) {
+        clinicIndex += 1;
+        renderClinicRound();
+      } else {
+        finishClinic();
+      }
+    });
+
+    const GAME_ROUNDS = [
+      {
+        q: "Which prompt is stronger?",
+        options: ["Write an email.", "Write a polite email to parents about tomorrow's class schedule change."],
+        correct: 1,
+        tip: "The second prompt gives audience, purpose, and tone."
+      },
+      {
+        q: "What should you avoid putting in a public AI prompt?",
+        options: ["A fake example name like Student A", "Real student names, IDs, passwords, or private records"],
+        correct: 1,
+        tip: "Use placeholders when the task involves private or sensitive information."
+      },
+      {
+        q: "Prompt: 'Summarize this.' What is missing most?",
+        options: ["The desired length and audience", "The word summarize"],
+        correct: 0,
+        tip: "Say who the summary is for and how long it should be."
+      },
+      {
+        q: "Best follow-up after a confusing AI answer?",
+        options: ["Make it simpler with one example.", "Never ask again."],
+        correct: 0,
+        tip: "Follow-ups are part of normal AI work."
+      },
+      {
+        q: "What is prompt chaining?",
+        options: ["Using small connected prompts for a bigger task", "Typing one huge prompt and never revising"],
+        correct: 0,
+        tip: "Plan, draft, review, and polish is a simple prompt chain."
+      },
+      {
+        q: "Who approves the final output?",
+        options: ["The human using AI", "The AI tool"],
+        correct: 0,
+        tip: "AI can draft and suggest. Humans review, edit, and take responsibility."
+      }
+    ];
+
+    const gamePanels = {
+      start: document.querySelector('[data-game-panel="start"]'),
+      play: document.querySelector('[data-game-panel="play"]'),
+      end: document.querySelector('[data-game-panel="end"]')
+    };
+    const gameBest = document.getElementById("gameBest");
+    const gameRound = document.getElementById("gameRound");
+    const gameScore = document.getElementById("gameScore");
+    const gameStreak = document.getElementById("gameStreak");
+    const gameProgress = document.getElementById("gameProgress");
+    const gameQuestion = document.getElementById("gameQuestion");
+    const gameOptions = document.getElementById("gameOptions");
+    const gameTip = document.getElementById("gameTip");
+    const gameNextBtn = document.getElementById("gameNextBtn");
+    const gameTitle = document.getElementById("gameTitle");
+    const gameSummary = document.getElementById("gameSummary");
+    const gameFinalScore = document.getElementById("gameFinalScore");
+    let gameIndex = 0;
+    let score = 0;
+    let streak = 0;
+    let answered = false;
+
+    function bestScore() {
+      return Number(localStorage.getItem("day2-prompt-game-best") || 0);
+    }
+
+    function setBest(nextScore) {
+      if (nextScore > bestScore()) {
+        localStorage.setItem("day2-prompt-game-best", String(nextScore));
+      }
+      gameBest.textContent = String(Math.max(nextScore, bestScore()));
+    }
+
+    function showGamePanel(name) {
+      Object.entries(gamePanels).forEach(([key, panel]) => {
+        panel.hidden = key !== name;
+      });
+    }
+
+    function renderRound() {
+      const round = GAME_ROUNDS[gameIndex];
+      answered = false;
+      gameRound.textContent = `${gameIndex + 1} / ${GAME_ROUNDS.length}`;
+      gameProgress.style.width = `${(gameIndex / GAME_ROUNDS.length) * 100}%`;
+      gameQuestion.textContent = round.q;
+      gameTip.textContent = "Pick an answer to see why.";
+      gameTip.classList.add("empty");
+      gameNextBtn.hidden = true;
+      gameOptions.innerHTML = "";
+      round.options.forEach((label, i) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "game-option";
+        button.textContent = label;
+        button.addEventListener("click", () => pickAnswer(i));
+        gameOptions.appendChild(button);
+      });
+    }
+
+    function pickAnswer(choice) {
+      if (answered) return;
+      answered = true;
+      const round = GAME_ROUNDS[gameIndex];
+      const correct = choice === round.correct;
+      [...gameOptions.children].forEach((button, i) => {
+        button.disabled = true;
+        if (i === round.correct) button.classList.add("correct");
+        if (i === choice && !correct) button.classList.add("wrong");
+      });
+      if (correct) {
+        streak += 1;
+        const points = streak >= 2 ? 10 : 8;
+        score += points;
+        gameTip.textContent = `Correct. +${points} points. ${round.tip}`;
+      } else {
+        streak = 0;
+        gameTip.textContent = `Not quite. ${round.tip}`;
+      }
+      gameTip.classList.remove("empty");
+      gameScore.textContent = String(score);
+      gameStreak.textContent = String(streak);
+      gameNextBtn.hidden = false;
+      gameNextBtn.textContent = gameIndex < GAME_ROUNDS.length - 1 ? "Next round" : "See results";
+    }
+
+    function finishGame() {
+      gameProgress.style.width = "100%";
+      setBest(score);
+      gameFinalScore.textContent = String(score);
+      let title = "Prompt Rookie";
+      let summary = "Good start. Revisit the formula and try again with a partner.";
+      if (score >= 50) {
+        title = "Prompt Pro";
+        summary = "Strong work. You can spot clear prompts, safe prompts, and useful follow-ups.";
+      } else if (score >= 30) {
+        title = "Prompt Builder";
+        summary = "Solid work. Keep practising context, format, and follow-up prompts.";
+      }
+      gameTitle.textContent = title;
+      gameSummary.textContent = `${summary} Best score in this browser: ${gameBest.textContent}.`;
+      showGamePanel("end");
+    }
+
+    function startGame() {
+      gameIndex = 0;
+      score = 0;
+      streak = 0;
+      gameScore.textContent = "0";
+      gameStreak.textContent = "0";
+      showGamePanel("play");
+      renderRound();
+    }
+
+    document.getElementById("gameStartBtn").addEventListener("click", startGame);
+    document.getElementById("gameAgainBtn").addEventListener("click", startGame);
+    document.getElementById("gameCelebrateBtn").addEventListener("click", celebrate);
+    gameNextBtn.addEventListener("click", () => {
+      if (gameIndex < GAME_ROUNDS.length - 1) {
+        gameIndex += 1;
+        renderRound();
+      } else {
+        finishGame();
+      }
+    });
+
+    gameBest.textContent = String(bestScore());
+    renderThumbs();
+    buildLibraryInputs();
+    loadLibrary();
+    updateTonePrompt();
+    updatePrompt();
+    goTo(index);
+  </script>
+</body>
+</html>
