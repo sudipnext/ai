@@ -1,0 +1,1732 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Day 3: Choosing the Right AI Assistant | AI Applications Workshop</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --ink: #17202a;
+      --muted: #5a6678;
+      --paper: #ffffff;
+      --line: #d9dfeb;
+      --blue: #2f6eea;
+      --teal: #008f8c;
+      --coral: #f45b69;
+      --gold: #f2b84b;
+      --green: #2f9e66;
+      --violet: #7257c8;
+      --soft-blue: #eaf1ff;
+      --soft-teal: #e8fbf7;
+      --soft-coral: #fff0f2;
+      --soft-gold: #fff7e4;
+      --shadow: 0 18px 48px rgba(23, 32, 42, 0.13);
+      --radius: 8px;
+      --slide-ratio: 16 / 9;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(47, 110, 234, 0.07) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(0, 143, 140, 0.06) 1px, transparent 1px),
+        var(--bg);
+      background-size: 34px 34px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      letter-spacing: 0;
+      overflow: hidden;
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 264px 1fr;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 0;
+      padding: 20px 16px;
+      background: rgba(255, 255, 255, 0.9);
+      border-right: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: grid;
+      gap: 8px;
+      padding: 4px 4px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand strong {
+      font-size: 1rem;
+      line-height: 1.25;
+    }
+
+    .brand span {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.35;
+    }
+
+    .progress-wrap { display: grid; gap: 8px; }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+    }
+
+    .progress {
+      width: 100%;
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8edf5;
+    }
+
+    .progress span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--blue), var(--coral));
+      transition: width 220ms ease;
+    }
+
+    .thumbs {
+      display: grid;
+      gap: 8px;
+      min-height: 0;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .thumb {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 9px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .thumb:hover,
+    .thumb.active {
+      background: #eef6ff;
+      border-color: #bfd4ff;
+    }
+
+    .thumb .num {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 850;
+    }
+
+    .thumb.active .num { background: var(--blue); }
+
+    .thumb .title {
+      font-size: 0.84rem;
+      line-height: 1.2;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .icon-btn {
+      display: grid;
+      place-items: center;
+      min-width: 42px;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--ink);
+      font-weight: 850;
+      box-shadow: 0 4px 14px rgba(23, 32, 42, 0.08);
+    }
+
+    .icon-btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .stage {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      min-width: 0;
+      min-height: 0;
+      padding: 24px;
+    }
+
+    .deck-shell {
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .deck {
+      position: relative;
+      width: min(100%, calc((100vh - 132px) * 16 / 9));
+      aspect-ratio: var(--slide-ratio);
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 42, 0.1);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+      padding: clamp(24px, 4vw, 54px);
+      overflow: hidden;
+    }
+
+    .slide.active { display: grid; }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(47, 110, 234, 0.07), transparent 34%),
+        linear-gradient(315deg, rgba(0, 143, 140, 0.07), transparent 34%);
+    }
+
+    .slide > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      max-width: 920px;
+      font-size: clamp(2.25rem, 4.9vw, 4.85rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      font-size: clamp(1.7rem, 3.2vw, 3.2rem);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      font-size: clamp(1rem, 1.4vw, 1.25rem);
+      line-height: 1.2;
+    }
+
+    p, li {
+      color: var(--muted);
+      font-size: clamp(0.86rem, 1.15vw, 1.08rem);
+      line-height: 1.42;
+    }
+
+    ul, ol {
+      margin: 0;
+      padding-left: 1.12em;
+    }
+
+    li + li { margin-top: 7px; }
+
+    .kicker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: clamp(0.72rem, 1vw, 0.92rem);
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      margin-right: 36px;
+      border-radius: 50%;
+      background: var(--coral);
+      box-shadow: 18px 0 0 var(--gold), 36px 0 0 var(--teal);
+    }
+
+    .hero-grid,
+    .two-col,
+    .three-col,
+    .four-col,
+    .split,
+    .wide-left,
+    .wide-right,
+    .builder-layout {
+      display: grid;
+      gap: 18px;
+      align-items: stretch;
+      min-height: 0;
+    }
+
+    .hero-grid { grid-template-columns: 1.1fr 0.9fr; align-items: center; }
+    .two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three-col { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .four-col { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .split { grid-template-columns: 0.88fr 1.12fr; align-items: center; }
+    .wide-left { grid-template-columns: 1.25fr 0.75fr; }
+    .wide-right { grid-template-columns: 0.72fr 1.28fr; }
+    .builder-layout { grid-template-columns: 0.95fr 1.05fr; }
+
+    .panel,
+    .mini-card,
+    .activity,
+    .quote-box,
+    .tool-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.84);
+      box-shadow: 0 10px 28px rgba(23, 32, 42, 0.08);
+    }
+
+    .panel,
+    .activity,
+    .quote-box {
+      padding: clamp(16px, 2vw, 24px);
+    }
+
+    .mini-card,
+    .tool-card {
+      display: grid;
+      gap: 10px;
+      min-height: 126px;
+      padding: clamp(14px, 1.5vw, 20px);
+    }
+
+    .tool-card {
+      background: var(--paper);
+    }
+
+    .mini-card strong,
+    .tool-card strong {
+      font-size: clamp(0.95rem, 1.25vw, 1.16rem);
+      line-height: 1.22;
+    }
+
+    .mini-card p,
+    .mini-card li,
+    .tool-card p,
+    .tool-card li {
+      font-size: clamp(0.76rem, 0.98vw, 0.94rem);
+    }
+
+    .accent-teal { border-top: 7px solid var(--teal); }
+    .accent-blue { border-top: 7px solid var(--blue); }
+    .accent-coral { border-top: 7px solid var(--coral); }
+    .accent-gold { border-top: 7px solid var(--gold); }
+    .accent-green { border-top: 7px solid var(--green); }
+    .accent-violet { border-top: 7px solid var(--violet); }
+
+    .tag-row,
+    .interactive-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #263253;
+      font-size: clamp(0.72rem, 0.95vw, 0.9rem);
+      font-weight: 780;
+      white-space: nowrap;
+    }
+
+    .matrix {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: var(--paper);
+      font-size: clamp(0.74rem, 0.94vw, 0.9rem);
+    }
+
+    .matrix th,
+    .matrix td {
+      padding: 10px 11px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .matrix th {
+      background: var(--ink);
+      color: #fff;
+      font-weight: 850;
+    }
+
+    .matrix tr:last-child td { border-bottom: 0; }
+
+    .choice-btn,
+    .action-btn {
+      min-height: 42px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--ink);
+      font-weight: 820;
+      line-height: 1.2;
+    }
+
+    .choice-btn:hover,
+    .action-btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .choice-btn.selected.good {
+      background: #e8fff2;
+      border-color: var(--green);
+      color: #12663b;
+    }
+
+    .choice-btn.selected.warn {
+      background: #fff7df;
+      border-color: var(--gold);
+      color: #735000;
+    }
+
+    .feedback {
+      min-height: 48px;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px dashed #adb7c9;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.75);
+      color: var(--muted);
+      font-size: clamp(0.8rem, 1vw, 0.98rem);
+      line-height: 1.38;
+    }
+
+    .game-panel {
+      display: grid;
+      gap: 12px;
+      min-height: 0;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .game-panel[hidden] { display: none; }
+
+    .game-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .game-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .game-stat {
+      display: grid;
+      gap: 2px;
+      min-width: 78px;
+      padding: 8px 12px;
+      border: 1px solid #d5def7;
+      border-radius: var(--radius);
+      background: #eef2ff;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 820;
+      text-transform: uppercase;
+    }
+
+    .game-stat strong {
+      color: var(--ink);
+      font-size: 1.15rem;
+      text-transform: none;
+    }
+
+    .game-progress {
+      flex: 1 1 140px;
+      min-width: 120px;
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e7eaf2;
+    }
+
+    .game-progress span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--violet));
+      transition: width 260ms ease;
+    }
+
+    .game-question {
+      color: var(--ink);
+      font-size: clamp(1.04rem, 1.48vw, 1.35rem);
+      line-height: 1.3;
+    }
+
+    .game-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .game-option {
+      min-height: 54px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--ink);
+      font-weight: 760;
+      line-height: 1.32;
+      text-align: left;
+    }
+
+    .game-option:hover:not(:disabled) { border-color: var(--blue); }
+    .game-option:disabled { cursor: default; opacity: 0.94; }
+    .game-option.correct { background: #e8fff2; border-color: var(--green); color: #12663b; }
+    .game-option.wrong { background: #fff0f1; border-color: var(--coral); color: #8b2430; }
+
+    .game-tip {
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px dashed #b8c5df;
+      border-radius: var(--radius);
+      background: #f8fbff;
+      color: var(--ink);
+      font-size: clamp(0.78rem, 0.95vw, 0.92rem);
+      line-height: 1.38;
+    }
+
+    .game-tip.empty { color: var(--muted); }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 820;
+      text-transform: uppercase;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcff;
+      color: var(--ink);
+      font-size: clamp(0.8rem, 0.98vw, 0.94rem);
+    }
+
+    input, select {
+      min-height: 40px;
+      padding: 9px 11px;
+    }
+
+    textarea {
+      min-height: 82px;
+      padding: 10px 12px;
+      resize: none;
+      line-height: 1.35;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: 2px solid rgba(47, 110, 234, 0.2);
+      border-color: var(--blue);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .output-box {
+      min-height: 230px;
+      padding: 14px;
+      overflow: auto;
+      border: 1px solid #bfd4ff;
+      border-radius: var(--radius);
+      background: #f8fbff;
+      color: var(--ink);
+      font-size: clamp(0.78rem, 0.98vw, 0.94rem);
+      line-height: 1.42;
+      white-space: pre-wrap;
+    }
+
+    .prompt-list {
+      display: grid;
+      gap: 8px;
+      min-height: 0;
+      max-height: 410px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .prompt-row {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .prompt-row span {
+      display: grid;
+      place-items: center;
+      min-height: 40px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: #fff;
+      font-weight: 850;
+      font-size: 0.78rem;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--muted);
+      font-size: clamp(0.72rem, 0.9vw, 0.86rem);
+      font-weight: 720;
+    }
+
+    .notes {
+      display: none;
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      left: 18px;
+      z-index: 3;
+      padding: 14px 16px;
+      border: 1px solid #c8d0df;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--ink);
+      box-shadow: 0 14px 36px rgba(23, 32, 42, 0.16);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    body.show-notes .slide.active .notes { display: block; }
+
+    .bottom-help {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 14px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .kbd {
+      display: inline-grid;
+      place-items: center;
+      min-width: 25px;
+      min-height: 23px;
+      padding: 2px 6px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--paper);
+      color: var(--ink);
+      font-weight: 850;
+    }
+
+    .confetti {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      overflow: hidden;
+    }
+
+    .confetti i {
+      position: absolute;
+      top: -20px;
+      width: 9px;
+      height: 15px;
+      border-radius: 3px;
+      animation: fall 1400ms ease-in forwards;
+    }
+
+    @keyframes fall {
+      to { transform: translateY(790px) rotate(540deg); opacity: 0; }
+    }
+
+    body.presenter .sidebar,
+    body.presenter .bottom-help { display: none; }
+    body.presenter .app { grid-template-columns: 1fr; }
+    body.presenter .stage { padding: 0; }
+    body.presenter .deck {
+      width: 100vw;
+      height: 100vh;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    @media (max-width: 960px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .stage { padding: 12px; }
+      .deck { width: 100%; }
+      .hero-grid,
+      .two-col,
+      .three-col,
+      .four-col,
+      .split,
+      .wide-left,
+      .wide-right,
+      .builder-layout,
+      .game-options,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .slide {
+        padding: 22px;
+        overflow: auto;
+      }
+    }
+
+    @media print {
+      html, body { height: auto; overflow: visible; background: #fff; }
+      .app { display: block; }
+      .sidebar, .bottom-help, .notes, .confetti { display: none !important; }
+      .stage { padding: 0; display: block; }
+      .deck { width: 100%; height: auto; border: 0; box-shadow: none; overflow: visible; }
+      .slide {
+        position: relative;
+        display: grid !important;
+        width: 100%;
+        aspect-ratio: var(--slide-ratio);
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="Slide navigation">
+      <div class="brand">
+        <strong>AI Applications Workshop</strong>
+        <span>Day 3 student session<br />Choose the right AI assistant</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>Progress</span>
+          <span id="progressText">1 / 23</span>
+        </div>
+        <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+      </div>
+      <nav class="thumbs" id="thumbs"></nav>
+      <div class="controls" aria-label="Deck controls">
+        <button class="icon-btn" id="prevBtn" title="Previous slide" aria-label="Previous slide">&lt;</button>
+        <button class="icon-btn" id="nextBtn" title="Next slide" aria-label="Next slide">&gt;</button>
+        <button class="icon-btn" id="notesBtn" title="Toggle speaker notes" aria-label="Toggle speaker notes">N</button>
+        <button class="icon-btn" id="presentBtn" title="Toggle presenter view" aria-label="Toggle presenter view">F</button>
+      </div>
+    </aside>
+
+    <main class="stage">
+      <div class="deck-shell">
+        <section class="deck" id="deck" aria-live="polite">
+          <div class="confetti" id="confetti" aria-hidden="true"></div>
+
+          <article class="slide active" data-title="Welcome">
+            <header class="kicker"><span class="dot"></span> Day 3 | Right Tool, Right Task</header>
+            <div class="hero-grid">
+              <div>
+                <h1>Choosing the Right AI Assistant</h1>
+                <p style="margin-top:18px; max-width:760px;">Today you will learn which AI tool is usually good for which kind of work, compare outputs, and design your first role-specific AI assistant.</p>
+                <div class="tag-row">
+                  <span class="tag">Tool choice</span>
+                  <span class="tag">Live comparison</span>
+                  <span class="tag">Scenario games</span>
+                  <span class="tag">Custom GPTs and Gems</span>
+                </div>
+              </div>
+              <div class="quote-box">
+                <h3>Simple idea</h3>
+                <p style="margin-top:14px; color:var(--ink); font-size:clamp(1.1rem,1.9vw,1.55rem);">Do not ask, "Which AI is best?" Ask, "Best for this task, this file, this audience, and this workflow?"</p>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Today: choose, compare, build, test</span><span>Your output: one assistant blueprint</span></footer>
+            <aside class="notes">Open by asking: Which AI tool have you already heard of or used? Keep it low-pressure.</aside>
+          </article>
+
+          <article class="slide" data-title="Session Map">
+            <header class="kicker"><span class="dot"></span> Today's Learning Path</header>
+            <div class="split">
+              <div>
+                <h2>A practical session for mixed learners.</h2>
+                <p style="margin-top:14px;">Some people may be teachers, some office staff, some students, some business owners. Everyone will choose a path that fits their real work.</p>
+              </div>
+              <div class="three-col">
+                <div class="mini-card accent-teal"><strong>1. Understand</strong><p>Learn the simple strengths of ChatGPT, Claude, Gemini, Copilot, GPTs, and Gems.</p></div>
+                <div class="mini-card accent-blue"><strong>2. Compare</strong><p>Run the same task in two tools and discuss what changed.</p></div>
+                <div class="mini-card accent-coral"><strong>3. Build</strong><p>Design a role assistant and test it with five prompts.</p></div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Recommended 4-hour flow: recap, tool map, demo, hands-on, share</span><span>Slide 2</span></footer>
+            <aside class="notes">This slide helps learners see that they will not be forced into one activity. They will select a role path.</aside>
+          </article>
+
+          <article class="slide" data-title="Why It Matters">
+            <header class="kicker"><span class="dot"></span> Why Tool Choice Matters</header>
+            <div class="two-col">
+              <div>
+                <h2>The same prompt can feel different in different assistants.</h2>
+                <p style="margin-top:14px;">One tool may give a fast list. Another may write a longer polished draft. Another may connect better with your Google or Microsoft files.</p>
+                <div class="interactive-row" data-poll>
+                  <button class="choice-btn" data-feedback="Good for quick work. Ask for a short answer and then improve it.">I need a quick idea</button>
+                  <button class="choice-btn" data-feedback="Choose a tool that handles long writing well, then give clear structure and audience.">I need a long document</button>
+                  <button class="choice-btn" data-feedback="Use the assistant connected to where your file already lives, such as Google Workspace or Microsoft 365.">I need help inside Docs or Word</button>
+                  <button class="choice-btn" data-feedback="Consider a custom assistant if you repeat the same task often.">I repeat this task weekly</button>
+                </div>
+                <div class="feedback">Click the situation closest to your work.</div>
+              </div>
+              <div class="quote-box">
+                <h3>Layman rule</h3>
+                <p style="margin-top:14px; color:var(--ink);">A tool is like a helper with a habit. Learn the habit, then choose the helper that fits the job.</p>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Choose by task, file location, output style, and safety</span><span>Slide 3</span></footer>
+            <aside class="notes">Avoid declaring one winner. Keep the mindset: right fit for the task.</aside>
+          </article>
+
+          <article class="slide" data-title="Decision Rule">
+            <header class="kicker"><span class="dot"></span> One-Minute Decision Rule</header>
+            <div class="four-col">
+              <div class="mini-card accent-teal"><strong>What do I need?</strong><p>Idea, email, table, report, code, slide, analysis, or assistant?</p></div>
+              <div class="mini-card accent-blue"><strong>Where is my work?</strong><p>Chat, Google Docs, Microsoft Word, PDF, spreadsheet, or browser?</p></div>
+              <div class="mini-card accent-gold"><strong>How deep is it?</strong><p>Quick answer, long document, many files, or repeat workflow?</p></div>
+              <div class="mini-card accent-coral"><strong>What is sensitive?</strong><p>Private records, student data, company files, names, IDs, or passwords?</p></div>
+            </div>
+            <footer class="slide-footer"><span>Tool choice starts before prompting</span><span>Slide 4</span></footer>
+            <aside class="notes">Have learners apply these four questions to one real task from Day 2.</aside>
+          </article>
+
+          <article class="slide" data-title="Big Tool Map">
+            <header class="kicker"><span class="dot"></span> Tool Map</header>
+            <div>
+              <h2>Start with the main assistant families.</h2>
+              <table class="matrix" style="margin-top:20px;">
+                <thead>
+                  <tr><th>Assistant</th><th>Usually strong for</th><th>Simple example</th><th>Watch out</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><strong>ChatGPT</strong></td><td>General productivity, brainstorming, writing, files, images, data-style thinking.</td><td>Create a plan, rewrite a notice, analyze a small table, draft slides.</td><td>Still verify important facts and privacy.</td></tr>
+                  <tr><td><strong>Claude</strong></td><td>Long-form writing, careful rewriting, document reasoning, structured explanations.</td><td>Improve a long policy draft or compare two long texts.</td><td>May be more detailed than needed; ask for short outputs.</td></tr>
+                  <tr><td><strong>Gemini</strong></td><td>Google-style workflows, everyday research support, Docs/Gmail/Drive-friendly tasks.</td><td>Plan a class activity from a Google Doc or create Gmail-style text.</td><td>Check account and workspace settings.</td></tr>
+                  <tr><td><strong>Copilot</strong></td><td>Microsoft work: Word, Excel, PowerPoint, Outlook, Teams, SharePoint.</td><td>Summarize meeting notes, draft Word content, explain Excel data.</td><td>Best when your work is already in Microsoft 365.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="slide-footer"><span>These are practical tendencies, not permanent labels</span><span>Slide 5</span></footer>
+            <aside class="notes">Say "usually" because tool features change. Encourage testing.</aside>
+          </article>
+
+          <article class="slide" data-title="ChatGPT Uses">
+            <header class="kicker"><span class="dot"></span> Tool List 1</header>
+            <div class="wide-left">
+              <div>
+                <h2>ChatGPT is a strong all-purpose starting point.</h2>
+                <p style="margin-top:14px;">Use it when you do not know where to start, need a fast draft, want multiple options, or need help thinking through a task.</p>
+                <div class="three-col" style="margin-top:18px;">
+                  <div class="tool-card accent-blue"><strong>Productivity</strong><p>Plans, checklists, schedules, emails, meeting notes.</p></div>
+                  <div class="tool-card accent-teal"><strong>Creative work</strong><p>Names, captions, poster copy, lesson ideas, campaign ideas.</p></div>
+                  <div class="tool-card accent-coral"><strong>Mixed tasks</strong><p>Analyze a file, explain a topic, create a table, draft slides.</p></div>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Try this prompt</h3>
+                <p style="margin-top:10px; color:var(--ink);">I am a beginner teacher. Give me 5 practical ways AI can save me 30 minutes this week. Use a table with task, AI help, and what I must check.</p>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Best when you need a flexible assistant</span><span>Slide 6</span></footer>
+            <aside class="notes">Based on current ChatGPT feature direction: files, projects, tools, and broad productivity. Keep examples simple.</aside>
+          </article>
+
+          <article class="slide" data-title="Claude Uses">
+            <header class="kicker"><span class="dot"></span> Tool List 2</header>
+            <div class="wide-left">
+              <div>
+                <h2>Claude is often useful for longer writing and careful editing.</h2>
+                <p style="margin-top:14px;">Use it when the task needs reading, rewriting, structured thinking, or a more polished long response.</p>
+                <div class="three-col" style="margin-top:18px;">
+                  <div class="tool-card accent-violet"><strong>Long documents</strong><p>Reports, policy drafts, SOPs, proposals, manuals.</p></div>
+                  <div class="tool-card accent-blue"><strong>Careful rewrite</strong><p>Make text clearer, warmer, shorter, or more professional.</p></div>
+                  <div class="tool-card accent-gold"><strong>Thoughtful review</strong><p>Find gaps, contradictions, weak logic, or missing sections.</p></div>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Try this prompt</h3>
+                <p style="margin-top:10px; color:var(--ink);">Review this draft report for clarity, structure, and missing points. Give 3 strengths, 5 improvements, and a revised outline before rewriting.</p>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Best when the answer needs depth and polish</span><span>Slide 7</span></footer>
+            <aside class="notes">Do not overstate. Say learners should compare with their own tasks.</aside>
+          </article>
+
+          <article class="slide" data-title="Gemini Uses">
+            <header class="kicker"><span class="dot"></span> Tool List 3</header>
+            <div class="wide-left">
+              <div>
+                <h2>Gemini is useful when your work lives in Google.</h2>
+                <p style="margin-top:14px;">Use it for Google-style tasks, quick research support, Gmail/Docs thinking, and Gemini Gems for repeated goals.</p>
+                <div class="three-col" style="margin-top:18px;">
+                  <div class="tool-card accent-teal"><strong>Google workflow</strong><p>Docs, Gmail, Drive-style planning, classroom material, summaries.</p></div>
+                  <div class="tool-card accent-blue"><strong>Everyday help</strong><p>Plan activities, explain topics, organize ideas, draft messages.</p></div>
+                  <div class="tool-card accent-green"><strong>Gems</strong><p>Create a reusable mini-assistant for a repeated need.</p></div>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Try this prompt</h3>
+                <p style="margin-top:10px; color:var(--ink);">Help me turn these rough notes into a Google Docs-style meeting summary with headings, action items, and a short follow-up email.</p>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Best when Google is already your working space</span><span>Slide 8</span></footer>
+            <aside class="notes">Mention that account type and workspace settings can affect features.</aside>
+          </article>
+
+          <article class="slide" data-title="Copilot Uses">
+            <header class="kicker"><span class="dot"></span> Tool List 4</header>
+            <div class="wide-left">
+              <div>
+                <h2>Copilot is strongest when your work is inside Microsoft 365.</h2>
+                <p style="margin-top:14px;">Use it when you already work in Word, Excel, PowerPoint, Outlook, Teams, or SharePoint.</p>
+                <div class="three-col" style="margin-top:18px;">
+                  <div class="tool-card accent-blue"><strong>Word and Outlook</strong><p>Draft, rewrite, summarize, polish tone, create responses.</p></div>
+                  <div class="tool-card accent-green"><strong>Excel and data</strong><p>Ask questions about tables, trends, charts, and summaries.</p></div>
+                  <div class="tool-card accent-coral"><strong>Meetings and slides</strong><p>Summaries, action items, PowerPoint outlines, speaker notes.</p></div>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Try this prompt</h3>
+                <p style="margin-top:10px; color:var(--ink);">Summarize this meeting into decisions, action items, owners, deadlines, and one short email I can send to the team.</p>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Best when Microsoft files are the center of the task</span><span>Slide 9</span></footer>
+            <aside class="notes">If learners do not have Microsoft 365 Copilot, still explain the workflow concept.</aside>
+          </article>
+
+          <article class="slide" data-title="Custom Assistants">
+            <header class="kicker"><span class="dot"></span> Custom GPTs and Gems</header>
+            <div class="two-col">
+              <div>
+                <h2>A custom assistant is a saved helper for a repeated job.</h2>
+                <p style="margin-top:14px;">Instead of rewriting the same long prompt every time, you save instructions once. Then the assistant follows those instructions whenever you use it.</p>
+                <div class="tag-row">
+                  <span class="tag">Reusable</span>
+                  <span class="tag">Role-specific</span>
+                  <span class="tag">No-code</span>
+                  <span class="tag">Needs testing</span>
+                </div>
+              </div>
+              <div class="quote-box">
+                <h3>Simple examples</h3>
+                <ul style="margin-top:12px;">
+                  <li>Teacher Assistant for lesson plans and quizzes</li>
+                  <li>Report Writer for office summaries</li>
+                  <li>Parent Notice Helper for school messages</li>
+                  <li>Social Media Caption Coach for a small business</li>
+                </ul>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Custom GPTs are in ChatGPT; Gems are in Gemini</span><span>Slide 10</span></footer>
+            <aside class="notes">Explain that availability depends on account, plan, age, and workspace permissions.</aside>
+          </article>
+
+          <article class="slide" data-title="Assistant Ingredients">
+            <header class="kicker"><span class="dot"></span> What To Put Inside</header>
+            <div class="four-col">
+              <div class="mini-card accent-teal"><strong>Purpose</strong><p>What job should this assistant do again and again?</p></div>
+              <div class="mini-card accent-blue"><strong>Behavior</strong><p>How should it respond? Ask questions, give tables, be brief?</p></div>
+              <div class="mini-card accent-gold"><strong>Knowledge</strong><p>What documents, rules, examples, or style notes should guide it?</p></div>
+              <div class="mini-card accent-coral"><strong>Boundaries</strong><p>What should it never do? Private data, final grading, legal claims?</p></div>
+            </div>
+            <footer class="slide-footer"><span>Purpose + behavior + knowledge + boundaries</span><span>Slide 11</span></footer>
+            <aside class="notes">This sets up the blueprint activity later.</aside>
+          </article>
+
+          <article class="slide" data-title="Match Warm-Up">
+            <header class="kicker"><span class="dot"></span> Quick Match</header>
+            <div class="two-col">
+              <div>
+                <h2>Which assistant would you try first?</h2>
+                <p style="margin-top:14px;">Click a scenario. Discuss why that choice might be useful. There can be more than one reasonable answer.</p>
+                <div class="interactive-row" data-poll>
+                  <button class="choice-btn" data-feedback="Try Copilot if the file is already in Word or Outlook. Try ChatGPT/Claude if you are pasting safe text into chat.">Improve a Word report</button>
+                  <button class="choice-btn" data-feedback="Try Gemini if you are working in Google Docs/Gmail. Try ChatGPT for general drafting.">Draft a Gmail message</button>
+                  <button class="choice-btn" data-feedback="Try Claude or ChatGPT for long-form review. Ask for structure, gaps, and a revised outline.">Review a long policy</button>
+                  <button class="choice-btn" data-feedback="Try a Custom GPT or Gem if this happens every week and needs the same rules.">Repeat a weekly task</button>
+                </div>
+                <div class="feedback">Click one scenario.</div>
+              </div>
+              <div class="activity">
+                <h3>Discussion prompt</h3>
+                <p style="margin-top:10px; color:var(--ink);">What information would you need before choosing the tool? File type? Privacy? Desired output? Account access? Deadline?</p>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Warm-up for the scenario game</span><span>Slide 12</span></footer>
+            <aside class="notes">Emphasize that tool choice is a reasoning habit, not memorization.</aside>
+          </article>
+
+          <article class="slide" data-title="Tool Chooser Game">
+            <header class="kicker"><span class="dot"></span> Scenario Game</header>
+            <div class="game-panel" data-game-panel="start">
+              <div class="hero-grid">
+                <div>
+                  <h2 style="margin:0;">AI Tool Match Challenge</h2>
+                  <p style="margin-top:10px;">Twelve real-world cases. Pick the assistant you would try first and read why. Play as individuals, pairs, or whole-room voting.</p>
+                  <div class="tag-row">
+                    <span class="tag">12 scenarios</span>
+                    <span class="tag">Tool reasoning</span>
+                    <span class="tag">Beginner-friendly</span>
+                  </div>
+                  <div class="interactive-row">
+                    <button class="action-btn" type="button" id="gameStartBtn">Start challenge</button>
+                  </div>
+                </div>
+                <div class="quote-box">
+                  <h3>Rank guide</h3>
+                  <p style="margin-top:10px; color:var(--ink);">0-59: Tool Explorer<br />60-99: Tool Chooser<br />100+: AI Matchmaker</p>
+                  <p style="margin-top:14px;">Best score: <strong id="gameBest">0</strong></p>
+                </div>
+              </div>
+            </div>
+            <div class="game-panel" data-game-panel="play" hidden>
+              <div class="game-top">
+                <span class="game-stat"><span>Case</span><strong id="gameRound">1 / 12</strong></span>
+                <div class="game-stats">
+                  <div class="game-stat"><span>Score</span><strong id="gameScore">0</strong></div>
+                  <div class="game-stat"><span>Streak</span><strong id="gameStreak">0</strong></div>
+                </div>
+                <div class="game-progress" aria-hidden="true"><span id="gameProgress"></span></div>
+              </div>
+              <p class="game-question" id="gameQuestion"></p>
+              <div class="game-options" id="gameOptions"></div>
+              <div class="game-tip empty" id="gameTip">Pick the best first tool for this case.</div>
+              <div class="interactive-row"><button class="action-btn" type="button" id="gameNextBtn" hidden>Next case</button></div>
+            </div>
+            <div class="game-panel" data-game-panel="end" hidden>
+              <div class="hero-grid">
+                <div>
+                  <h2 id="gameTitle">Tool Explorer</h2>
+                  <p style="margin-top:10px;" id="gameSummary"></p>
+                  <div class="interactive-row">
+                    <button class="action-btn" type="button" id="gameAgainBtn">Play again</button>
+                    <button class="action-btn" type="button" id="gameCelebrateBtn">Celebrate</button>
+                  </div>
+                </div>
+                <div class="quote-box">
+                  <h3>Your score</h3>
+                  <p style="margin-top:10px; color:var(--ink); font-size:clamp(2rem,4vw,4rem); font-weight:900;" id="gameFinalScore">0</p>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Game: choose the right assistant for the situation</span><span>Slide 13</span></footer>
+            <aside class="notes">Let learners debate before clicking. Correct answer means best first try, not the only possible tool.</aside>
+          </article>
+
+          <article class="slide" data-title="Demo Compare">
+            <header class="kicker"><span class="dot"></span> Live Demo</header>
+            <div class="wide-left">
+              <div>
+                <h2>Compare two assistants on the same task.</h2>
+                <p style="margin-top:14px;">Do not only ask, "Which answer is longer?" Ask which one is more useful for the job.</p>
+                <div class="chain" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px;">
+                  <div class="mini-card accent-teal"><strong>1. Same prompt</strong><p>Use identical wording in two tools.</p></div>
+                  <div class="mini-card accent-blue"><strong>2. Same output target</strong><p>Email, table, report, quiz, or plan.</p></div>
+                  <div class="mini-card accent-gold"><strong>3. Compare quality</strong><p>Clarity, usefulness, detail, tone, safety.</p></div>
+                  <div class="mini-card accent-coral"><strong>4. Improve</strong><p>Use follow-up prompts in both tools.</p></div>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Demo prompt</h3>
+                <p style="margin-top:10px; color:var(--ink);">Create a one-page plan for a school AI awareness session for beginner teachers. Include objectives, activities, time plan, materials, and what teachers must check before using AI.</p>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Run in two tools, then discuss differences</span><span>Slide 14</span></footer>
+            <aside class="notes">Suggested pair: ChatGPT vs Claude, or Gemini vs Copilot depending on available access.</aside>
+          </article>
+
+          <article class="slide" data-title="Compare Scorecard">
+            <header class="kicker"><span class="dot"></span> Demo Scorecard</header>
+            <div>
+              <h2>Use a simple scorecard instead of guessing.</h2>
+              <table class="matrix" style="margin-top:20px;">
+                <thead><tr><th>Check</th><th>Question to ask</th><th>Score 1-5</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Clarity</strong></td><td>Can a beginner understand it in one reading?</td><td>1 2 3 4 5</td></tr>
+                  <tr><td><strong>Usefulness</strong></td><td>Can I use this output with small edits?</td><td>1 2 3 4 5</td></tr>
+                  <tr><td><strong>Format</strong></td><td>Did it follow the requested structure?</td><td>1 2 3 4 5</td></tr>
+                  <tr><td><strong>Safety</strong></td><td>Did it avoid risky advice or private data problems?</td><td>1 2 3 4 5</td></tr>
+                  <tr><td><strong>Local fit</strong></td><td>Does it match our school, office, audience, or context?</td><td>1 2 3 4 5</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="slide-footer"><span>Students compare outputs like reviewers, not spectators</span><span>Slide 15</span></footer>
+            <aside class="notes">Have learners score two outputs and explain one reason for their score.</aside>
+          </article>
+
+          <article class="slide" data-title="Activity Tracks">
+            <header class="kicker"><span class="dot"></span> Hands-On Tracks</header>
+            <div>
+              <h2>Everyone chooses a path that fits their real life.</h2>
+              <div class="three-col" style="margin-top:20px;">
+                <div class="tool-card accent-teal"><strong>Teacher Track</strong><p>Build a Teacher Assistant for lesson plans, quizzes, rubrics, and student-friendly explanations.</p></div>
+                <div class="tool-card accent-blue"><strong>Office Track</strong><p>Build a Report Writer for emails, meeting summaries, action items, notices, and SOP drafts.</p></div>
+                <div class="tool-card accent-coral"><strong>Business Track</strong><p>Build a Customer Message Helper for replies, offers, product descriptions, and follow-ups.</p></div>
+                <div class="tool-card accent-gold"><strong>Student Track</strong><p>Build a Study Coach for summaries, flashcards, practice questions, and simple explanations.</p></div>
+                <div class="tool-card accent-green"><strong>Creator Track</strong><p>Build a Content Helper for captions, posters, video scripts, and campaign ideas.</p></div>
+                <div class="tool-card accent-violet"><strong>Admin Track</strong><p>Build an Organizer for schedules, checklists, forms, and announcement drafts.</p></div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>One room, many learner types, one shared method</span><span>Slide 16</span></footer>
+            <aside class="notes">Ask each learner to choose one track. No one should feel forced into teaching-only examples.</aside>
+          </article>
+
+          <article class="slide" data-title="Role Picker">
+            <header class="kicker"><span class="dot"></span> Activity Generator</header>
+            <div class="builder-layout">
+              <div class="activity">
+                <h2 style="font-size:clamp(1.35rem,2.3vw,2.25rem);">Choose your learner track.</h2>
+                <label style="margin-top:14px;">Track
+                  <select id="trackSelect">
+                    <option value="teacher">Teacher</option>
+                    <option value="office">Office staff</option>
+                    <option value="business">Business owner</option>
+                    <option value="student">Student or learner</option>
+                    <option value="creator">Content creator</option>
+                    <option value="admin">School or office admin</option>
+                  </select>
+                </label>
+                <div class="interactive-row">
+                  <button class="action-btn" id="trackBtn" type="button">Show my activity</button>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Your suggested hands-on work</h3>
+                <div class="output-box" id="trackOutput"></div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Use this to personalize the hands-on session</span><span>Slide 17</span></footer>
+            <aside class="notes">This prevents mixed audiences from feeling the examples are only for one profession.</aside>
+          </article>
+
+          <article class="slide" data-title="Blueprint Builder">
+            <header class="kicker"><span class="dot"></span> Custom Assistant Blueprint</header>
+            <div class="builder-layout">
+              <div class="activity">
+                <h2 style="font-size:clamp(1.35rem,2.3vw,2.25rem);">Design your GPT or Gem.</h2>
+                <div class="form-grid" style="margin-top:14px;">
+                  <label>Name <input id="assistantName" value="Teacher Assistant" /></label>
+                  <label>Purpose <input id="assistantPurpose" value="help me create lesson plans, quizzes, and rubrics" /></label>
+                  <label>Audience <input id="assistantAudience" value="beginner teachers and Grade 8 students" /></label>
+                  <label>Tone <input id="assistantTone" value="simple, supportive, and practical" /></label>
+                  <label>Format rules <textarea id="assistantFormat">Use tables when helpful. Give short examples. Ask clarifying questions if the task is unclear.</textarea></label>
+                  <label>Safety rules <textarea id="assistantSafety">Do not ask for private student data. Remind me to review facts and adapt output to my local classroom.</textarea></label>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Generated instructions</h3>
+                <div class="output-box" id="assistantOutput"></div>
+                <div class="interactive-row">
+                  <button class="action-btn" id="copyAssistantBtn" type="button">Copy instructions</button>
+                  <button class="action-btn" id="resetAssistantBtn" type="button">Reset</button>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Main build: one Custom GPT or Gemini Gem blueprint</span><span>Slide 18</span></footer>
+            <aside class="notes">If accounts do not allow building GPTs/Gems, the blueprint still works as a reusable master prompt.</aside>
+          </article>
+
+          <article class="slide" data-title="Testing Prompts">
+            <header class="kicker"><span class="dot"></span> Test With Five Real Prompts</header>
+            <div class="wide-right">
+              <div>
+                <h2>Do not trust a custom assistant until you test it.</h2>
+                <p style="margin-top:14px;">Write five real prompts for your assistant. Test, observe, and refine the instructions.</p>
+                <div class="interactive-row">
+                  <button class="action-btn" id="saveTestsBtn" type="button">Save</button>
+                  <button class="action-btn" id="copyTestsBtn" type="button">Copy tests</button>
+                  <button class="action-btn" id="clearTestsBtn" type="button">Clear</button>
+                </div>
+                <div class="feedback" id="testFeedback">Your test prompts stay in this browser after saving.</div>
+              </div>
+              <div class="activity">
+                <div class="prompt-list" id="testList"></div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Required output: 5 test prompts and refinements</span><span>Slide 19</span></footer>
+            <aside class="notes">Have each learner test at least two prompts live if tool access is available.</aside>
+          </article>
+
+          <article class="slide" data-title="Refine Loop">
+            <header class="kicker"><span class="dot"></span> Improve the Assistant</header>
+            <div class="four-col">
+              <div class="mini-card accent-teal"><strong>Test</strong><p>Ask one real prompt from your work.</p></div>
+              <div class="mini-card accent-blue"><strong>Observe</strong><p>What did it do well? What was missing?</p></div>
+              <div class="mini-card accent-gold"><strong>Edit</strong><p>Add clearer instructions, examples, or boundaries.</p></div>
+              <div class="mini-card accent-coral"><strong>Retest</strong><p>Try the same prompt again and compare.</p></div>
+            </div>
+            <div class="quote-box" style="margin-top:18px;">
+              <p style="color:var(--ink);">Useful follow-up: "Based on this weak output, what instruction should I add to my custom assistant so it performs better next time?"</p>
+            </div>
+            <footer class="slide-footer"><span>Custom assistants are built by iteration</span><span>Slide 20</span></footer>
+            <aside class="notes">This is the key practical habit for the day.</aside>
+          </article>
+
+          <article class="slide" data-title="Sharing Safety">
+            <header class="kicker"><span class="dot"></span> Responsible AI</header>
+            <div class="two-col">
+              <div>
+                <h2>Before sharing a custom assistant, check what is inside.</h2>
+                <p style="margin-top:14px;">A GPT or Gem can contain instructions, examples, uploaded files, and behavior rules. Some of that may be private or unsuitable for sharing.</p>
+              </div>
+              <div class="four-col">
+                <div class="mini-card accent-coral"><strong>Remove private data</strong><p>No student names, IDs, marks, salaries, or confidential files.</p></div>
+                <div class="mini-card accent-gold"><strong>Check instructions</strong><p>Do not include passwords, hidden policies, or sensitive internal details.</p></div>
+                <div class="mini-card accent-blue"><strong>Share carefully</strong><p>Private, link, workspace, or public settings may behave differently.</p></div>
+                <div class="mini-card accent-green"><strong>Review outputs</strong><p>The assistant still needs human review every time.</p></div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>Day 3 safety rule: review before sharing</span><span>Slide 21</span></footer>
+            <aside class="notes">This matches the syllabus responsible AI note for Day 3.</aside>
+          </article>
+
+          <article class="slide" data-title="Session Activity Plan">
+            <header class="kicker"><span class="dot"></span> Conducting the Hands-On Session</header>
+            <div>
+              <h2>A simple activity flow for mixed beginners.</h2>
+              <table class="matrix" style="margin-top:20px;">
+                <thead><tr><th>Time</th><th>Activity</th><th>What learners do</th><th>Your role</th></tr></thead>
+                <tbody>
+                  <tr><td>10 min</td><td>Tool choice warm-up</td><td>Vote on scenarios and explain choices.</td><td>Normalize different answers.</td></tr>
+                  <tr><td>25 min</td><td>Tool map walkthrough</td><td>Write one task under each assistant.</td><td>Give simple examples, avoid jargon.</td></tr>
+                  <tr><td>35 min</td><td>Compare two assistants</td><td>Score outputs with the scorecard.</td><td>Help them judge usefulness, not length.</td></tr>
+                  <tr><td>55 min</td><td>Build assistant blueprint</td><td>Choose track, write purpose, rules, and safety boundaries.</td><td>Coach one-on-one by role.</td></tr>
+                  <tr><td>35 min</td><td>Test with 5 prompts</td><td>Run prompts, note what worked and what failed.</td><td>Help refine instructions.</td></tr>
+                  <tr><td>15 min</td><td>Share back</td><td>Show assistant name, purpose, one test result.</td><td>Give 2 strengths and 1 next step.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="slide-footer"><span>Use this as your facilitator guide during the session</span><span>Slide 22</span></footer>
+            <aside class="notes">This slide is intentionally facilitator-oriented but still useful for learners to understand the workshop flow.</aside>
+          </article>
+
+          <article class="slide" data-title="Wrap-Up">
+            <header class="kicker"><span class="dot"></span> Recap and Homework</header>
+            <div class="hero-grid">
+              <div>
+                <h2>You now have a tool-choice habit and an assistant blueprint.</h2>
+                <p style="margin-top:14px;">Choose by task, compare outputs, build for repeated work, test with real prompts, and keep private information out of shared assistants.</p>
+                <div class="interactive-row">
+                  <button class="action-btn" id="celebrateBtn" type="button">Celebrate completion</button>
+                  <button class="action-btn" onclick="window.print()" type="button">Print / Save PDF</button>
+                </div>
+              </div>
+              <div class="activity">
+                <h3>Homework before Day 4</h3>
+                <ol>
+                  <li>Finalize your Custom GPT or Gem blueprint.</li>
+                  <li>Test it with 5 real prompts from your work or study.</li>
+                  <li>Bring one good result and one weak result for discussion.</li>
+                  <li>Write one sentence: "This assistant saves me time by..."</li>
+                </ol>
+                <div class="quote-box" style="margin-top:14px;">
+                  <p style="color:var(--ink);">Career tip: Role-specific AI assistants are sellable. Schools, offices, and small businesses pay for helpers that save repeated work.</p>
+                </div>
+              </div>
+            </div>
+            <footer class="slide-footer"><span>See you on Day 4: AI for daily life and productivity</span><span>End of Day 3</span></footer>
+            <aside class="notes">Close with appreciation. Ask 2 learners to share what assistant they plan to build.</aside>
+          </article>
+        </section>
+      </div>
+      <div class="bottom-help">
+        <span>Keyboard: <span class="kbd">&lt;</span> <span class="kbd">&gt;</span> navigate, <span class="kbd">N</span> notes, <span class="kbd">F</span> focus</span>
+        <span>Standalone HTML slide deck</span>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const thumbs = document.getElementById("thumbs");
+    const progressText = document.getElementById("progressText");
+    const progressBar = document.getElementById("progressBar");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const notesBtn = document.getElementById("notesBtn");
+    const presentBtn = document.getElementById("presentBtn");
+    const confetti = document.getElementById("confetti");
+    let index = Number(localStorage.getItem("day3-ai-slide") || 0);
+
+    function clampSlide(value) {
+      return Math.max(0, Math.min(slides.length - 1, value));
+    }
+
+    function renderThumbs() {
+      thumbs.innerHTML = "";
+      slides.forEach((slide, i) => {
+        const button = document.createElement("button");
+        button.className = "thumb";
+        button.type = "button";
+        button.innerHTML = `<span class="num">${i + 1}</span><span class="title">${slide.dataset.title}</span>`;
+        button.addEventListener("click", () => goTo(i));
+        thumbs.appendChild(button);
+      });
+    }
+
+    function goTo(nextIndex) {
+      index = clampSlide(nextIndex);
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
+      [...thumbs.children].forEach((thumb, i) => thumb.classList.toggle("active", i === index));
+      progressText.textContent = `${index + 1} / ${slides.length}`;
+      progressBar.style.width = `${((index + 1) / slides.length) * 100}%`;
+      localStorage.setItem("day3-ai-slide", String(index));
+    }
+
+    prevBtn.addEventListener("click", () => goTo(index - 1));
+    nextBtn.addEventListener("click", () => goTo(index + 1));
+    notesBtn.addEventListener("click", () => document.body.classList.toggle("show-notes"));
+    presentBtn.addEventListener("click", () => document.body.classList.toggle("presenter"));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.target.matches("input, textarea, select")) return;
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") goTo(index + 1);
+      if (event.key === "ArrowLeft" || event.key === "PageUp") goTo(index - 1);
+      if (event.key.toLowerCase() === "n") document.body.classList.toggle("show-notes");
+      if (event.key.toLowerCase() === "f") document.body.classList.toggle("presenter");
+      if (event.key === "Home") goTo(0);
+      if (event.key === "End") goTo(slides.length - 1);
+    });
+
+    document.querySelectorAll("[data-poll]").forEach((group) => {
+      const feedback = group.parentElement.querySelector(".feedback");
+      group.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", () => {
+          group.querySelectorAll("button").forEach((b) => b.classList.remove("selected", "good"));
+          button.classList.add("selected", "good");
+          feedback.textContent = button.dataset.feedback;
+        });
+      });
+    });
+
+    function celebrate() {
+      confetti.innerHTML = "";
+      const colors = ["#008f8c", "#2f6eea", "#f45b69", "#f2b84b", "#2f9e66", "#7257c8"];
+      for (let i = 0; i < 72; i += 1) {
+        const piece = document.createElement("i");
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.background = colors[i % colors.length];
+        piece.style.animationDelay = `${Math.random() * 220}ms`;
+        piece.style.transform = `rotate(${Math.random() * 180}deg)`;
+        confetti.appendChild(piece);
+      }
+      setTimeout(() => confetti.innerHTML = "", 1400);
+    }
+
+    document.getElementById("celebrateBtn").addEventListener("click", celebrate);
+
+    const TRACKS = {
+      teacher: {
+        title: "Teacher Assistant",
+        build: "Create an assistant that makes lesson plans, quizzes, rubrics, worksheets, and student-friendly explanations.",
+        tests: ["Create a 45-minute lesson plan", "Make 10 quiz questions", "Explain a hard concept simply", "Create a marking rubric", "Rewrite a notice to parents"],
+        safety: "Do not share real student names, marks, IDs, or private records."
+      },
+      office: {
+        title: "Report Writer",
+        build: "Create an assistant that drafts emails, meeting summaries, reports, SOPs, and action lists.",
+        tests: ["Summarize meeting notes", "Draft a formal email", "Create an action-item table", "Rewrite a rough report", "Make an SOP checklist"],
+        safety: "Do not upload confidential office files unless your organization allows it."
+      },
+      business: {
+        title: "Customer Message Helper",
+        build: "Create an assistant that writes replies, product descriptions, offers, follow-ups, and customer FAQs.",
+        tests: ["Reply to a customer complaint", "Write product benefits", "Make a WhatsApp offer", "Create FAQs", "Draft a follow-up message"],
+        safety: "Do not invent guarantees, fake reviews, or misleading prices."
+      },
+      student: {
+        title: "Study Coach",
+        build: "Create an assistant that explains topics, makes flashcards, quizzes you, and helps plan study time.",
+        tests: ["Explain a chapter", "Make flashcards", "Create a practice quiz", "Plan revision for one week", "Explain in beginner language"],
+        safety: "Use it for learning support, not cheating or submitting unreviewed work."
+      },
+      creator: {
+        title: "Content Helper",
+        build: "Create an assistant that makes captions, post ideas, carousel outlines, video scripts, and campaign plans.",
+        tests: ["Write 5 captions", "Plan a 7-day content calendar", "Create a 60-second script", "Suggest poster copy", "Rewrite in brand voice"],
+        safety: "Do not create fake claims, fake endorsements, or misleading images."
+      },
+      admin: {
+        title: "Organizer",
+        build: "Create an assistant that prepares schedules, forms, checklists, notices, and follow-up messages.",
+        tests: ["Make an event checklist", "Draft a notice", "Create a schedule", "Prepare a form outline", "Summarize pending work"],
+        safety: "Keep private records and personal data out of public tools."
+      }
+    };
+
+    const trackSelect = document.getElementById("trackSelect");
+    const trackOutput = document.getElementById("trackOutput");
+
+    function updateTrack() {
+      const item = TRACKS[trackSelect.value];
+      trackOutput.textContent =
+        `${item.title}\n\n` +
+        `Build: ${item.build}\n\n` +
+        `Five test prompts:\n` +
+        item.tests.map((test, i) => `${i + 1}. ${test}`).join("\n") +
+        `\n\nSafety reminder: ${item.safety}`;
+    }
+
+    document.getElementById("trackBtn").addEventListener("click", updateTrack);
+    trackSelect.addEventListener("change", updateTrack);
+
+    const assistantFields = ["assistantName", "assistantPurpose", "assistantAudience", "assistantTone", "assistantFormat", "assistantSafety"].map((id) => document.getElementById(id));
+    const assistantOutput = document.getElementById("assistantOutput");
+
+    function updateAssistant() {
+      const [name, purpose, audience, tone, format, safety] = assistantFields.map((field) => field.value.trim());
+      assistantOutput.textContent =
+        `Name: ${name || "My Assistant"}\n\n` +
+        `Purpose: You help me ${purpose || "complete repeated work tasks"}.\n\n` +
+        `Audience: Your responses are for ${audience || "beginners"}.\n\n` +
+        `Tone: Use a ${tone || "simple and practical"} tone.\n\n` +
+        `Behavior and format rules:\n${format || "Ask clarifying questions when needed. Use clear structure."}\n\n` +
+        `Safety and boundaries:\n${safety || "Do not include private data. Remind me to review important facts."}\n\n` +
+        `When a task is unclear, ask up to 3 questions before answering.`;
+    }
+
+    assistantFields.forEach((field) => field.addEventListener("input", updateAssistant));
+    document.getElementById("copyAssistantBtn").addEventListener("click", async () => {
+      await navigator.clipboard.writeText(assistantOutput.textContent);
+      assistantOutput.textContent += "\n\nCopied to clipboard.";
+      setTimeout(updateAssistant, 900);
+    });
+    document.getElementById("resetAssistantBtn").addEventListener("click", () => {
+      const defaults = [
+        "Teacher Assistant",
+        "help me create lesson plans, quizzes, and rubrics",
+        "beginner teachers and Grade 8 students",
+        "simple, supportive, and practical",
+        "Use tables when helpful. Give short examples. Ask clarifying questions if the task is unclear.",
+        "Do not ask for private student data. Remind me to review facts and adapt output to my local classroom."
+      ];
+      assistantFields.forEach((field, i) => field.value = defaults[i]);
+      updateAssistant();
+    });
+
+    const testList = document.getElementById("testList");
+    const testFeedback = document.getElementById("testFeedback");
+
+    function buildTestInputs() {
+      testList.innerHTML = "";
+      for (let i = 1; i <= 5; i += 1) {
+        const row = document.createElement("div");
+        row.className = "prompt-row";
+        row.innerHTML = `<span>${i}</span><input class="testInput" placeholder="${i}. Example: Create a 45-minute lesson plan for Grade 8 science" />`;
+        testList.appendChild(row);
+      }
+    }
+
+    function testInputs() {
+      return [...document.querySelectorAll(".testInput")];
+    }
+
+    function saveTests() {
+      localStorage.setItem("day3-assistant-tests", JSON.stringify(testInputs().map((input) => input.value)));
+      testFeedback.textContent = "Saved. Now test at least two prompts in your selected AI tool.";
+    }
+
+    function loadTests() {
+      const saved = JSON.parse(localStorage.getItem("day3-assistant-tests") || "[]");
+      saved.forEach((value, i) => {
+        const inputs = testInputs();
+        if (inputs[i]) inputs[i].value = value;
+      });
+    }
+
+    document.getElementById("saveTestsBtn").addEventListener("click", saveTests);
+    document.getElementById("copyTestsBtn").addEventListener("click", async () => {
+      const text = testInputs().map((input, i) => `${i + 1}. ${input.value || "[write your test prompt]"}`).join("\n");
+      await navigator.clipboard.writeText(text);
+      testFeedback.textContent = "Copied your 5 test prompts.";
+    });
+    document.getElementById("clearTestsBtn").addEventListener("click", () => {
+      testInputs().forEach((input) => input.value = "");
+      localStorage.removeItem("day3-assistant-tests");
+      testFeedback.textContent = "Cleared. Start fresh.";
+    });
+
+    const GAME_ROUNDS = [
+      {
+        q: "You need to polish a long school policy draft. Which would you try first?",
+        options: ["Claude", "Calculator", "Image generator", "Weather app"],
+        correct: 0,
+        tip: "Claude is often useful for longer writing and careful document review."
+      },
+      {
+        q: "Your work is in Word, Excel, Outlook, and Teams. Which assistant fits the workflow?",
+        options: ["Microsoft Copilot", "Only a random chatbot", "A photo editor", "A map app"],
+        correct: 0,
+        tip: "Copilot is designed around Microsoft 365 workflows."
+      },
+      {
+        q: "You repeat the same lesson-plan task every week. What should you consider building?",
+        options: ["A Custom GPT or Gem", "A new password", "A random image", "Nothing reusable"],
+        correct: 0,
+        tip: "Repeated tasks are perfect candidates for role-specific custom assistants."
+      },
+      {
+        q: "You need a fast starting point for a poster caption, event plan, and checklist. Which is a flexible first try?",
+        options: ["ChatGPT", "A calculator", "A file compressor", "A music player"],
+        correct: 0,
+        tip: "ChatGPT is a strong general-purpose starting point for mixed productivity tasks."
+      },
+      {
+        q: "You are working mostly in Google Docs and Gmail. Which assistant may fit naturally?",
+        options: ["Gemini", "Only Excel formulas", "A stopwatch", "A camera filter"],
+        correct: 0,
+        tip: "Gemini is often useful for Google-style workflows."
+      },
+      {
+        q: "Before sharing a custom assistant, what should you check?",
+        options: ["Private data, instructions, files, and sharing settings", "Only the color", "Only the name", "Nothing"],
+        correct: 0,
+        tip: "Custom assistants can contain sensitive instructions or files. Review before sharing."
+      },
+      {
+        q: "Which task is best for a Study Coach assistant?",
+        options: ["Make flashcards and explain topics", "Send confidential records", "Impersonate a person", "Guess exam answers without studying"],
+        correct: 0,
+        tip: "A study assistant should support learning, not cheating or private-data sharing."
+      },
+      {
+        q: "You compare two AI outputs. What should matter most?",
+        options: ["Usefulness, accuracy, clarity, format, and safety", "Only which answer is longest", "Only colorful words", "Only confidence"],
+        correct: 0,
+        tip: "Longer is not always better. Use a scorecard."
+      },
+      {
+        q: "A business owner wants customer replies and product descriptions. Which track fits?",
+        options: ["Customer Message Helper", "Study Coach", "Weather Tracker", "Grade Calculator only"],
+        correct: 0,
+        tip: "Choose the assistant role around the repeated job."
+      },
+      {
+        q: "What is the best first step in building a custom assistant?",
+        options: ["Define the purpose clearly", "Upload everything you own", "Make it public immediately", "Skip testing"],
+        correct: 0,
+        tip: "A custom assistant needs a clear job before extra files or sharing."
+      },
+      {
+        q: "You get a weak answer from your assistant. What should you do?",
+        options: ["Edit instructions and retest", "Assume AI can never help", "Share it publicly", "Delete all notes"],
+        correct: 0,
+        tip: "Custom assistants improve through testing and refinement."
+      },
+      {
+        q: "Which is a safe test prompt?",
+        options: ["Use anonymized example data", "Paste real student IDs", "Paste passwords", "Upload confidential salary sheets"],
+        correct: 0,
+        tip: "Use placeholders and anonymized data for practice."
+      }
+    ];
+
+    const gamePanels = {
+      start: document.querySelector('[data-game-panel="start"]'),
+      play: document.querySelector('[data-game-panel="play"]'),
+      end: document.querySelector('[data-game-panel="end"]')
+    };
+    const gameBest = document.getElementById("gameBest");
+    const gameRound = document.getElementById("gameRound");
+    const gameScore = document.getElementById("gameScore");
+    const gameStreak = document.getElementById("gameStreak");
+    const gameProgress = document.getElementById("gameProgress");
+    const gameQuestion = document.getElementById("gameQuestion");
+    const gameOptions = document.getElementById("gameOptions");
+    const gameTip = document.getElementById("gameTip");
+    const gameNextBtn = document.getElementById("gameNextBtn");
+    const gameTitle = document.getElementById("gameTitle");
+    const gameSummary = document.getElementById("gameSummary");
+    const gameFinalScore = document.getElementById("gameFinalScore");
+    let gameIndex = 0;
+    let score = 0;
+    let streak = 0;
+    let answered = false;
+
+    function bestScore() {
+      return Number(localStorage.getItem("day3-tool-game-best") || 0);
+    }
+
+    function setBest(nextScore) {
+      if (nextScore > bestScore()) {
+        localStorage.setItem("day3-tool-game-best", String(nextScore));
+      }
+      gameBest.textContent = String(Math.max(nextScore, bestScore()));
+    }
+
+    function showGamePanel(name) {
+      Object.entries(gamePanels).forEach(([key, panel]) => {
+        panel.hidden = key !== name;
+      });
+    }
+
+    function renderRound() {
+      const round = GAME_ROUNDS[gameIndex];
+      answered = false;
+      gameRound.textContent = `${gameIndex + 1} / ${GAME_ROUNDS.length}`;
+      gameProgress.style.width = `${(gameIndex / GAME_ROUNDS.length) * 100}%`;
+      gameQuestion.textContent = round.q;
+      gameTip.textContent = "Pick the best first tool for this case.";
+      gameTip.classList.add("empty");
+      gameNextBtn.hidden = true;
+      gameOptions.innerHTML = "";
+      round.options.forEach((label, i) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "game-option";
+        button.textContent = label;
+        button.addEventListener("click", () => pickAnswer(i));
+        gameOptions.appendChild(button);
+      });
+    }
+
+    function pickAnswer(choice) {
+      if (answered) return;
+      answered = true;
+      const round = GAME_ROUNDS[gameIndex];
+      const correct = choice === round.correct;
+      [...gameOptions.children].forEach((button, i) => {
+        button.disabled = true;
+        if (i === round.correct) button.classList.add("correct");
+        if (i === choice && !correct) button.classList.add("wrong");
+      });
+      if (correct) {
+        streak += 1;
+        const points = streak >= 2 ? 10 : 8;
+        score += points;
+        gameTip.textContent = `Correct. +${points} points. ${round.tip}`;
+      } else {
+        streak = 0;
+        gameTip.textContent = `Not quite. ${round.tip}`;
+      }
+      gameTip.classList.remove("empty");
+      gameScore.textContent = String(score);
+      gameStreak.textContent = String(streak);
+      gameNextBtn.hidden = false;
+      gameNextBtn.textContent = gameIndex < GAME_ROUNDS.length - 1 ? "Next case" : "See results";
+    }
+
+    function finishGame() {
+      gameProgress.style.width = "100%";
+      setBest(score);
+      gameFinalScore.textContent = String(score);
+      let title = "Tool Explorer";
+      let summary = "Good beginning. Revisit the tool map and try again with a partner.";
+      if (score >= 100) {
+        title = "AI Matchmaker";
+        summary = "Excellent. You can choose tools based on task, files, workflow, and safety.";
+      } else if (score >= 60) {
+        title = "Tool Chooser";
+        summary = "Strong work. You understand the main assistant strengths.";
+      }
+      gameTitle.textContent = title;
+      gameSummary.textContent = `${summary} Best score in this browser: ${gameBest.textContent}.`;
+      showGamePanel("end");
+    }
+
+    function startGame() {
+      gameIndex = 0;
+      score = 0;
+      streak = 0;
+      gameScore.textContent = "0";
+      gameStreak.textContent = "0";
+      showGamePanel("play");
+      renderRound();
+    }
+
+    document.getElementById("gameStartBtn").addEventListener("click", startGame);
+    document.getElementById("gameAgainBtn").addEventListener("click", startGame);
+    document.getElementById("gameCelebrateBtn").addEventListener("click", celebrate);
+    gameNextBtn.addEventListener("click", () => {
+      if (gameIndex < GAME_ROUNDS.length - 1) {
+        gameIndex += 1;
+        renderRound();
+      } else {
+        finishGame();
+      }
+    });
+
+    gameBest.textContent = String(bestScore());
+    renderThumbs();
+    updateTrack();
+    updateAssistant();
+    buildTestInputs();
+    loadTests();
+    goTo(index);
+  </script>
+</body>
+</html>
