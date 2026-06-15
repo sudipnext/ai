@@ -1,0 +1,772 @@
+[
+  {
+    "day": 1,
+    "slide": 1,
+    "title": "Welcome",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 2,
+    "title": "Today's Path",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 3,
+    "title": "Warm-Up",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 4,
+    "title": "What AI Does",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 5,
+    "title": "Generative AI",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 6,
+    "title": "Chatbots",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 7,
+    "title": "Tools",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 8,
+    "title": "AI or Not?",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 9,
+    "title": "AI Quest",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 10,
+    "title": "Myths",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 11,
+    "title": "Where AI Fits",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 12,
+    "title": "Try It Together",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 13,
+    "title": "Prompt Makeover",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 14,
+    "title": "Prompt Builder",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 15,
+    "title": "Safe Start",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 16,
+    "title": "Main Activity",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 17,
+    "title": "Share Back",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 1,
+    "slide": 18,
+    "title": "Wrap-Up",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 1,
+    "title": "Welcome",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 2,
+    "title": "Today's Path",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 3,
+    "title": "Day 1 Recap",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 4,
+    "title": "Bad vs Good",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 5,
+    "title": "Formula",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 6,
+    "title": "Ingredient Quiz",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 7,
+    "title": "Prompt Makeover",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 8,
+    "title": "Prompt Clinic",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 9,
+    "title": "Tone Lab",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 10,
+    "title": "Follow-Ups",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 11,
+    "title": "Prompt Chaining",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 12,
+    "title": "Ask AI to Improve",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 13,
+    "title": "Safety Check",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 14,
+    "title": "Prompt Game",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 15,
+    "title": "Prompt Builder",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 16,
+    "title": "Prompt Library",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 17,
+    "title": "Peer Swap",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 2,
+    "slide": 18,
+    "title": "Wrap-Up",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 1,
+    "title": "Welcome",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 2,
+    "title": "Session Map",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 3,
+    "title": "Why It Matters",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 4,
+    "title": "Decision Rule",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 5,
+    "title": "Big Tool Map",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 6,
+    "title": "ChatGPT Uses",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 7,
+    "title": "Claude Uses",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 8,
+    "title": "Gemini Uses",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 9,
+    "title": "Copilot Uses",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 10,
+    "title": "Custom Assistants",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 11,
+    "title": "Assistant Ingredients",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 12,
+    "title": "Match Warm-Up",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 13,
+    "title": "Tool Chooser Game",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 14,
+    "title": "Demo Compare",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 15,
+    "title": "Compare Scorecard",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 16,
+    "title": "Activity Tracks",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 17,
+    "title": "Role Picker",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 18,
+    "title": "Blueprint Builder",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 19,
+    "title": "Testing Prompts",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 20,
+    "title": "Refine Loop",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 21,
+    "title": "Sharing Safety",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 22,
+    "title": "Session Activity Plan",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 3,
+    "slide": 23,
+    "title": "Wrap-Up",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 1,
+    "title": "AI Fun Lab",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 2,
+    "title": "How We Play",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 3,
+    "title": "Challenge Picker",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 4,
+    "title": "Mind Reader",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 5,
+    "title": "Explain It",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 6,
+    "title": "Impossible Planner",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 7,
+    "title": "Bad Advice Detective",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 8,
+    "title": "Mystery Solver",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 9,
+    "title": "Debate Coach",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 10,
+    "title": "Prompt Remix",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 11,
+    "title": "AI Game Maker",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 12,
+    "title": "Challenge Quiz",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 13,
+    "title": "Showcase",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 14,
+    "title": "What You Learned",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 4,
+    "slide": 15,
+    "title": "Wrap-Up",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 1,
+    "title": "Welcome",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 2,
+    "title": "Session Map",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 3,
+    "title": "Human in Charge",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 4,
+    "title": "Confidently Wrong",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 5,
+    "title": "Trust Test",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 6,
+    "title": "Fact-Check Flow",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 7,
+    "title": "Source Quality",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 8,
+    "title": "Privacy",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 9,
+    "title": "Anonymize It",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 10,
+    "title": "Bias and Fairness",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 11,
+    "title": "Bias Check",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 12,
+    "title": "Copyright",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 13,
+    "title": "Responsible Use",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 14,
+    "title": "Risk Levels",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 15,
+    "title": "Guide Builder",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 16,
+    "title": "Safety Quiz",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 17,
+    "title": "Checklist",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 5,
+    "slide": 18,
+    "title": "Wrap-Up",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 1,
+    "title": "Welcome",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 2,
+    "title": "Session Map",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 3,
+    "title": "What We Build",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 4,
+    "title": "AI Tools",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 5,
+    "title": "Output Ladder",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 6,
+    "title": "Prompt Formula",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 7,
+    "title": "Proposal Structure",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 8,
+    "title": "Master Prompt",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 9,
+    "title": "Use Existing Design",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 10,
+    "title": "Design Feedback",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 11,
+    "title": "DOCX Ready",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 12,
+    "title": "PDF Ready",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 13,
+    "title": "Proposal Builder",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 14,
+    "title": "Refinement Loop",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 15,
+    "title": "MoU Basics",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 16,
+    "title": "MoU Builder",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 17,
+    "title": "Final Check",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  },
+  {
+    "day": 6,
+    "slide": 18,
+    "title": "Wrap-Up",
+    "widthOverflow": 0,
+    "heightOverflow": 0
+  }
+]
