@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day 13 and 14 Combined: AI Image and Video Generation | AI Applications Workshop</title>
+  <style>
+    :root{--bg:#f3f6fb;--paper:#fff;--ink:#142033;--muted:#59667a;--line:#d7dfeb;--blue:#2868e8;--teal:#008f86;--coral:#ef5c6b;--gold:#eeb33d;--green:#299b63;--violet:#7557c9;--navy:#17345e;--r:10px;--shadow:0 18px 48px rgba(20,32,51,.14)}
+    *{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden;color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:linear-gradient(90deg,rgba(40,104,232,.06) 1px,transparent 1px),linear-gradient(0deg,rgba(0,143,134,.05) 1px,transparent 1px),var(--bg);background-size:34px 34px}button,input,textarea,select{font:inherit}button{cursor:pointer}
+    .app{display:grid;grid-template-columns:260px 1fr;height:100%}.side{display:flex;flex-direction:column;gap:15px;min-height:0;padding:20px 16px;background:rgba(255,255,255,.95);border-right:1px solid var(--line)}.brand{display:grid;gap:7px;padding:3px 4px 12px;border-bottom:1px solid var(--line)}.brand strong{font-size:1rem}.brand span{font-size:.82rem;line-height:1.35;color:var(--muted)}.p-label{display:flex;justify-content:space-between;color:var(--muted);font-size:.73rem;text-transform:uppercase}.progress{height:8px;margin-top:7px;overflow:hidden;border-radius:99px;background:#e7edf5}.progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--teal),var(--blue),var(--violet),var(--coral))}.thumbs{display:grid;gap:7px;min-height:0;overflow:auto}.thumb{display:grid;grid-template-columns:30px 1fr;align-items:center;gap:8px;width:100%;padding:8px;border:1px solid transparent;border-radius:var(--r);background:transparent;text-align:left;color:var(--ink)}.thumb:hover,.thumb.active{background:#eef6ff;border-color:#bfd4ff}.num{display:grid;place-items:center;width:29px;height:29px;border-radius:8px;background:var(--ink);color:#fff;font-size:.71rem;font-weight:850}.thumb.active .num{background:var(--blue)}.thumb-title{font-size:.76rem;line-height:1.18}.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding-top:11px;border-top:1px solid var(--line)}.icon{min-height:40px;border:1px solid var(--line);border-radius:var(--r);background:#fff;color:var(--ink);font-weight:850}
+    .stage{display:grid;grid-template-rows:1fr auto;min-width:0;min-height:0;padding:24px}.shell{display:grid;place-items:center;min-height:0}.deck{position:relative;width:min(100%,calc((100vh - 130px)*16/9));aspect-ratio:16/9;overflow:hidden;border:1px solid rgba(20,32,51,.1);border-radius:var(--r);background:#fff;box-shadow:var(--shadow)}.slide{position:absolute;inset:0;display:none;grid-template-rows:auto 1fr auto;gap:15px;padding:clamp(22px,3.6vw,47px);overflow:hidden}.slide.active{display:grid}.slide:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,rgba(40,104,232,.075),transparent 32%),linear-gradient(315deg,rgba(0,143,134,.055),transparent 31%)}.slide>*{position:relative;z-index:1}
+    h1,h2,h3,p{margin:0}h1{font-size:clamp(2.2rem,4.6vw,4.65rem);line-height:.98;max-width:1000px}h2{font-size:clamp(1.6rem,2.9vw,2.9rem);line-height:1.04}h3{font-size:clamp(.96rem,1.32vw,1.2rem);line-height:1.2}p,li{font-size:clamp(.77rem,.98vw,.95rem);line-height:1.4;color:var(--muted)}ul,ol{margin:0;padding-left:1.1em}li+li{margin-top:5px}.kick{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:clamp(.67rem,.87vw,.82rem);font-weight:850;text-transform:uppercase}.dots{width:11px;height:11px;margin-right:36px;border-radius:50%;background:var(--coral);box-shadow:18px 0 var(--gold),36px 0 var(--teal)}
+    .hero,.two,.three,.four,.five,.six,.split,.lab,.wide{display:grid;gap:14px;min-height:0;align-items:stretch}.hero{grid-template-columns:1.12fr .88fr;align-items:center}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.four{grid-template-columns:repeat(4,minmax(0,1fr))}.five{grid-template-columns:repeat(5,minmax(0,1fr))}.six{grid-template-columns:repeat(6,minmax(0,1fr))}.split{grid-template-columns:.78fr 1.22fr;align-items:center}.lab{grid-template-columns:.88fr 1.12fr}.wide{grid-template-columns:1.18fr .82fr}
+    .card,.box,.task,.prompt,.tool,.canvas{border:1px solid var(--line);border-radius:var(--r);background:rgba(255,255,255,.94);box-shadow:0 9px 25px rgba(20,32,51,.08)}.box,.task,.canvas{padding:clamp(13px,1.7vw,20px)}.card,.tool{display:grid;align-content:start;gap:7px;min-height:108px;padding:clamp(11px,1.35vw,16px)}.card strong,.tool strong{font-size:clamp(.82rem,1.04vw,1rem)}.card p,.card li,.tool p,.tool li{font-size:clamp(.65rem,.8vw,.78rem)}.teal{border-top:7px solid var(--teal)}.blue{border-top:7px solid var(--blue)}.coral{border-top:7px solid var(--coral)}.gold{border-top:7px solid var(--gold)}.green{border-top:7px solid var(--green)}.violet{border-top:7px solid var(--violet)}.navy{border-top:7px solid var(--navy)}
+    .tags,.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.tag{display:inline-flex;align-items:center;min-height:29px;padding:5px 9px;border-radius:99px;background:#eef2ff;color:#263253;font-size:clamp(.62rem,.78vw,.76rem);font-weight:780}.tag.warn{background:#fff6dc;color:#735000}.tag.do{background:#e8fff2;color:#12663b}.tag.hot{background:#fff0f1;color:#8b2430}.action,.copy{min-height:38px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font-weight:820}.action:hover,.copy:hover{border-color:var(--blue);color:var(--blue)}
+    .flow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}.step{display:grid;align-content:start;gap:6px;padding:11px;border:1px solid var(--line);border-radius:8px;background:#fff}.step span,.badge{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-size:.7rem;font-weight:900}.step:nth-child(2n) span{background:var(--teal)}.step:nth-child(3n) span{background:var(--violet)}.step strong{font-size:.79rem}.step p{font-size:.62rem}
+    .prompt{max-height:335px;padding:12px;overflow:auto;border-color:#bfd4ff;background:#f7faff;color:var(--ink);font:clamp(.62rem,.75vw,.73rem)/1.38 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap}.prompt.tall{max-height:430px}.prompt-label{display:inline-flex;margin-right:7px;margin-bottom:6px;padding:4px 7px;border-radius:5px;background:var(--blue);color:#fff;font:700 .6rem/1 Inter,sans-serif;text-transform:uppercase}.matrix{width:100%;border-collapse:collapse;border-radius:8px;overflow:hidden;background:#fff;font-size:clamp(.59rem,.72vw,.7rem)}.matrix th,.matrix td{padding:6px 7px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.matrix th{background:var(--ink);color:#fff}.matrix tr:last-child td{border-bottom:0}.matrix strong{color:var(--ink)}
+    label{display:grid;gap:5px;color:var(--muted);font-size:.64rem;font-weight:820;text-transform:uppercase}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:8px;background:#fbfcff;color:var(--ink);font-size:.75rem}input,select{min-height:34px;padding:7px 8px}textarea{min-height:55px;padding:8px;resize:none}.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.output{min-height:285px;max-height:330px;padding:10px;overflow:auto;border:1px solid #bfd4ff;border-radius:8px;background:#f8fbff;color:var(--ink);font:clamp(.61rem,.73vw,.71rem)/1.34 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap}.mini{font-size:.66rem}.frame{display:grid;grid-template-rows:1fr auto;min-height:250px;border:2px solid #cdd8e8;border-radius:12px;background:linear-gradient(135deg,#eef5ff,#f0fffd);overflow:hidden}.frame-art{display:grid;place-items:center;padding:18px}.person{width:120px;height:155px;border-radius:55px 55px 28px 28px;background:linear-gradient(#ffd4b8 0 36%,#2868e8 36%);box-shadow:0 14px 30px rgba(20,32,51,.18);position:relative}.person:before,.person:after{content:"";position:absolute;border-radius:50%;background:#142033}.person:before{width:10px;height:10px;left:38px;top:38px;box-shadow:34px 0 #142033}.person:after{width:42px;height:8px;left:39px;top:63px;background:#ef5c6b}.frame-caption{padding:10px 12px;border-top:1px solid var(--line);background:#fff;color:var(--muted);font-size:.72rem;font-weight:780}.footer{display:flex;justify-content:space-between;gap:14px;color:var(--muted);font-size:clamp(.6rem,.74vw,.72rem);font-weight:720}.notes{display:none;position:absolute;right:18px;bottom:18px;left:18px;z-index:5;padding:12px 14px;border:1px solid #c8d0df;border-radius:8px;background:rgba(255,255,255,.98);color:var(--ink);box-shadow:0 14px 36px rgba(20,32,51,.16);font-size:.8rem}.show-notes .slide.active .notes{display:block}.bottom{display:flex;justify-content:space-between;padding-top:12px;color:var(--muted);font-size:.76rem}.kbd{display:inline-grid;place-items:center;min-width:23px;min-height:21px;padding:2px 6px;border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--ink);font-weight:850}.presenter .side,.presenter .bottom{display:none}.presenter .app{grid-template-columns:1fr}.presenter .stage{padding:0}.presenter .deck{width:100vw;height:100vh;border:0;border-radius:0}
+    @media(max-width:960px){.app{grid-template-columns:1fr}.side{display:none}.stage{padding:12px}.deck{width:100%}.hero,.two,.three,.four,.five,.six,.split,.lab,.wide,.form,.flow{grid-template-columns:1fr}.slide{padding:22px;overflow:auto}}@media print{@page{size:A4 landscape;margin:0}html,body{height:auto;overflow:visible;background:#fff}.app{display:block}.side,.bottom,.notes{display:none!important}.stage{padding:0;display:block}.shell{display:block}.deck{width:100%;height:auto;border:0;box-shadow:none;overflow:visible}.slide{position:relative;display:grid!important;width:100%;aspect-ratio:16/9;page-break-after:always}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="side"><div class="brand"><strong>AI Applications Workshop</strong><span>Day 13 and 14 Combined<br>Image prompts, script writing, and video generation</span></div><div><div class="p-label"><span>Progress</span><span id="progressText">1 / 24</span></div><div class="progress"><span id="progressBar"></span></div></div><nav class="thumbs" id="thumbs"></nav><div class="controls"><button class="icon" id="prev">&lt;</button><button class="icon" id="next">&gt;</button><button class="icon" id="notes">N</button><button class="icon" id="focus">F</button></div></aside>
+  <main class="stage"><div class="shell"><section class="deck">
+
+  <article class="slide active" data-title="Welcome"><header class="kick"><span class="dots"></span>Day 13 and 14 | AI Image and Video Generation</header><div class="hero"><div><h1>Script it. Frame it. Animate it.</h1><p style="margin-top:16px;font-size:clamp(.94rem,1.25vw,1.16rem)">These two days turn one idea into a short visual story: first with scripts and images, then with generated video clips.</p><div class="tags"><span class="tag">Script writing</span><span class="tag">Image prompts</span><span class="tag">Reference images</span><span class="tag">Flow workflow</span><span class="tag do">Copy-ready prompts</span></div></div><div class="box"><h3>Final output</h3><p style="margin-top:10px;color:var(--ink);font-size:clamp(1.04rem,1.65vw,1.42rem)">One 30-45 second short video with consistent visuals, scene cards, animation directions, and voiceover.</p></div></div><footer class="footer"><span>Use Gemini or any image tool; use Flow or any image-to-video tool</span><span>Slide 1</span></footer><aside class="notes">Frame this as a production workflow, not a single tool tutorial. The same prompting method transfers across tools.</aside></article>
+
+  <article class="slide" data-title="Two-Day Plan"><header class="kick"><span class="dots"></span>How the Combined Day Works</header><div class="two"><div class="task"><h2>Day 13: Image production</h2><ol style="margin-top:9px"><li>Choose a video idea.</li><li>Write the short script.</li><li>Break it into scenes.</li><li>Define the visual style.</li><li>Create consistent image prompts.</li><li>Generate and download scene images.</li></ol></div><div class="task"><h2>Day 14: Video generation</h2><ol style="margin-top:9px"><li>Open Flow or another video tool.</li><li>Upload scene images as start/end frames.</li><li>Paste the scene description, animation, and voiceover.</li><li>Generate short clips.</li><li>Review, repair, and export.</li><li>Combine clips into one story.</li></ol></div></div><footer class="footer"><span>Day 14 topic: video generation from planned image frames</span><span>Slide 2</span></footer><aside class="notes">Make the boundary clear: Day 13 creates the assets; Day 14 animates them.</aside></article>
+
+  <article class="slide" data-title="Full Pipeline"><header class="kick"><span class="dots"></span>The Production Pipeline</header><div><h2>Every good AI video starts before the video tool opens.</h2><div class="flow" style="margin-top:16px"><div class="step"><span>1</span><strong>Idea</strong><p>Pick one clear topic or story.</p></div><div class="step"><span>2</span><strong>Script</strong><p>Write spoken lines for the audience.</p></div><div class="step"><span>3</span><strong>Scenes</strong><p>Split into 6 visual moments.</p></div><div class="step"><span>4</span><strong>Images</strong><p>Generate consistent frames.</p></div><div class="step"><span>5</span><strong>Motion</strong><p>Describe camera and action.</p></div><div class="step"><span>6</span><strong>Video</strong><p>Generate one clip per scene.</p></div><div class="step"><span>7</span><strong>Edit</strong><p>Combine, add audio, export.</p></div></div><div class="box" style="margin-top:14px"><p style="color:var(--ink);text-align:center"><strong>Rule:</strong> Keep the same scene card beside you from image generation to video generation.</p></div></div><footer class="footer"><span>The scene card is the bridge between tools</span><span>Slide 3</span></footer><aside class="notes">Use this slide to explain why one combined prompt can save time later.</aside></article>
+
+  <article class="slide" data-title="Production Decisions"><header class="kick"><span class="dots"></span>Before Prompting, Choose These</header><div class="six"><div class="card blue"><strong>Video type</strong><p>Explainer, story, product demo, awareness message, lesson, reel, or ad concept.</p></div><div class="card teal"><strong>Audience</strong><p>Kids, parents, students, customers, teachers, founders, or general public.</p></div><div class="card violet"><strong>Language</strong><p>Nepali, English, Hindi, bilingual, or another language.</p></div><div class="card gold"><strong>Visual style</strong><p>2D cartoon, close-to-human, fruit characters, superhero, 3D toy, paper cutout.</p></div><div class="card coral"><strong>Reference</strong><p>Own image, character sheet, brand colors, product photo, logo, or no reference.</p></div><div class="card green"><strong>Brand presence</strong><p>None, subtle watermark, background sticker, color palette, or end-card mention.</p></div></div><footer class="footer"><span>Clear constraints make outputs easier to reuse</span><span>Slide 4</span></footer><aside class="notes">Have learners fill these in before copying the master prompt.</aside></article>
+
+  <article class="slide" data-title="Style Menu"><header class="kick"><span class="dots"></span>Visual Style Menu</header><div><h2>Give learners style choices instead of one fixed example.</h2><div class="three" style="margin-top:14px"><div class="card blue"><strong>Clean 2D cartoon explainer</strong><p>Friendly characters, simple shapes, readable scenes, soft colors. Best for education and social media.</p></div><div class="card teal"><strong>Close-to-human animated style</strong><p>Realistic proportions, expressive face, modern clothes. Best for relatable workplace or life stories.</p></div><div class="card violet"><strong>Fruit or object characters</strong><p>Objects act like characters. Best for fun reels, food brands, kids' content, and metaphor stories.</p></div><div class="card gold"><strong>Superhero or monster energy</strong><p>Bold poses, transformation, exaggerated power. Best for hooks, challenges, and dramatic comparison videos.</p></div><div class="card coral"><strong>3D toy or clay style</strong><p>Miniature characters, tactile lighting, playful movement. Best for product explainers and kid-friendly shorts.</p></div><div class="card green"><strong>Minimal infographic animation</strong><p>Icons, simple scenes, abstract objects. Best when people are not needed and clarity matters most.</p></div></div></div><footer class="footer"><span>Style is not decoration; it controls consistency</span><span>Slide 5</span></footer><aside class="notes">Ask participants which style fits their own topic and why.</aside></article>
+
+  <article class="slide" data-title="Master Prompt"><header class="kick"><span class="dots"></span>Step 1 | Master Prompt</header><div class="lab"><div class="prompt tall"><span class="prompt-label">Copy-ready master prompt</span>Act as a professional short-form visual storytelling director and AI production planner.
+
+Create a short [LANGUAGE] video about [TOPIC] for [AUDIENCE]. The video type is [VIDEO TYPE], such as educational explainer, product demo, awareness story, classroom lesson, brand reel, comedy scene, or mini story.
+
+Visual direction:
+- Art style: [ART STYLE]
+- Character type: [HUMAN / CLOSE-TO-HUMAN / FRUIT OR OBJECT CHARACTER / SUPERHERO / 3D TOY / MINIMAL INFOGRAPHIC]
+- Color palette: [COLOR PALETTE]
+- Setting style: [MODERN OFFICE / HOME / CAFE / SCHOOL / CITY / FANTASY / PRODUCT STUDIO]
+- Reference image use: [NO REFERENCE / USE MY UPLOADED IMAGE FOR CHARACTER CONSISTENCY / USE MY UPLOADED PRODUCT IMAGE / USE MY BRAND COLORS]
+- Brand presence: [NONE / SUBTLE BACKGROUND / SMALL WATERMARK / END-CARD MENTION]
+
+Strict rules:
+- Keep the output simple, visual, and easy to understand.
+- Do not sound like a sales pitch unless I explicitly ask for an ad.
+- Do not add subtitles, captions, labels, logos, or readable text inside generated images or video frames. AI often creates poor text. Leave clean space if text will be added manually later.
+- Maintain the same main character, object, or product style across all scenes.
+- Do not use internal body visuals unless the topic requires it and I approve.
+- Keep the content family-friendly.
+
+Video structure:
+- Exactly [SCENE COUNT] scenes.
+- Each scene should last [DURATION PER SCENE] seconds.
+- Total video length should be [TOTAL LENGTH].
+- Fast-paced, clear, and suitable for [PLATFORM].
+
+Step 1: Generate 10 curiosity-driven video ideas for this topic. The ideas must be visual, relatable, short-form friendly, and not too technical. After listing the ideas, stop and ask me which idea I want to expand.
+
+After I choose an idea, continue with:
+1. Character or object design summary.
+2. Exactly [SCENE COUNT] scene production cards.
+3. Image generation prompt for each scene.
+4. Animation prompt for each scene.
+5. Voiceover script for each scene.
+
+Use this exact format for every scene:
+
+Scene 1 Production Card
+Scene Description:
+Image Prompt:
+Animation:
+VoiceOverScript:
+Reference Notes:
+
+Repeat the same format for every scene.</div><div class="task"><h3>How learners use it</h3><ol style="margin-top:9px"><li>Replace every bracket.</li><li>Paste into Gemini, ChatGPT, Claude, or another planner.</li><li>Choose one idea from the list.</li><li>Ask it to continue with full scene cards.</li></ol><button class="copy action" style="margin-top:12px">Copy master prompt</button></div></div><footer class="footer"><span>Generic, reusable, and not locked to one brand or topic</span><span>Slide 6</span></footer><aside class="notes">This is the corrected version of the original sample: clean formatting, generic topic, style options, and scene cards grouped for easier copy-paste.</aside></article>
+
+  <article class="slide" data-title="Prompt Builder"><header class="kick"><span class="dots"></span>Interactive Lab | Master Prompt Builder</header><div class="lab"><div class="canvas"><div class="form"><label>Topic<input id="topic" value="why websites become slow"></label><label>Language<select id="language"><option>Nepali</option><option>English</option><option>Hindi</option><option>Bilingual Nepali and English</option></select></label><label>Audience<input id="audience" value="small business owners"></label><label>Video type<select id="videoType"><option>short educational explainer</option><option>product demo</option><option>public awareness story</option><option>classroom lesson</option><option>funny object-character reel</option><option>brand trust video</option></select></label><label>Art style<select id="style"><option>clean 2D cartoon explainer</option><option>close-to-human animated style</option><option>fruit or object characters</option><option>superhero transformation style</option><option>3D toy-like animation</option><option>minimal infographic animation</option></select></label><label>Reference<select id="reference"><option>no reference image</option><option>use my uploaded image for character consistency</option><option>use my uploaded product image</option><option>use my brand colors and logo as subtle reference</option></select></label><label>Scenes<select id="scenes"><option selected>6</option><option>5</option><option>7</option><option>8</option></select></label><label>Platform<select id="platform"><option>TikTok, Reels, and Shorts</option><option>classroom presentation</option><option>website banner video</option><option>WhatsApp sharing</option></select></label></div><label style="margin-top:8px">Brand or special instruction<textarea id="brand">Subtle authority only. No direct promotion.</textarea></label><button class="action" id="buildVideoPrompt" style="margin-top:9px">Build master prompt</button></div><div><div class="output" id="videoPromptOutput"></div><button class="action" id="copyBuilt" style="margin-top:9px">Copy generated prompt</button></div></div><footer class="footer"><span>Change the fields and copy a custom master prompt</span><span>Slide 7</span></footer><aside class="notes">This lets learners experiment with styles and reference-image strategies without rewriting the full prompt manually.</aside></article>
+
+  <article class="slide" data-title="Script First"><header class="kick"><span class="dots"></span>Step 2 | Write the Voiceover Before Images</header><div class="two"><div class="task"><h2>Why script first?</h2><p style="margin-top:10px">Images should serve the voiceover. If the script is unclear, the visuals become random.</p><div class="tags"><span class="tag">Hook</span><span class="tag">Problem</span><span class="tag">Simple explanation</span><span class="tag">Example</span><span class="tag">Takeaway</span></div></div><div class="prompt"><span class="prompt-label">Script prompt</span>Write a short [LANGUAGE] voiceover script for a [TOTAL LENGTH] video about [TOPIC] for [AUDIENCE].
+
+Rules:
+- Use simple spoken language.
+- Start with a curiosity hook.
+- Explain one idea only.
+- Avoid heavy jargon.
+- Keep each scene line short enough for [DURATION PER SCENE] seconds.
+- Make the final line useful and natural.
+- Do not make it sound promotional unless the video is explicitly an ad.
+
+Output exactly [SCENE COUNT] voiceover lines, labeled Scene 1 to Scene [SCENE COUNT].</div></div><footer class="footer"><span>The voiceover gives each scene a job</span><span>Slide 8</span></footer><aside class="notes">Ask learners to read the script aloud. If it sounds awkward, revise before making images.</aside></article>
+
+  <article class="slide" data-title="Scene Cards"><header class="kick"><span class="dots"></span>Step 3 | Production Card Format</header><div class="wide"><div class="prompt"><span class="prompt-label">Scene card format</span>Use this format for every scene so I can copy it into image and video tools easily.
+
+Scene [NUMBER] Production Card
+Scene Description:
+[Describe what we see. Include character action, setting, emotion, and key visual metaphor.]
+
+Image Prompt:
+[A clean image-generation prompt for this exact frame. Include art style, character consistency, environment, lighting, composition, and no text inside the image.]
+
+Animation:
+[Describe 6-8 seconds of motion. Include character movement, object movement, camera movement, and mood. Keep motion smooth and minimal.]
+
+VoiceOverScript:
+[One short spoken line for this scene in the chosen language.]
+
+Reference Notes:
+[Mention uploaded image, character sheet, product photo, brand colors, or "no reference".]</div><div class="task"><h3>Why this format works</h3><ul style="margin-top:9px"><li>Scene Description helps planning.</li><li>Image Prompt helps Gemini or image tools.</li><li>Animation helps Flow or video tools.</li><li>VoiceOverScript keeps timing clear.</li><li>Reference Notes protect consistency.</li></ul><button class="copy action" style="margin-top:12px">Copy scene card format</button></div></div><footer class="footer"><span>This is the main copy-paste format for the day</span><span>Slide 9</span></footer><aside class="notes">This directly addresses the requirement to keep scene, animation, and voiceover together.</aside></article>
+
+  <article class="slide" data-title="Example Card"><header class="kick"><span class="dots"></span>Example | One Scene Card</header><div class="lab"><div class="prompt"><span class="prompt-label">Example production card</span>Scene 1 Production Card
+Scene Description:
+A friendly young shop owner looks confused at a laptop because the website loading circle keeps spinning. The shop is modern, clean, and relatable. The mood is curious, not stressful.
+
+Image Prompt:
+Clean 2D cartoon explainer style, friendly young Nepali shop owner in modern casual clothes sitting at a small shop counter with a laptop, website loading circle on screen shown as a simple icon shape without readable text, soft pastel Asian-inspired color palette, warm indoor lighting, expressive confused face, modern shop background, consistent character design, animated frame look, no subtitles, no captions, no readable text.
+
+Animation:
+6-8 seconds. The camera slowly pushes in. The character taps the laptop, the loading circle spins, and the character raises one eyebrow in confusion. Keep motion smooth and minimal.
+
+VoiceOverScript:
+"Website खोल्न खोज्दा घुमेको घुमै हुन्छ, हैन?"
+
+Reference Notes:
+No reference image. Keep the same character design for all scenes.</div><div class="frame"><div class="frame-art"><div class="person"></div></div><div class="frame-caption">Image frame, motion, and voiceover stay linked.</div></div></div><footer class="footer"><span>Use one production card per scene</span><span>Slide 10</span></footer><aside class="notes">Point out that the generated image prompt says no readable text inside the image.</aside></article>
+
+  <article class="slide" data-title="Image Prompt"><header class="kick"><span class="dots"></span>Step 4 | Image Generation Prompt Template</header><div class="wide"><div class="prompt"><span class="prompt-label">Copy-ready image prompt template</span>Create one image for Scene [NUMBER] of a short video.
+
+Scene:
+[PASTE SCENE DESCRIPTION]
+
+Voiceover context:
+[PASTE VOICEOVER SCRIPT]
+
+Visual style:
+[PASTE ART STYLE, CHARACTER TYPE, COLOR PALETTE, AND SETTING]
+
+Character consistency:
+Use the same main character/object/product as previous scenes. Keep face, outfit, colors, proportions, and overall design consistent.
+
+Reference image instruction:
+[IF UPLOADED: Use the uploaded image as a reference for character/object/product consistency. Do not copy copyrighted style unless I own or have permission to use it.]
+[IF NOT UPLOADED: No reference image. Create a consistent original design.]
+
+Image rules:
+- Show only one clear moment from the scene.
+- Make it look like a clean animated frame.
+- No subtitles, captions, labels, UI text, or readable words inside the image.
+- Leave clean space if text will be added manually later.
+- Use simple composition and clear emotion.
+- Family-friendly.
+
+Output only the final image.</div><div class="task"><h3>Step in class</h3><ol style="margin-top:9px"><li>Copy one scene's image prompt.</li><li>Open a new Gemini tab or image tool tab.</li><li>Paste the prompt.</li><li>Generate 2-4 options.</li><li>Download the best image.</li><li>Repeat for every scene.</li></ol><button class="copy action" style="margin-top:12px">Copy image prompt template</button></div></div><footer class="footer"><span>One tab per scene keeps the workflow organized</span><span>Slide 11</span></footer><aside class="notes">The no-text rule prevents bad AI subtitles and unreadable labels from appearing in images.</aside></article>
+
+  <article class="slide" data-title="Reference Images"><header class="kick"><span class="dots"></span>Using Uploaded Images as Reference</header><div class="three"><div class="card blue"><strong>Character reference</strong><p>Upload a character sheet or best previous image. Ask for the same face, outfit, colors, and proportions.</p></div><div class="card teal"><strong>Product reference</strong><p>Upload your product photo. Ask the tool to keep the product shape, color, and key details recognizable.</p></div><div class="card violet"><strong>Brand reference</strong><p>Upload logo or brand guide only if allowed. Ask for subtle colors or background presence, not heavy promotion.</p></div><div class="card gold"><strong>Style reference</strong><p>Use style references carefully. Avoid copying a living artist or copyrighted show style directly.</p></div><div class="card coral"><strong>Scene reference</strong><p>Upload a room, school, office, or background image. Ask to preserve layout, mood, or color only.</p></div><div class="card green"><strong>No reference</strong><p>Ask for an original consistent design and reuse the best generated frame as the future reference.</p></div></div><footer class="footer"><span>References are for consistency, not blind copying</span><span>Slide 12</span></footer><aside class="notes">If learners use real people, remind them to get permission and avoid misleading contexts.</aside></article>
+
+  <article class="slide" data-title="Reference Prompt"><header class="kick"><span class="dots"></span>Reference Image Prompt</header><div class="lab"><div class="prompt"><span class="prompt-label">Copy-ready reference prompt</span>Use the uploaded image as a visual reference for [CHARACTER / OBJECT / PRODUCT / LOCATION].
+
+Keep these consistent:
+- Overall shape and proportions.
+- Main colors.
+- Important visible details.
+- Mood and personality.
+- Outfit or surface design if relevant.
+
+Change these as needed for the new scene:
+- Pose and action.
+- Camera angle.
+- Background.
+- Lighting.
+- Facial expression.
+
+Do not add subtitles, captions, labels, or readable text inside the image.
+Do not change the identity of the character/object/product.
+Create the image in this style: [ART STYLE].
+
+Scene to generate:
+[PASTE SCENE DESCRIPTION]</div><div class="task"><h3>Good reference habit</h3><p style="margin-top:9px">After generating Scene 1, use the best Scene 1 image as the reference for Scene 2. This usually improves consistency.</p><button class="copy action" style="margin-top:12px">Copy reference prompt</button></div></div><footer class="footer"><span>Reference images make scene-to-scene continuity easier</span><span>Slide 13</span></footer><aside class="notes">Tell learners to keep a folder named with scene numbers so they can upload the correct frame later.</aside></article>
+
+  <article class="slide" data-title="Image Repair"><header class="kick"><span class="dots"></span>Repair Bad Images Fast</header><div class="lab"><div class="prompt"><span class="prompt-label">Image repair prompt</span>Regenerate this image with the following fixes while keeping the same character, style, scene, and composition:
+
+Problems to fix:
+- [PROBLEM 1]
+- [PROBLEM 2]
+- [PROBLEM 3]
+
+Keep:
+- [WHAT IS WORKING]
+
+Change:
+- [WHAT MUST CHANGE]
+
+Important rules:
+- No subtitles, captions, labels, logos, watermarks, or readable text inside the image.
+- Keep hands, face, eyes, and proportions clean.
+- Keep the main character/object consistent with the reference.
+- Make the image simple, clear, and usable as a video start frame.</div><div class="task"><h3>Common fixes</h3><div class="tags"><span class="tag">Remove text</span><span class="tag">Fix hands</span><span class="tag">Same outfit</span><span class="tag">Cleaner background</span><span class="tag">More emotion</span><span class="tag">Less clutter</span></div><button class="copy action" style="margin-top:12px">Copy repair prompt</button></div></div><footer class="footer"><span>Repair prompts should be specific, not emotional</span><span>Slide 14</span></footer><aside class="notes">Have learners name what to keep before saying what to change.</aside></article>
+
+  <article class="slide" data-title="Download Assets"><header class="kick"><span class="dots"></span>Step 5 | Download and Organize</header><div class="two"><div class="task"><h2>Folder structure</h2><div class="prompt" style="margin-top:10px">video-project/
+  01-script.txt
+  02-scene-cards.txt
+  images/
+    scene-01-start.png
+    scene-02-start.png
+    scene-03-start.png
+    scene-04-start.png
+    scene-05-start.png
+    scene-06-start.png
+  video-clips/
+  final-export/</div></div><div class="task"><h2>File naming rule</h2><ol style="margin-top:9px"><li>Use scene numbers.</li><li>Keep selected images only.</li><li>Save the scene card text.</li><li>Do not mix drafts with final frames.</li><li>Use the same names when uploading to Flow.</li></ol><div class="tags"><span class="tag do">Organized files reduce mistakes on Day 14</span></div></div></div><footer class="footer"><span>The video tool works better when your assets are ready</span><span>Slide 15</span></footer><aside class="notes">This is a practical classroom slide before moving to Flow or another video tool.</aside></article>
+
+  <article class="slide" data-title="Day 14 Start"><header class="kick"><span class="dots"></span>Day 14 | Video Generation Workflow</header><div><h2>Turn each image into a short clip.</h2><div class="flow" style="margin-top:16px"><div class="step"><span>1</span><strong>Open Flow</strong><p>Or any image-to-video tool.</p></div><div class="step"><span>2</span><strong>Upload frame</strong><p>Use start image or start/end images.</p></div><div class="step"><span>3</span><strong>Paste scene</strong><p>Use the Scene Description.</p></div><div class="step"><span>4</span><strong>Paste motion</strong><p>Use the Animation line.</p></div><div class="step"><span>5</span><strong>Check script</strong><p>Keep voiceover timing nearby.</p></div><div class="step"><span>6</span><strong>Generate</strong><p>Create 6-8 second clip.</p></div><div class="step"><span>7</span><strong>Review</strong><p>Repair or regenerate.</p></div></div></div><footer class="footer"><span>Video generation is scene-by-scene production</span><span>Slide 16</span></footer><aside class="notes">If Flow UI changes, teach the logic: upload frame, add prompt, generate clip, review.</aside></article>
+
+  <article class="slide" data-title="Flow Prompt"><header class="kick"><span class="dots"></span>Step 6 | Video Generation Prompt Template</header><div class="wide"><div class="prompt"><span class="prompt-label">Copy-ready video prompt</span>Create a [DURATION] second video clip from the uploaded image frame.
+
+Scene Description:
+[PASTE SCENE DESCRIPTION]
+
+Animation:
+[PASTE ANIMATION PROMPT]
+
+VoiceOverScript:
+[PASTE VOICEOVER SCRIPT]
+
+Motion rules:
+- Keep the character/object/product consistent with the uploaded image.
+- Use smooth, minimal motion.
+- Avoid changing the main character's face, outfit, or object design.
+- Do not add subtitles, captions, labels, logos, watermarks, or readable text.
+- Do not create extra fingers, distorted faces, or distracting background changes.
+- Keep camera movement simple: [STATIC / SLOW PUSH-IN / SLOW PAN / GENTLE ZOOM / TRACKING SHOT].
+- Make the clip feel like one continuous animated scene.
+
+Output goal:
+A clean clip that can be combined with the other scenes in a 30-45 second short video.</div><div class="task"><h3>Paste into Flow</h3><ol style="margin-top:9px"><li>Upload scene image.</li><li>Select start frame or start/end frame.</li><li>Paste this prompt.</li><li>Replace the three blocks from the scene card.</li><li>Generate the clip.</li></ol><button class="copy action" style="margin-top:12px">Copy video prompt template</button></div></div><footer class="footer"><span>Scene Description + Animation + VoiceOverScript stay together</span><span>Slide 17</span></footer><aside class="notes">This slide is the Day 14 core prompt.</aside></article>
+
+  <article class="slide" data-title="Start End Frames"><header class="kick"><span class="dots"></span>Start Frame and End Frame Choices</header><div class="three"><div class="card blue"><strong>Start frame only</strong><p>Use when the scene has simple movement and you want the tool to decide the ending.</p></div><div class="card teal"><strong>Start and end frame</strong><p>Use when the character must move from one clear pose or position to another.</p></div><div class="card violet"><strong>Same image twice</strong><p>Use when you want subtle camera motion, blinking, breathing, or gentle object movement.</p></div><div class="card gold"><strong>Different angle end frame</strong><p>Use carefully. Big angle changes can cause identity drift or strange transitions.</p></div><div class="card coral"><strong>Product scene</strong><p>Use stable frames. Ask for slow rotation, hand movement, light sweep, or camera push.</p></div><div class="card green"><strong>Character scene</strong><p>Keep movement small: gesture, turn head, point, walk a few steps, react.</p></div></div><footer class="footer"><span>The more controlled the frames, the easier the clip is to use</span><span>Slide 18</span></footer><aside class="notes">Explain that huge movement usually increases errors.</aside></article>
+
+  <article class="slide" data-title="Animation Examples"><header class="kick"><span class="dots"></span>Animation Prompt Patterns</header><div class="three"><div class="card blue"><strong>Explainer</strong><div class="prompt">6-8 seconds. Slow camera push-in. The character points at the laptop, nods, and a simple visual metaphor appears beside them. Keep motion smooth and minimal.</div></div><div class="card teal"><strong>Product</strong><div class="prompt">6-8 seconds. The camera slowly circles the product by a few degrees. Soft light moves across the surface. Keep product shape and logo unchanged. No text.</div></div><div class="card violet"><strong>Fruit character</strong><div class="prompt">6-8 seconds. The fruit character bounces gently, looks surprised, then smiles. Background objects move slightly. Keep face and body design consistent.</div></div><div class="card gold"><strong>Superhero</strong><div class="prompt">6-8 seconds. The character takes a confident step forward, cape moves gently, camera tilts upward slightly, energy glow appears in the background. No readable text.</div></div><div class="card coral"><strong>Close-to-human</strong><div class="prompt">6-8 seconds. The character looks at the phone, reacts with a small smile, and turns toward camera. Natural movement, no face distortion, no extra people.</div></div><div class="card green"><strong>Infographic</strong><div class="prompt">6-8 seconds. Icons move from left to right in a simple sequence. Camera remains static. Use clean motion and no text labels.</div></div></div><footer class="footer"><span>Motion prompts should be short, clear, and controlled</span><span>Slide 19</span></footer><aside class="notes">Learners can copy one pattern and adapt it to their scene.</aside></article>
+
+  <article class="slide" data-title="Video Repair"><header class="kick"><span class="dots"></span>Repair Bad Video Clips</header><div class="lab"><div class="prompt"><span class="prompt-label">Video repair prompt</span>Regenerate the clip using the same uploaded image and same scene idea.
+
+Fix these problems:
+- [PROBLEM 1]
+- [PROBLEM 2]
+- [PROBLEM 3]
+
+Keep these parts:
+- [WHAT WORKED WELL]
+
+New motion instruction:
+[WRITE A SIMPLER, MORE CONTROLLED MOTION]
+
+Strict rules:
+- Keep the character/object/product consistent with the uploaded frame.
+- Keep camera movement simple.
+- Do not add subtitles, captions, labels, watermarks, logos, or readable text.
+- Avoid face distortion, extra fingers, melting objects, sudden scene changes, and random extra characters.
+- Make the clip usable as one scene in a short video.</div><div class="task"><h3>If the clip keeps failing</h3><ol style="margin-top:9px"><li>Reduce movement.</li><li>Use same start and end frame.</li><li>Regenerate the image with cleaner composition.</li><li>Remove extra characters.</li><li>Shorten the animation instruction.</li></ol><button class="copy action" style="margin-top:12px">Copy video repair prompt</button></div></div><footer class="footer"><span>Most repairs are solved by simpler motion</span><span>Slide 20</span></footer><aside class="notes">Do not let learners spend too long fixing one clip. Generate alternatives and pick the best.</aside></article>
+
+  <article class="slide" data-title="Voiceover Timing"><header class="kick"><span class="dots"></span>Voiceover and Timing</header><div class="two"><div class="task"><h2>Timing rule</h2><p style="margin-top:9px">A 6-8 second scene needs one short spoken line. If the line is too long, either split the scene or shorten the words.</p><div class="tags"><span class="tag">One thought</span><span class="tag">Natural speech</span><span class="tag">No jargon</span><span class="tag">Read aloud</span></div></div><div class="prompt"><span class="prompt-label">Timing repair prompt</span>Shorten this voiceover so it fits naturally in [DURATION] seconds.
+
+Original line:
+[PASTE LINE]
+
+Rules:
+- Keep the meaning.
+- Use simple spoken [LANGUAGE].
+- Make it sound natural, not robotic.
+- Avoid heavy jargon.
+- Return 3 options.
+- Mark the best option.</div></div><footer class="footer"><span>Shorter voiceover usually makes better video</span><span>Slide 21</span></footer><aside class="notes">Have learners read each line with a timer.</aside></article>
+
+  <article class="slide" data-title="Final Assembly"><header class="kick"><span class="dots"></span>Step 7 | Assemble the Final Video</header><div class="two"><div class="task"><h2>Minimum editing steps</h2><ol style="margin-top:9px"><li>Import all clips in scene order.</li><li>Trim bad starts or endings.</li><li>Add voiceover or generated audio.</li><li>Add subtitles manually if needed.</li><li>Add background music quietly.</li><li>Export vertical video if posting to short-form platforms.</li></ol></div><div class="task"><h2>Final quality check</h2><ol style="margin-top:9px"><li>Does every scene match the script?</li><li>Is the character consistent?</li><li>Is there any unwanted text?</li><li>Is the voiceover clear?</li><li>Is the pacing fast enough?</li><li>Does the ending feel complete?</li></ol></div></div><footer class="footer"><span>Subtitles are best added manually in the editor, not generated inside images</span><span>Slide 22</span></footer><aside class="notes">The user specifically wanted the deck to warn against AI-generated subtitles inside frames.</aside></article>
+
+  <article class="slide" data-title="Four-Hour Schedule"><header class="kick"><span class="dots"></span>Facilitator View | Combined Schedule</header><div><h2>Run the day as a production sprint.</h2><table class="matrix" style="margin-top:12px"><thead><tr><th>Time</th><th>Block</th><th>Visible output</th></tr></thead><tbody><tr><td>00:00-00:20</td><td>Show pipeline and choose style/video type</td><td>Production decisions</td></tr><tr><td>00:20-00:50</td><td>Use master prompt and choose one idea</td><td>Approved idea</td></tr><tr><td>00:50-01:25</td><td>Script and scene cards</td><td>6 production cards</td></tr><tr><td>01:25-01:35</td><td>Break</td><td>Reset</td></tr><tr><td>01:35-02:20</td><td>Generate and repair images</td><td>6 downloaded frames</td></tr><tr><td>02:20-02:35</td><td>Organize files and open Flow</td><td>Ready asset folder</td></tr><tr><td>02:35-03:25</td><td>Generate video clips scene by scene</td><td>6 short clips</td></tr><tr><td>03:25-03:45</td><td>Repair clips and assemble draft</td><td>Rough video</td></tr><tr><td>03:45-04:00</td><td>Showcase and reflection</td><td>Final export or next repair list</td></tr></tbody></table></div><footer class="footer"><span>Protect time for generation failures and repairs</span><span>Slide 23</span></footer><aside class="notes">If the class is split across two days, stop after downloaded frames on Day 13 and resume with Flow on Day 14.</aside></article>
+
+  <article class="slide" data-title="Wrap-up"><header class="kick"><span class="dots"></span>Wrap-up | Image and Video Generation</header><div class="hero"><div><h1 style="font-size:clamp(2.05rem,4.05vw,4rem)">A good AI video is planned before it moves.</h1><div class="tags"><span class="tag">One idea</span><span class="tag">One style</span><span class="tag">One character</span><span class="tag">One scene card format</span><span class="tag">Simple motion</span><span class="tag">Manual final polish</span></div><div class="actions"><button class="action" onclick="window.print()">Print / Save PDF</button></div></div><div class="box"><h3>Exit ticket</h3><ol style="margin-top:9px"><li>Which style did you choose?</li><li>Which scene was easiest to generate?</li><li>Which clip needed repair?</li><li>What rule will you use next time?</li><li>What will you create after class?</li></ol></div></div><footer class="footer"><span>Day 13 and 14 complete: script, images, motion, video</span><span>Slide 24</span></footer><aside class="notes">Celebrate usable process more than perfect output. The goal is that learners can repeat the workflow independently.</aside></article>
+
+  </section></div><div class="bottom"><span>Keyboard: <span class="kbd">&lt;</span> <span class="kbd">&gt;</span> navigate, <span class="kbd">N</span> notes, <span class="kbd">F</span> focus</span><span>Standalone HTML deck for Day 13 and 14 combined</span></div></main>
+</div>
+<script>
+const slides=[...document.querySelectorAll(".slide")],thumbs=document.getElementById("thumbs"),progressText=document.getElementById("progressText"),progressBar=document.getElementById("progressBar");let index=Number(localStorage.getItem("day13-14-video-slide")||0);
+function go(n){index=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>s.classList.toggle("active",i===index));[...thumbs.children].forEach((t,i)=>t.classList.toggle("active",i===index));progressText.textContent=`${index+1} / ${slides.length}`;progressBar.style.width=`${(index+1)/slides.length*100}%`;localStorage.setItem("day13-14-video-slide",index)}
+slides.forEach((s,i)=>{const b=document.createElement("button");b.className="thumb";b.innerHTML=`<span class="num">${i+1}</span><span class="thumb-title">${s.dataset.title}</span>`;b.onclick=()=>go(i);thumbs.appendChild(b)});document.getElementById("prev").onclick=()=>go(index-1);document.getElementById("next").onclick=()=>go(index+1);document.getElementById("notes").onclick=()=>document.body.classList.toggle("show-notes");document.getElementById("focus").onclick=()=>document.body.classList.toggle("presenter");document.addEventListener("keydown",e=>{if(e.target.matches("input,textarea,select"))return;if(["ArrowRight","PageDown"," "].includes(e.key))go(index+1);if(["ArrowLeft","PageUp"].includes(e.key))go(index-1);if(e.key.toLowerCase()==="n")document.body.classList.toggle("show-notes");if(e.key.toLowerCase()==="f")document.body.classList.toggle("presenter");if(e.key==="Home")go(0);if(e.key==="End")go(slides.length-1)});
+async function copyText(text,button){await navigator.clipboard.writeText(text.trim());const old=button.textContent;button.textContent="Copied";setTimeout(()=>button.textContent=old,1000)}
+document.querySelectorAll(".copy").forEach(b=>b.onclick=()=>{const p=b.closest(".slide").querySelector(".prompt");copyText(p?.innerText||"",b)});
+const fields=["topic","language","audience","videoType","style","reference","scenes","platform","brand"].reduce((o,id)=>(o[id]=document.getElementById(id),o),{}),videoPromptOutput=document.getElementById("videoPromptOutput");
+function buildVideoPrompt(){const total=Number(fields.scenes.value)*7;videoPromptOutput.textContent=`Act as a professional short-form visual storytelling director and AI production planner.
+
+Create a short ${fields.language.value} video about ${fields.topic.value} for ${fields.audience.value}. The video type is ${fields.videoType.value}.
+
+Visual direction:
+- Art style: ${fields.style.value}
+- Character type: choose the best character/object format for this topic and keep it consistent
+- Color palette: soft, clean, modern, and high contrast
+- Setting style: choose a relatable setting for the audience
+- Reference image use: ${fields.reference.value}
+- Brand presence or special instruction: ${fields.brand.value}
+
+Strict rules:
+- Keep the output simple, visual, and easy to understand.
+- Do not sound like a sales pitch unless I explicitly ask for an ad.
+- Do not add subtitles, captions, labels, logos, watermarks, or readable text inside generated images or video frames. AI often creates poor text. Leave clean space if text will be added manually later.
+- Maintain the same main character, object, or product style across all scenes.
+- Keep the content family-friendly.
+
+Video structure:
+- Exactly ${fields.scenes.value} scenes.
+- Each scene should last 6-8 seconds.
+- Total video length should be about ${total} seconds.
+- Suitable for ${fields.platform.value}.
+
+Step 1: Generate 10 curiosity-driven video ideas for this topic. The ideas must be visual, relatable, short-form friendly, and not too technical. After listing the ideas, stop and ask me which idea I want to expand.
+
+After I choose an idea, continue with:
+1. Character or object design summary.
+2. Exactly ${fields.scenes.value} scene production cards.
+3. Image generation prompt for each scene.
+4. Animation prompt for each scene.
+5. Voiceover script for each scene.
+
+Use this exact format for every scene:
+
+Scene 1 Production Card
+Scene Description:
+Image Prompt:
+Animation:
+VoiceOverScript:
+Reference Notes:
+
+Repeat the same format for every scene.`}
+document.getElementById("buildVideoPrompt").onclick=buildVideoPrompt;document.getElementById("copyBuilt").onclick=()=>copyText(videoPromptOutput.textContent,document.getElementById("copyBuilt"));buildVideoPrompt();go(index);
+</script>
+</body>
+</html>
