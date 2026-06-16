@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day 13: AI Image Generation and Restoration | AI Applications Workshop</title>
+  <style>
+    :root{--bg:#f3f6fb;--paper:#fff;--ink:#142033;--muted:#59667a;--line:#d7dfeb;--blue:#2868e8;--teal:#008f86;--coral:#ef5c6b;--gold:#eeb33d;--green:#299b63;--violet:#7557c9;--navy:#17345e;--r:10px;--shadow:0 18px 48px rgba(20,32,51,.14)}
+    *{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden;color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:linear-gradient(90deg,rgba(40,104,232,.06) 1px,transparent 1px),linear-gradient(0deg,rgba(0,143,134,.05) 1px,transparent 1px),var(--bg);background-size:34px 34px}button,input,textarea,select{font:inherit}button{cursor:pointer}
+    .app{display:grid;grid-template-columns:260px 1fr;height:100%}.side{display:flex;flex-direction:column;gap:15px;min-height:0;padding:20px 16px;background:rgba(255,255,255,.95);border-right:1px solid var(--line)}.brand{display:grid;gap:7px;padding:3px 4px 12px;border-bottom:1px solid var(--line)}.brand strong{font-size:1rem}.brand span{font-size:.82rem;line-height:1.35;color:var(--muted)}.p-label{display:flex;justify-content:space-between;color:var(--muted);font-size:.73rem;text-transform:uppercase}.progress{height:8px;margin-top:7px;overflow:hidden;border-radius:99px;background:#e7edf5}.progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--teal),var(--blue),var(--violet),var(--coral))}.thumbs{display:grid;gap:7px;min-height:0;overflow:auto}.thumb{display:grid;grid-template-columns:30px 1fr;align-items:center;gap:8px;width:100%;padding:8px;border:1px solid transparent;border-radius:var(--r);background:transparent;text-align:left;color:var(--ink)}.thumb:hover,.thumb.active{background:#eef6ff;border-color:#bfd4ff}.num{display:grid;place-items:center;width:29px;height:29px;border-radius:8px;background:var(--ink);color:#fff;font-size:.71rem;font-weight:850}.thumb.active .num{background:var(--blue)}.thumb-title{font-size:.76rem;line-height:1.18}.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding-top:11px;border-top:1px solid var(--line)}.icon{min-height:40px;border:1px solid var(--line);border-radius:var(--r);background:#fff;color:var(--ink);font-weight:850}
+    .stage{display:grid;grid-template-rows:1fr auto;min-width:0;min-height:0;padding:24px}.shell{display:grid;place-items:center;min-height:0}.deck{position:relative;width:min(100%,calc((100vh - 130px)*16/9));aspect-ratio:16/9;overflow:hidden;border:1px solid rgba(20,32,51,.1);border-radius:var(--r);background:#fff;box-shadow:var(--shadow)}.slide{position:absolute;inset:0;display:none;grid-template-rows:auto 1fr auto;gap:15px;padding:clamp(22px,3.6vw,47px);overflow:hidden}.slide.active{display:grid}.slide:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,rgba(40,104,232,.075),transparent 32%),linear-gradient(315deg,rgba(0,143,134,.055),transparent 31%)}.slide>*{position:relative;z-index:1}
+    h1,h2,h3,p{margin:0}h1{font-size:clamp(2.2rem,4.6vw,4.65rem);line-height:.98;max-width:1000px}h2{font-size:clamp(1.6rem,2.9vw,2.9rem);line-height:1.04}h3{font-size:clamp(.96rem,1.32vw,1.2rem);line-height:1.2}p,li{font-size:clamp(.77rem,.98vw,.95rem);line-height:1.4;color:var(--muted)}ul,ol{margin:0;padding-left:1.1em}li+li{margin-top:5px}.kick{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:clamp(.67rem,.87vw,.82rem);font-weight:850;text-transform:uppercase}.dots{width:11px;height:11px;margin-right:36px;border-radius:50%;background:var(--coral);box-shadow:18px 0 var(--gold),36px 0 var(--teal)}
+    .hero,.two,.three,.four,.five,.six,.split,.lab,.wide{display:grid;gap:14px;min-height:0;align-items:stretch}.hero{grid-template-columns:1.12fr .88fr;align-items:center}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.four{grid-template-columns:repeat(4,minmax(0,1fr))}.five{grid-template-columns:repeat(5,minmax(0,1fr))}.six{grid-template-columns:repeat(6,minmax(0,1fr))}.split{grid-template-columns:.78fr 1.22fr;align-items:center}.lab{grid-template-columns:.88fr 1.12fr}.wide{grid-template-columns:1.18fr .82fr}
+    .card,.box,.task,.prompt,.tool,.canvas{border:1px solid var(--line);border-radius:var(--r);background:rgba(255,255,255,.94);box-shadow:0 9px 25px rgba(20,32,51,.08)}.box,.task,.canvas{padding:clamp(13px,1.7vw,20px)}.card,.tool{display:grid;align-content:start;gap:7px;min-height:108px;padding:clamp(11px,1.35vw,16px)}.card strong,.tool strong{font-size:clamp(.82rem,1.04vw,1rem)}.card p,.card li,.tool p,.tool li{font-size:clamp(.65rem,.8vw,.78rem)}.teal{border-top:7px solid var(--teal)}.blue{border-top:7px solid var(--blue)}.coral{border-top:7px solid var(--coral)}.gold{border-top:7px solid var(--gold)}.green{border-top:7px solid var(--green)}.violet{border-top:7px solid var(--violet)}.navy{border-top:7px solid var(--navy)}
+    .tags,.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.tag{display:inline-flex;align-items:center;min-height:29px;padding:5px 9px;border-radius:99px;background:#eef2ff;color:#263253;font-size:clamp(.62rem,.78vw,.76rem);font-weight:780}.tag.warn{background:#fff6dc;color:#735000}.tag.do{background:#e8fff2;color:#12663b}.tag.hot{background:#fff0f1;color:#8b2430}.action,.copy{min-height:38px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font-weight:820}.action:hover,.copy:hover{border-color:var(--blue);color:var(--blue)}
+    .flow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}.step{display:grid;align-content:start;gap:6px;padding:11px;border:1px solid var(--line);border-radius:8px;background:#fff}.step span,.badge{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-size:.7rem;font-weight:900}.step:nth-child(2n) span{background:var(--teal)}.step:nth-child(3n) span{background:var(--violet)}.step strong{font-size:.79rem}.step p{font-size:.62rem}
+    .prompt{max-height:335px;padding:12px;overflow:auto;border-color:#bfd4ff;background:#f7faff;color:var(--ink);font:clamp(.62rem,.75vw,.73rem)/1.38 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap}.prompt.tall{max-height:430px}.prompt-label{display:inline-flex;margin-right:7px;margin-bottom:6px;padding:4px 7px;border-radius:5px;background:var(--blue);color:#fff;font:700 .6rem/1 Inter,sans-serif;text-transform:uppercase}.matrix{width:100%;border-collapse:collapse;border-radius:8px;overflow:hidden;background:#fff;font-size:clamp(.59rem,.72vw,.7rem)}.matrix th,.matrix td{padding:6px 7px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.matrix th{background:var(--ink);color:#fff}.matrix tr:last-child td{border-bottom:0}.matrix strong{color:var(--ink)}
+    label{display:grid;gap:5px;color:var(--muted);font-size:.64rem;font-weight:820;text-transform:uppercase}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:8px;background:#fbfcff;color:var(--ink);font-size:.75rem}input,select{min-height:34px;padding:7px 8px}textarea{min-height:55px;padding:8px;resize:none}.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.output{min-height:285px;max-height:330px;padding:10px;overflow:auto;border:1px solid #bfd4ff;border-radius:8px;background:#f8fbff;color:var(--ink);font:clamp(.61rem,.73vw,.71rem)/1.34 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap}.mini{font-size:.66rem}.frame{display:grid;grid-template-rows:1fr auto;min-height:250px;border:2px solid #cdd8e8;border-radius:12px;background:linear-gradient(135deg,#eef5ff,#f0fffd);overflow:hidden}.frame-art{display:grid;place-items:center;padding:18px}.person{width:120px;height:155px;border-radius:55px 55px 28px 28px;background:linear-gradient(#ffd4b8 0 36%,#2868e8 36%);box-shadow:0 14px 30px rgba(20,32,51,.18);position:relative}.person:before,.person:after{content:"";position:absolute;border-radius:50%;background:#142033}.person:before{width:10px;height:10px;left:38px;top:38px;box-shadow:34px 0 #142033}.person:after{width:42px;height:8px;left:39px;top:63px;background:#ef5c6b}.frame-caption{padding:10px 12px;border-top:1px solid var(--line);background:#fff;color:var(--muted);font-size:.72rem;font-weight:780}.footer{display:flex;justify-content:space-between;gap:14px;color:var(--muted);font-size:clamp(.6rem,.74vw,.72rem);font-weight:720}.notes{display:none;position:absolute;right:18px;bottom:18px;left:18px;z-index:5;padding:12px 14px;border:1px solid #c8d0df;border-radius:8px;background:rgba(255,255,255,.98);color:var(--ink);box-shadow:0 14px 36px rgba(20,32,51,.16);font-size:.8rem}.show-notes .slide.active .notes{display:block}.bottom{display:flex;justify-content:space-between;padding-top:12px;color:var(--muted);font-size:.76rem}.kbd{display:inline-grid;place-items:center;min-width:23px;min-height:21px;padding:2px 6px;border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--ink);font-weight:850}.presenter .side,.presenter .bottom{display:none}.presenter .app{grid-template-columns:1fr}.presenter .stage{padding:0}.presenter .deck{width:100vw;height:100vh;border:0;border-radius:0}
+    @media(max-width:960px){.app{grid-template-columns:1fr}.side{display:none}.stage{padding:12px}.deck{width:100%}.hero,.two,.three,.four,.five,.six,.split,.lab,.wide,.form,.flow{grid-template-columns:1fr}.slide{padding:22px;overflow:auto}}@media print{@page{size:A4 landscape;margin:0}html,body{height:auto;overflow:visible;background:#fff}.app{display:block}.side,.bottom,.notes{display:none!important}.stage{padding:0;display:block}.shell{display:block}.deck{width:100%;height:auto;border:0;box-shadow:none;overflow:visible}.slide{position:relative;display:grid!important;width:100%;aspect-ratio:16/9;page-break-after:always}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="side"><div class="brand"><strong>AI Applications Workshop</strong><span>Day 13: AI Image Generation<br>Prompt, restore, edit, and design</span></div><div><div class="p-label"><span>Progress</span><span id="progressText">1 / 24</span></div><div class="progress"><span id="progressBar"></span></div></div><nav class="thumbs" id="thumbs"></nav><div class="controls"><button class="icon" id="prev">&lt;</button><button class="icon" id="next">&gt;</button><button class="icon" id="notes">N</button><button class="icon" id="focus">F</button></div></aside>
+  <main class="stage"><div class="shell"><section class="deck">
+
+  <article class="slide active" data-title="Welcome"><header class="kick"><span class="dots"></span>Day 13 | AI Image Generation</header><div class="hero"><div><h1>Prompt it. Repair it. Design with it.</h1><p style="margin-top:16px;font-size:clamp(.94rem,1.25vw,1.16rem)">Today we learn how image prompting actually works, how to create different types of images, how to restore low-quality visuals, and how to turn generated images into polished graphics and banners.</p><div class="tags"><span class="tag">Image prompts</span><span class="tag">High quality outputs</span><span class="tag">Restoration</span><span class="tag">Graphic design</span><span class="tag do">Copy-ready prompts</span></div></div><div class="box"><h3>Final output</h3><p style="margin-top:10px;color:var(--ink);font-size:clamp(1.04rem,1.65vw,1.42rem)">A reusable prompt toolkit plus at least three finished assets: one restored image, one creative image, and one banner or poster graphic.</p></div></div><footer class="footer"><span>Use Gemini, ChatGPT image tools, Canva, Adobe Express, Ideogram, Leonardo, or any image generator</span><span>Slide 1</span></footer><aside class="notes">Frame this as practical image production. The learner should leave with prompts they can reuse immediately.</aside></article>
+
+  <article class="slide" data-title="Today's Plan"><header class="kick"><span class="dots"></span>What We Will Build</header><div class="two"><div class="task"><h2>Skill stack</h2><ol style="margin-top:9px"><li>Understand how image prompting works.</li><li>Generate different image types and styles.</li><li>Use references without copying blindly.</li><li>Restore, upscale, and clean poor images.</li><li>Edit only one part of an image with prompt instructions.</li><li>Create banners, thumbnails, and social graphics.</li></ol></div><div class="task"><h2>Hands-on outputs</h2><ol style="margin-top:9px"><li>One photo-style image.</li><li>One illustration or character image.</li><li>One restored or enhanced image.</li><li>One banner or promotional graphic.</li><li>One localized edit using a specialized prompt.</li><li>One personal prompt library.</li></ol></div></div><footer class="footer"><span>The goal is repeatable control, not one lucky image</span><span>Slide 2</span></footer><aside class="notes">Make sure participants know they will copy, edit, and immediately use the prompt recipes.</aside></article>
+
+  <article class="slide" data-title="Image Pipeline"><header class="kick"><span class="dots"></span>The Image Production Pipeline</header><div><h2>High quality images come from a clear production path.</h2><div class="flow" style="margin-top:16px"><div class="step"><span>1</span><strong>Goal</strong><p>Decide what the image must do.</p></div><div class="step"><span>2</span><strong>Subject</strong><p>Define the person, product, object, or scene.</p></div><div class="step"><span>3</span><strong>Style</strong><p>Choose photo, 3D, illustration, graphic, or UI.</p></div><div class="step"><span>4</span><strong>Composition</strong><p>Control angle, framing, spacing, and focus.</p></div><div class="step"><span>5</span><strong>Quality</strong><p>Add lighting, detail level, ratio, and constraints.</p></div><div class="step"><span>6</span><strong>Repair</strong><p>Fix only what is broken.</p></div><div class="step"><span>7</span><strong>Export</strong><p>Save in the right size and format.</p></div></div><div class="box" style="margin-top:14px"><p style="color:var(--ink);text-align:center"><strong>Rule:</strong> A prompt is a creative brief. The clearer the brief, the less random the image.</p></div></div><footer class="footer"><span>Prompting is direction, not magic wording</span><span>Slide 3</span></footer><aside class="notes">Use the pipeline to reduce trial-and-error. Learners should identify the missing part when an image fails.</aside></article>
+
+  <article class="slide" data-title="Prompt Decisions"><header class="kick"><span class="dots"></span>Before Prompting, Choose These</header><div class="six"><div class="card blue"><strong>Image purpose</strong><p>Profile photo, ad banner, product image, thumbnail, poster, concept art, restoration, or edit.</p></div><div class="card teal"><strong>Subject</strong><p>Person, product, building, food, object, character, landscape, interface, or abstract idea.</p></div><div class="card violet"><strong>Audience</strong><p>Customers, students, parents, kids, founders, community members, or a specific niche.</p></div><div class="card gold"><strong>Visual style</strong><p>Realistic photo, 3D render, editorial graphic, vector art, watercolor, anime-inspired, or clean UI.</p></div><div class="card coral"><strong>Reference</strong><p>Own photo, product image, logo, color palette, composition sample, or no reference.</p></div><div class="card green"><strong>Output format</strong><p>Square post, story, YouTube thumbnail, website hero, print poster, transparent PNG, or wallpaper.</p></div></div><footer class="footer"><span>Clear constraints make outputs easier to reuse</span><span>Slide 4</span></footer><aside class="notes">Have learners fill these in before copying the master prompt.</aside></article>
+
+  <article class="slide" data-title="Image Types"><header class="kick"><span class="dots"></span>Different Types of Images</header><div><h2>Choose the image family before choosing fancy words.</h2><div class="three" style="margin-top:14px"><div class="card blue"><strong>Realistic photo</strong><p>Best for people, places, products, food, events, lifestyle campaigns, and believable scenes.</p></div><div class="card teal"><strong>Product or studio render</strong><p>Best for clean ecommerce visuals, packaging mockups, app devices, and object-focused hero images.</p></div><div class="card violet"><strong>Illustration or character</strong><p>Best for education, storytelling, kid-friendly content, mascots, explainers, and concept visuals.</p></div><div class="card gold"><strong>Graphic or banner</strong><p>Best for posters, social ads, website headers, thumbnails, event announcements, and offers.</p></div><div class="card coral"><strong>Restoration or enhancement</strong><p>Best for old photos, blurry images, low-resolution screenshots, damaged memories, and noisy scans.</p></div><div class="card green"><strong>Localized image edit</strong><p>Best when the image is mostly right and only one object, background, color, pose, or expression should change.</p></div></div></div><footer class="footer"><span>Image type controls composition, detail, and editing strategy</span><span>Slide 5</span></footer><aside class="notes">Ask participants which image type they need most in daily work.</aside></article>
+
+  <article class="slide" data-title="Master Prompt"><header class="kick"><span class="dots"></span>Step 1 | Master Prompt</header><div class="lab"><div class="prompt tall"><span class="prompt-label">Copy-ready master prompt</span>Act as a senior AI image director, photographer, and graphic designer.
+
+Create one high-quality image for [PURPOSE] about [SUBJECT] for [AUDIENCE].
+
+Image type:
+- [REALISTIC PHOTO / PRODUCT RENDER / CHARACTER ILLUSTRATION / SOCIAL MEDIA BANNER / POSTER / WEBSITE HERO / THUMBNAIL / RESTORATION / LOCALIZED EDIT]
+
+Visual direction:
+- Main subject: [WHO OR WHAT MUST APPEAR]
+- Setting/background: [LOCATION OR BACKDROP]
+- Style: [PHOTO / 3D / VECTOR / EDITORIAL / MINIMAL / PREMIUM / PLAYFUL / CINEMATIC]
+- Composition: [CLOSE-UP / WIDE / CENTERED / RULE OF THIRDS / LEFT TEXT SPACE / RIGHT TEXT SPACE]
+- Lighting: [SOFT NATURAL / STUDIO / DRAMATIC / BRIGHT CLEAN / GOLDEN HOUR]
+- Color palette: [BRAND COLORS OR MOOD]
+- Aspect ratio: [1:1 / 4:5 / 9:16 / 16:9 / A4 POSTER]
+- Quality target: sharp, clean, high resolution, polished, professional, no clutter.
+
+Reference instruction:
+- [NO REFERENCE / USE MY UPLOADED IMAGE FOR IDENTITY OR PRODUCT CONSISTENCY / USE MY LOGO ONLY AS BRAND COLOR REFERENCE]
+
+Strict rules:
+- Do not add random text, subtitles, watermarks, distorted logos, extra fingers, or messy details.
+- If text is needed, leave clean empty space and tell me where to add it manually.
+- Keep the image family-friendly and suitable for public use.
+- Preserve identity, product shape, and brand colors when a reference is provided.
+- Do not imitate a living artist or copyrighted character style.
+
+Before generating, silently check: subject, style, composition, lighting, color, aspect ratio, and what must not change.
+
+Generate the image now.</div><div class="task"><h3>How learners use it</h3><ol style="margin-top:9px"><li>Replace every bracket.</li><li>Keep only the lines that matter.</li><li>Paste into Gemini, ChatGPT, Canva, or another image tool.</li><li>Generate 2-4 options.</li><li>Use a repair prompt instead of starting over.</li></ol><button class="copy action" style="margin-top:12px">Copy master prompt</button></div></div><footer class="footer"><span>Generic, reusable, and not locked to one tool</span><span>Slide 6</span></footer><aside class="notes">Stress that the prompt separates subject, style, composition, quality, and constraints.</aside></article>
+
+  <article class="slide" data-title="Prompt Builder"><header class="kick"><span class="dots"></span>Interactive Lab | Image Prompt Builder</header><div class="lab"><div class="canvas"><div class="form"><label>Purpose<input id="topic" value="website hero banner for a bakery"></label><label>Audience<select id="language"><option>local customers</option><option>students</option><option>small business owners</option><option>parents</option><option>online shoppers</option></select></label><label>Main subject<input id="audience" value="fresh cakes on a clean counter"></label><label>Image type<select id="videoType"><option>social media banner</option><option>realistic product photo</option><option>website hero image</option><option>YouTube thumbnail background</option><option>poster graphic</option><option>character illustration</option><option>photo restoration</option><option>localized image edit</option></select></label><label>Visual style<select id="style"><option>premium realistic studio photo</option><option>clean 3D product render</option><option>modern editorial graphic</option><option>friendly vector illustration</option><option>cinematic lifestyle photography</option><option>minimal high-contrast design</option></select></label><label>Reference<select id="reference"><option>no reference image</option><option>use my uploaded image for identity consistency</option><option>use my uploaded product image accurately</option><option>use my brand colors and logo as subtle reference</option></select></label><label>Aspect ratio<select id="scenes"><option selected>16:9 website banner</option><option>1:1 square post</option><option>4:5 Instagram post</option><option>9:16 story or reel cover</option><option>A4 poster</option></select></label><label>Composition<select id="platform"><option>subject on left, empty text space on right</option><option>centered hero composition</option><option>close-up detail shot</option><option>wide scene with clean background</option><option>top-down flat lay</option></select></label></div><label style="margin-top:8px">Quality or brand instruction<textarea id="brand">Warm, modern, clean, high resolution, no readable text inside the image.</textarea></label><button class="action" id="buildVideoPrompt" style="margin-top:9px">Build image prompt</button></div><div><div class="output" id="videoPromptOutput"></div><button class="action" id="copyBuilt" style="margin-top:9px">Copy generated prompt</button></div></div><footer class="footer"><span>Change the fields and copy a custom image prompt</span><span>Slide 7</span></footer><aside class="notes">This lets learners create ready-to-use prompts for many image types without rewriting from zero.</aside></article>
+
+  <article class="slide" data-title="How Prompts Work"><header class="kick"><span class="dots"></span>How Image Prompting Actually Works</header><div class="two"><div class="task"><h2>The model builds a visual probability map.</h2><p style="margin-top:10px">It does not read your mind. It combines patterns from your words: subject, style, composition, lighting, context, and restrictions.</p><div class="tags"><span class="tag">Subject</span><span class="tag">Style</span><span class="tag">Composition</span><span class="tag">Lighting</span><span class="tag">Constraints</span></div></div><div class="task"><h2>Why prompts fail</h2><ol style="margin-top:9px"><li>The subject is vague.</li><li>The style words conflict.</li><li>Too many ideas compete.</li><li>The image needs readable text.</li><li>The edit instruction changes the whole image.</li><li>The reference instruction is unclear.</li></ol></div></div><footer class="footer"><span>Better prompts reduce ambiguity one decision at a time</span><span>Slide 8</span></footer><aside class="notes">Explain that the prompt is a set of weighted instructions. Strong, specific instructions usually guide the output better.</aside></article>
+  <article class="slide" data-title="Prompt Formula"><header class="kick"><span class="dots"></span>The Prompt Formula</header><div class="wide"><div class="prompt"><span class="prompt-label">Reusable formula</span>[IMAGE TYPE] of [MAIN SUBJECT], doing/appearing [ACTION OR STATE], in/against [SETTING OR BACKGROUND].
+
+Style:
+[PHOTO / 3D / ILLUSTRATION / GRAPHIC / VECTOR / CINEMATIC / MINIMAL]
+
+Composition:
+[CAMERA ANGLE], [FRAMING], [WHERE THE SUBJECT SITS], [EMPTY SPACE FOR TEXT IF NEEDED]
+
+Quality:
+[LIGHTING], [COLOR PALETTE], [DETAIL LEVEL], [MOOD], [ASPECT RATIO]
+
+Reference:
+[WHAT TO PRESERVE FROM UPLOADED IMAGE]
+
+Do not:
+[TEXT, WATERMARKS, DISTORTIONS, EXTRA OBJECTS, STYLE CONFLICTS]</div><div class="task"><h3>Why this format works</h3><ul style="margin-top:9px"><li>It separates creative decisions.</li><li>It makes edits easier.</li><li>It supports any image tool.</li><li>It leaves room for manual design text.</li><li>It avoids one long confusing sentence.</li></ul><button class="copy action" style="margin-top:12px">Copy prompt formula</button></div></div><footer class="footer"><span>Use the same formula for photos, illustrations, products, and banners</span><span>Slide 9</span></footer><aside class="notes">Have learners identify each component in a sample prompt.</aside></article>
+
+  <article class="slide" data-title="Example Prompt"><header class="kick"><span class="dots"></span>Example | Strong Image Prompt</header><div class="lab"><div class="prompt"><span class="prompt-label">Ready-to-use example</span>Realistic premium studio photo of fresh chocolate cakes and colorful cupcakes arranged on a clean wooden bakery counter.
+
+Composition:
+Wide 16:9 website hero image, main cakes on the left third, clean empty warm background space on the right for a headline to be added later, eye-level camera, shallow depth of field.
+
+Style and quality:
+Soft natural window light, warm modern bakery mood, appetizing texture, clean surfaces, high resolution, sharp focus on the front cake, subtle pastel color palette.
+
+Brand direction:
+Friendly local bakery, premium but approachable, no visible brand logo.
+
+Do not add:
+Readable text, labels, price tags, watermark, messy crumbs, extra hands, distorted cake shapes, or harsh shadows.</div><div class="frame"><div class="frame-art"><div class="person"></div></div><div class="frame-caption">Subject, composition, quality, and restrictions work together.</div></div></div><footer class="footer"><span>Leave text space; add real text later in Canva or another editor</span><span>Slide 10</span></footer><aside class="notes">Point out that the prompt tells the model where to leave text space instead of asking it to render text.</aside></article>
+  <article class="slide" data-title="Image Prompt"><header class="kick"><span class="dots"></span>Step 2 | Single Image Template</header><div class="wide"><div class="prompt"><span class="prompt-label">Copy-ready image prompt template</span>Create one high-quality [IMAGE TYPE] for [PURPOSE].
+
+Main subject:
+[WHO OR WHAT SHOULD BE VISIBLE]
+
+Scene or background:
+[WHERE IT IS / WHAT SURROUNDS IT]
+
+Style:
+[REALISTIC PHOTO / PRODUCT RENDER / ILLUSTRATION / GRAPHIC DESIGN / MINIMAL VECTOR / CINEMATIC]
+
+Composition:
+[ASPECT RATIO], [CAMERA ANGLE], [SUBJECT PLACEMENT], [EMPTY SPACE FOR TEXT IF NEEDED]
+
+Quality:
+Sharp, high resolution, professional lighting, clean details, balanced colors, polished finish.
+
+Reference instruction:
+[WHAT TO PRESERVE FROM UPLOADED IMAGE, OR "NO REFERENCE IMAGE"]
+
+Do not add:
+Readable text, captions, watermarks, distorted logos, extra people, extra fingers, clutter, or random objects.
+
+Output only the final image.</div><div class="task"><h3>Step in class</h3><ol style="margin-top:9px"><li>Pick the image type.</li><li>Replace every bracket.</li><li>Generate 2-4 options.</li><li>Compare composition and quality.</li><li>Repair only the best option.</li><li>Save final image with a clear name.</li></ol><button class="copy action" style="margin-top:12px">Copy image prompt template</button></div></div><footer class="footer"><span>One clear image goal per prompt</span><span>Slide 11</span></footer><aside class="notes">The no-text rule prevents bad AI text. Add real text in a graphic editor after generation.</aside></article>
+
+  <article class="slide" data-title="Reference Images"><header class="kick"><span class="dots"></span>Using Uploaded Images as Reference</header><div class="three"><div class="card blue"><strong>Character reference</strong><p>Upload a character sheet or best previous image. Ask for the same face, outfit, colors, and proportions.</p></div><div class="card teal"><strong>Product reference</strong><p>Upload your product photo. Ask the tool to keep the product shape, color, and key details recognizable.</p></div><div class="card violet"><strong>Brand reference</strong><p>Upload logo or brand guide only if allowed. Ask for subtle colors or background presence, not heavy promotion.</p></div><div class="card gold"><strong>Style reference</strong><p>Use style references carefully. Avoid copying a living artist or copyrighted show style directly.</p></div><div class="card coral"><strong>Scene reference</strong><p>Upload a room, school, office, or background image. Ask to preserve layout, mood, or color only.</p></div><div class="card green"><strong>No reference</strong><p>Ask for an original consistent design and reuse the best generated frame as the future reference.</p></div></div><footer class="footer"><span>References are for consistency, not blind copying</span><span>Slide 12</span></footer><aside class="notes">If learners use real people, remind them to get permission and avoid misleading contexts.</aside></article>
+
+  <article class="slide" data-title="Reference Prompt"><header class="kick"><span class="dots"></span>Reference Image Prompt</header><div class="lab"><div class="prompt"><span class="prompt-label">Copy-ready reference prompt</span>Use the uploaded image as a visual reference for [CHARACTER / OBJECT / PRODUCT / LOCATION].
+
+Keep these consistent:
+- Overall shape and proportions.
+- Main colors.
+- Important visible details.
+- Mood and personality.
+- Outfit or surface design if relevant.
+
+Change these as needed for the new image:
+- Pose and action.
+- Camera angle.
+- Background.
+- Lighting.
+- Facial expression.
+
+Do not add subtitles, captions, labels, or readable text inside the image.
+Do not change the identity of the character/object/product.
+Create the image in this style: [ART STYLE].
+
+Image to generate:
+[PASTE IMAGE DESCRIPTION]</div><div class="task"><h3>Good reference habit</h3><p style="margin-top:9px">After generating one strong image, reuse it as a reference for future versions, matching products, character consistency, or brand style.</p><button class="copy action" style="margin-top:12px">Copy reference prompt</button></div></div><footer class="footer"><span>Reference images make consistent outputs easier</span><span>Slide 13</span></footer><aside class="notes">Tell learners to keep source images, references, and final images in separate folders.</aside></article>
+
+  <article class="slide" data-title="Image Repair"><header class="kick"><span class="dots"></span>Repair Bad Images Fast</header><div class="lab"><div class="prompt"><span class="prompt-label">Image repair prompt</span>Regenerate this image with the following fixes while keeping the same subject, style, layout, and composition:
+
+Problems to fix:
+- [PROBLEM 1]
+- [PROBLEM 2]
+- [PROBLEM 3]
+
+Keep:
+- [WHAT IS WORKING]
+
+Change:
+- [WHAT MUST CHANGE]
+
+Important rules:
+- No subtitles, captions, labels, logos, watermarks, or readable text inside the image.
+- Keep hands, face, eyes, and proportions clean.
+- Keep the main character/object consistent with the reference.
+- Make the image simple, clear, and usable as a final graphic or design asset.</div><div class="task"><h3>Common fixes</h3><div class="tags"><span class="tag">Remove text</span><span class="tag">Fix hands</span><span class="tag">Same outfit</span><span class="tag">Cleaner background</span><span class="tag">More emotion</span><span class="tag">Less clutter</span></div><button class="copy action" style="margin-top:12px">Copy repair prompt</button></div></div><footer class="footer"><span>Repair prompts should be specific, not emotional</span><span>Slide 14</span></footer><aside class="notes">Have learners name what to keep before saying what to change.</aside></article>
+
+  <article class="slide" data-title="Save Assets"><header class="kick"><span class="dots"></span>Step 5 | Save and Organize</header><div class="two"><div class="task"><h2>Folder structure</h2><div class="prompt" style="margin-top:10px">day13-images/
+  prompts/
+    image-master-prompt.txt
+    repair-prompts.txt
+  source-images/
+    original-reference.jpg
+    old-photo-before.jpg
+  generated/
+    bakery-hero-v01.png
+    product-render-v01.png
+    character-v01.png
+  final/
+    bakery-hero-final.png
+    restored-photo-final.png
+    social-banner-final.png</div></div><div class="task"><h2>File naming rule</h2><ol style="margin-top:9px"><li>Name by purpose, not "download 1".</li><li>Keep originals separate from final files.</li><li>Save the prompt that created each final image.</li><li>Use PNG for graphics and transparent assets.</li><li>Use JPG for photo exports when file size matters.</li></ol><div class="tags"><span class="tag do">Organized files make future edits faster</span></div></div></div><footer class="footer"><span>Good image workflow includes prompt history</span><span>Slide 15</span></footer><aside class="notes">Have learners save the prompt with the final image so they can recreate or adjust it later.</aside></article>
+
+  <article class="slide" data-title="Restore Workflow"><header class="kick"><span class="dots"></span>Image Restoration Workflow</header><div><h2>Restoration works best when you ask for preservation first, enhancement second.</h2><div class="flow" style="margin-top:16px"><div class="step"><span>1</span><strong>Upload</strong><p>Use the clearest original file.</p></div><div class="step"><span>2</span><strong>Preserve</strong><p>Name identity, pose, clothing, and era.</p></div><div class="step"><span>3</span><strong>Repair</strong><p>Fix scratches, blur, noise, fading, or tears.</p></div><div class="step"><span>4</span><strong>Enhance</strong><p>Sharpen face, restore contrast, improve light.</p></div><div class="step"><span>5</span><strong>Respect</strong><p>Do not invent new features.</p></div><div class="step"><span>6</span><strong>Upscale</strong><p>Export higher resolution after repair.</p></div><div class="step"><span>7</span><strong>Compare</strong><p>Check before and after closely.</p></div></div><div class="box" style="margin-top:14px"><p style="color:var(--ink);text-align:center"><strong>Restoration rule:</strong> keep the person or object recognizable. A prettier face that changes identity is a failed restoration.</p></div></div><footer class="footer"><span>Preserve truth before improving quality</span><span>Slide 16</span></footer><aside class="notes">Use this for old family photos, scanned certificates, product shots, and blurry event images.</aside></article>
+
+  <article class="slide" data-title="Restore Prompt"><header class="kick"><span class="dots"></span>Copy-ready Restoration Prompt</header><div class="lab"><div class="prompt"><span class="prompt-label">Restore and enhance</span>Restore this uploaded image in high quality while preserving the original identity, pose, clothing, object shapes, and overall memory.
+
+Fix:
+- Blur, low resolution, compression noise, scratches, dust, stains, fading, and uneven lighting.
+
+Enhance:
+- Natural sharpness, realistic skin or surface texture, balanced contrast, clean background, and clear facial or product details.
+
+Do not change:
+- Face shape, age, expression, clothing design, product shape, body proportions, original era, or important objects.
+
+Do not add:
+- New people, decorative effects, fake text, heavy beauty filters, unrealistic colors, watermark, or artificial-looking skin.
+
+Output:
+A natural high-resolution restored version that still looks like the same original image.</div><div class="task"><h3>Restoration checks</h3><ol style="margin-top:9px"><li>Does the face or product still match?</li><li>Did it invent details?</li><li>Are eyes, hands, and edges natural?</li><li>Is the image too smooth?</li><li>Is the final size useful?</li></ol><button class="copy action" style="margin-top:12px">Copy restoration prompt</button></div></div><footer class="footer"><span>Restoration prompts should say what must not change</span><span>Slide 17</span></footer><aside class="notes">Tell learners to compare side-by-side, not from memory.</aside></article>
+
+  <article class="slide" data-title="Upscale Prompt"><header class="kick"><span class="dots"></span>High-quality Upscale and Cleanup</header><div class="wide"><div class="prompt"><span class="prompt-label">Upscale prompt</span>Upscale and enhance this image for professional use.
+
+Target quality:
+- High resolution, crisp subject edges, clean texture, realistic detail, balanced contrast, accurate colors, and no compression artifacts.
+
+Preserve:
+- Original composition, identity, product shape, clothing, background layout, logo placement if present, and overall mood.
+
+Fix only:
+- Noise, pixelation, blur, dull colors, small scratches, harsh shadows, and low contrast.
+
+Do not:
+- Change the face, product design, text, logo, pose, camera angle, background objects, or overall style.
+
+If any readable text or logo is unclear, do not invent it. Keep it blank or preserve the original as closely as possible.</div><div class="task"><h3>Use when</h3><div class="tags"><span class="tag">Old photos</span><span class="tag">Low-res product shots</span><span class="tag">Screenshots</span><span class="tag">Event images</span><span class="tag">Portfolio visuals</span><span class="tag">Print assets</span></div><button class="copy action" style="margin-top:12px">Copy upscale prompt</button></div></div><footer class="footer"><span>Upscaling is not redesigning</span><span>Slide 18</span></footer><aside class="notes">Warn learners that AI may hallucinate text during upscaling. Verify anything readable.</aside></article>
+
+  <article class="slide" data-title="Style Recipes"><header class="kick"><span class="dots"></span>Prompt Recipes for Different Image Types</header><div class="three"><div class="card blue"><strong>Realistic photo</strong><div class="prompt">Realistic documentary-style photo of [subject] in [setting], natural light, authentic emotion, 35mm lens look, shallow depth of field, high detail, no text.</div></div><div class="card teal"><strong>Product render</strong><div class="prompt">Premium studio product render of [product], clean background, softbox lighting, subtle shadow, accurate shape and material, ecommerce-ready, high resolution.</div></div><div class="card violet"><strong>Character</strong><div class="prompt">Friendly original character of [subject], consistent outfit and proportions, expressive face, clean illustration style, simple background, no copyrighted style.</div></div><div class="card gold"><strong>Poster</strong><div class="prompt">Modern poster background for [event/topic], bold visual metaphor, strong focal point, clean empty headline area, high contrast, no generated text.</div></div><div class="card coral"><strong>Thumbnail</strong><div class="prompt">YouTube thumbnail background about [topic], dramatic clear subject, strong emotion, simple composition, high contrast, room for large manual title text.</div></div><div class="card green"><strong>Transparent asset</strong><div class="prompt">Isolated [object] as a clean transparent-background PNG asset, centered, crisp edges, realistic shadow removed, no background, no text.</div></div></div><footer class="footer"><span>Start with a recipe, then customize subject and constraints</span><span>Slide 19</span></footer><aside class="notes">Have participants copy one recipe and adapt it for their own work.</aside></article>
+
+  <article class="slide" data-title="Graphics Workflow"><header class="kick"><span class="dots"></span>Making Graphics and Banners from Generated Images</header><div class="two"><div class="task"><h2>Best workflow</h2><ol style="margin-top:9px"><li>Generate the background or hero visual without text.</li><li>Leave clean space for headline and logo.</li><li>Open the image in Canva, Figma, PowerPoint, or Adobe Express.</li><li>Add real text, logo, buttons, and shapes manually.</li><li>Check mobile crop and readability.</li><li>Export the correct size.</li></ol></div><div class="task"><h2>Why not ask AI for the final banner?</h2><p style="margin-top:9px">Image tools often make bad spelling, distorted logos, and unreadable layout. Use AI for the visual foundation; use a design editor for exact text and branding.</p><div class="tags"><span class="tag do">AI image first</span><span class="tag">Manual typography</span><span class="tag">Real logo</span><span class="tag">Correct size</span></div></div></div><footer class="footer"><span>Graphics are strongest when AI and design tools share the work</span><span>Slide 20</span></footer><aside class="notes">Demonstrate a generated background moved into a design tool with text added manually.</aside></article>
+
+  <article class="slide" data-title="Banner Prompt"><header class="kick"><span class="dots"></span>Copy-ready Banner Background Prompt</header><div class="lab"><div class="prompt"><span class="prompt-label">Banner background</span>Create a high-quality [BANNER TYPE] background for [BRAND / EVENT / PRODUCT / TOPIC].
+
+Main visual:
+[DESCRIBE SUBJECT OR METAPHOR]
+
+Layout:
+[ASPECT RATIO], subject on [LEFT/CENTER/RIGHT], clean empty space on [LEFT/RIGHT/TOP/BOTTOM] for manually added headline, logo, and call-to-action.
+
+Style:
+[MODERN / PREMIUM / PLAYFUL / EDUCATIONAL / CORPORATE / FESTIVE], [COLOR PALETTE], clean lighting, strong contrast, professional composition.
+
+Quality:
+High resolution, crisp details, balanced colors, simple background, readable negative space.
+
+Do not include:
+Any readable text, fake logo, watermark, UI buttons, price, phone number, random icons, distorted hands, or clutter.
+
+Output only the background image.</div><div class="task"><h3>Good sizes</h3><table class="matrix" style="margin-top:9px"><tbody><tr><td>Website hero</td><td>16:9 or 21:9</td></tr><tr><td>Instagram post</td><td>1:1 or 4:5</td></tr><tr><td>Story/Reel cover</td><td>9:16</td></tr><tr><td>YouTube thumbnail</td><td>16:9</td></tr><tr><td>Poster</td><td>A4 vertical</td></tr></tbody></table><button class="copy action" style="margin-top:12px">Copy banner prompt</button></div></div><footer class="footer"><span>Generate background first, design exact text second</span><span>Slide 21</span></footer><aside class="notes">This directly addresses graphics and banners from image creation.</aside></article>
+
+  <article class="slide" data-title="Quality Checklist"><header class="kick"><span class="dots"></span>How to Create High-quality Graphics Nicely</header><div class="three"><div class="card blue"><strong>One focal point</strong><p>Do not make every object important. The viewer should know where to look first.</p></div><div class="card teal"><strong>Clean negative space</strong><p>Leave calm areas for headline, logo, product name, or call-to-action.</p></div><div class="card violet"><strong>Controlled palette</strong><p>Use 2-4 main colors with enough contrast. Match brand colors when needed.</p></div><div class="card gold"><strong>Real typography later</strong><p>Add readable text manually in a design editor. Do not trust generated text.</p></div><div class="card coral"><strong>Right crop</strong><p>Generate or edit for the actual platform ratio before final export.</p></div><div class="card green"><strong>Final inspection</strong><p>Zoom in for hands, faces, product details, logos, spelling, and edge artifacts.</p></div></div><footer class="footer"><span>Polish comes from composition and restraint</span><span>Slide 22</span></footer><aside class="notes">Use this as a final checklist before participants submit assets.</aside></article>
+
+  <article class="slide" data-title="Localized Edits"><header class="kick"><span class="dots"></span>Edit One Part Without Affecting the Whole Image</header><div class="lab"><div class="prompt"><span class="prompt-label">Localized edit prompt</span>Edit only the selected area: [OBJECT / BACKGROUND PART / CLOTHING / COLOR / EXPRESSION / LIGHTING].
+
+Change:
+[EXACT CHANGE YOU WANT]
+
+Keep everything else unchanged:
+- Same person or product identity.
+- Same pose, camera angle, composition, background layout, lighting direction, colors, and image style.
+- Same facial features, clothing shape, object proportions, and surrounding details.
+
+Do not regenerate the whole image.
+Do not add new objects, text, watermark, logo, people, hands, or decoration.
+Blend the edit naturally so it matches the original image quality and lighting.</div><div class="task"><h3>Specialized examples</h3><ul style="margin-top:9px"><li>Change only shirt color.</li><li>Remove only background clutter.</li><li>Replace only sky or wall.</li><li>Brighten only face or product.</li><li>Make only one object larger.</li><li>Keep the rest pixel-for-pixel similar.</li></ul><button class="copy action" style="margin-top:12px">Copy localized edit prompt</button></div></div><footer class="footer"><span>Use selection tools when available, then reinforce with text instructions</span><span>Slide 23</span></footer><aside class="notes">This answers the request for prompts that change certain parts without affecting the whole image.</aside></article>
+
+  <article class="slide" data-title="Wrap-up"><header class="kick"><span class="dots"></span>Wrap-up | Image Generation Toolkit</header><div class="hero"><div><h1 style="font-size:clamp(2.05rem,4.05vw,4rem)">Great images come from clear direction and careful repair.</h1><div class="tags"><span class="tag">Purpose</span><span class="tag">Subject</span><span class="tag">Style</span><span class="tag">Composition</span><span class="tag">Quality</span><span class="tag">Reference</span><span class="tag">Localized edits</span></div><div class="actions"><button class="action" onclick="window.print()">Print / Save PDF</button></div></div><div class="box"><h3>Exit ticket</h3><ol style="margin-top:9px"><li>Which prompt recipe will you reuse first?</li><li>Which image needed restoration or repair?</li><li>Where did you leave space for design text?</li><li>Which localized edit worked best?</li><li>What will you generate after class?</li></ol></div></div><footer class="footer"><span>Day 13 complete: generate, restore, edit, and design with confidence</span><span>Slide 24</span></footer><aside class="notes">End by having learners save their three best prompts in one personal toolkit file.</aside></article>
+
+
+  </section></div><div class="bottom"><span>Keyboard: <span class="kbd">&lt;</span> <span class="kbd">&gt;</span> navigate, <span class="kbd">N</span> notes, <span class="kbd">F</span> focus</span><span>Standalone HTML deck for Day 13 image generation</span></div></main>
+</div>
+<script>
+const slides=[...document.querySelectorAll(".slide")],thumbs=document.getElementById("thumbs"),progressText=document.getElementById("progressText"),progressBar=document.getElementById("progressBar");let index=Number(localStorage.getItem("day13-images-slide")||0);
+function go(n){index=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>s.classList.toggle("active",i===index));[...thumbs.children].forEach((t,i)=>t.classList.toggle("active",i===index));progressText.textContent=`${index+1} / ${slides.length}`;progressBar.style.width=`${(index+1)/slides.length*100}%`;localStorage.setItem("day13-images-slide",index)}
+slides.forEach((s,i)=>{const b=document.createElement("button");b.className="thumb";b.innerHTML=`<span class="num">${i+1}</span><span class="thumb-title">${s.dataset.title}</span>`;b.onclick=()=>go(i);thumbs.appendChild(b)});document.getElementById("prev").onclick=()=>go(index-1);document.getElementById("next").onclick=()=>go(index+1);document.getElementById("notes").onclick=()=>document.body.classList.toggle("show-notes");document.getElementById("focus").onclick=()=>document.body.classList.toggle("presenter");document.addEventListener("keydown",e=>{if(e.target.matches("input,textarea,select"))return;if(["ArrowRight","PageDown"," "].includes(e.key))go(index+1);if(["ArrowLeft","PageUp"].includes(e.key))go(index-1);if(e.key.toLowerCase()==="n")document.body.classList.toggle("show-notes");if(e.key.toLowerCase()==="f")document.body.classList.toggle("presenter");if(e.key==="Home")go(0);if(e.key==="End")go(slides.length-1)});
+async function copyText(text,button){await navigator.clipboard.writeText(text.trim());const old=button.textContent;button.textContent="Copied";setTimeout(()=>button.textContent=old,1000)}
+document.querySelectorAll(".copy").forEach(b=>b.onclick=()=>{const p=b.closest(".slide").querySelector(".prompt");copyText(p?.innerText||"",b)});
+const fields=["topic","language","audience","videoType","style","reference","scenes","platform","brand"].reduce((o,id)=>(o[id]=document.getElementById(id),o),{}),videoPromptOutput=document.getElementById("videoPromptOutput");
+function buildVideoPrompt(){videoPromptOutput.textContent=`Act as a senior AI image director, photographer, and graphic designer.
+
+Create one high-quality ${fields.videoType.value} for ${fields.topic.value}.
+
+Audience:
+${fields.language.value}
+
+Main subject:
+${fields.audience.value}
+
+Visual style:
+${fields.style.value}
+
+Reference instruction:
+${fields.reference.value}
+
+Aspect ratio:
+${fields.scenes.value}
+
+Composition:
+${fields.platform.value}
+
+Quality and brand instruction:
+${fields.brand.value}
+
+Strict rules:
+- Make the image polished, sharp, balanced, and professional.
+- Keep the subject clear and easy to understand.
+- Leave clean negative space if design text will be added manually later.
+- Do not add readable text, fake logos, watermarks, distorted hands, random people, clutter, or messy details.
+- Preserve identity, product shape, and brand colors if a reference image is uploaded.
+- Do not imitate a living artist or copyrighted character style.
+
+Output only the final image.`}
+document.getElementById("buildVideoPrompt").onclick=buildVideoPrompt;document.getElementById("copyBuilt").onclick=()=>copyText(videoPromptOutput.textContent,document.getElementById("copyBuilt"));buildVideoPrompt();go(index);
+</script>
+</body>
+</html>
